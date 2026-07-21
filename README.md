@@ -64,6 +64,53 @@ Once running, you can access your site at:
 
 ---
 
+## 🐳 Container Operations (Run, Stop, Remove & Rebuild)
+
+Here are the essential Docker Compose commands to manage your LAMP stack environment:
+
+### 1. ▶️ Run / Start Containers
+* **Start containers in background (detached mode)**:
+  ```bash
+  docker compose up -d
+  ```
+* **Start containers and attach to terminal logs**:
+  ```bash
+  docker compose up
+  ```
+
+### 2. ⏹️ Stop Containers
+* **Stop running containers (without removing them)**:
+  ```bash
+  docker compose stop
+  ```
+* **Stop and remove running containers & networks**:
+  ```bash
+  docker compose down
+  ```
+
+### 3. 🗑️ Remove Containers & Database Volumes
+* **Stop containers, remove networks, and purge persistent database volumes**:
+  ```bash
+  docker compose down -v
+  ```
+* **Force remove stopped container instances**:
+  ```bash
+  docker compose rm -f
+  ```
+
+### 4. 🔄 Rebuild Images & Container Stack
+* **Rebuild the PHP/Apache image without cache and restart containers**:
+  ```bash
+  docker compose up -d --build --no-cache
+  ```
+* **Rebuild specific service image (e.g. webserver)**:
+  ```bash
+  docker compose build --no-cache webserver
+  docker compose up -d
+  ```
+
+---
+
 ## 🔍 Verification & Diagnostics
 
 The project includes an `index.php.testing.example` script to verify that your environment is fully compatible with Grav CMS and can successfully connect to the database.
