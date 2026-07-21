@@ -11,8 +11,6 @@ onpage_menu: true
 page-toc:
   anchors:
     link: false
-sitemap:
-  changefreq: yearly
 metadata:
-  description: 'Hadron is a modern, fast, and flexible Grav CMS theme and skeleton designed for websites and webshops.'
+  description: 'Milkboy - Software Engineer, Full-Stack Developer & DevOps Specialist Personal CV and Portfolio.'
 ---

@@ -4,9 +4,9 @@ hero_classes: parallax text-light
 hero_image: header.webp
 ---
 
-# Welcome to [span class="hadron-font"]**Hadron**[/span]
-## Fast, Modern, and Flexible Grav CMS Stack
+# Hi, I'm [span class="hadron-font"]**Milkboy**[/span] 👋
+## Full-Stack Software Engineer & DevOps Enthusiast
 
-Hadron is a modern, high-performance Grav CMS theme designed for simplicity and versatility. Whether you are building a personal blog, business portal, or online shop, Hadron provides a solid, responsive foundation.
+Passionate about building scalable web applications, designing resilient containerized infrastructure, and crafting elegant user experiences. Welcome to my personal CV and developer portfolio!
 
-[Explore Features](#highlights?classes=btn,btn-primary,btn-lg) [Documentation](https://getgrav.org/docs?classes=btn,btn-secondary,btn-lg)
+[View Portfolio](#portfolio?classes=btn,btn-primary,btn-lg) [Core Skills](#skills?classes=btn,btn-secondary,btn-lg) [Contact Me](#contact?classes=btn,btn-outline,btn-lg)

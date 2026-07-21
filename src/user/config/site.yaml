@@ -1,7 +1,6 @@
-title: Grav
+title: 'Milkboy | Personal CV & Portfolio'
 author:
-  name: Joe Bloggs
-  email: 'joe@example.com'
+  name: Milkboy
+  email: 'webmaster@milkboy.my.id'
 metadata:
-    description: 'Grav is an easy to use, yet powerful, open source flat-file CMS'
-
+  description: 'Personal CV, Resume, and Developer Portfolio built with Grav CMS and Docker.'
