@@ -328,6 +328,7 @@ body #header nav.language-switcher ul li a.active .flag-icon,
     /* Brand Logo & Title Scaling on Mobile */
     #header .navbar-brand {
         gap: 0.4rem !important;
+        flex: 0 0 auto !important;
     }
 
     #header .navbar-brand .title {
@@ -339,15 +340,61 @@ body #header nav.language-switcher ul li a.active .flag-icon,
         max-height: 24px !important;
     }
 
-    /* Desktop Menu & Language Switcher Adjustments on Mobile */
+    /* Side-Scrollable Horizontal Navbar Ribbon on Mobile */
     #header .navbar-section.desktop-menu {
+        display: flex !important;
+        flex: 1 1 auto !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important; /* Firefox */
+        -ms-overflow-style: none !important; /* IE 10+ */
+        padding: 0 0.25rem !important;
+        margin-left: 0.5rem !important;
         gap: 0.4rem !important;
+        align-items: center !important;
+    }
+
+    /* Hide scrollbar visually while keeping touch swipe functionality */
+    #header .navbar-section.desktop-menu::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    #header .dropmenu {
+        display: flex !important;
+        flex: 0 0 auto !important;
+        align-items: center !important;
+        white-space: nowrap !important;
+    }
+
+    #header .dropmenu ul.navigation {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+        gap: 0.25rem !important;
+    }
+
+    #header .dropmenu ul.navigation li {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #header .dropmenu:not(.language-switcher) a,
+    #header .dropmenu ul.navigation > li > a {
+        white-space: nowrap !important;
+        padding: 0.35rem 0.6rem !important;
+        font-size: 0.8rem !important;
+        flex-shrink: 0 !important;
     }
 
     /* Language Switcher Touch Targets on Mobile */
     body #header nav.language-switcher,
     #header nav.language-switcher {
         margin-left: 0.25rem !important;
+        flex: 0 0 auto !important;
     }
 
     body #header nav.language-switcher ul li a,
