@@ -1,7 +1,9 @@
 <div class="card">
+	{% if card.image %}
 	<div class="card-image">
-		<img src="{{ card.image }}" alt="{{ card.title ?? '' }}" class="img-responsive">
+		<img src="{{ page.media[card.image].url ?? card.image }}" alt="{{ card.title ?? '' }}" class="img-responsive">
 	</div>
+	{% endif %}
 
 	<div class="card-header">
 		<div class="card-title">
