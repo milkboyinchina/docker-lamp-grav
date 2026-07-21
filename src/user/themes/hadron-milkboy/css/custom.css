@@ -20,11 +20,11 @@ body #header.scrolled {
     align-items: center !important;
     z-index: 999999 !important;
     pointer-events: auto !important;
-    background: rgba(10, 15, 30, 0.92) !important;
+    background: rgba(10, 15, 30, 0.94) !important;
     backdrop-filter: blur(14px) !important;
     -webkit-backdrop-filter: blur(14px) !important;
-    border-bottom: 1px solid rgba(0, 240, 255, 0.3) !important;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6) !important;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.35) !important;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7) !important;
     transition: all 0.3s ease-in-out !important;
 }
 
@@ -117,7 +117,7 @@ body #header.scrolled {
 #header .dropmenu ul.navigation {
     display: flex !important;
     align-items: center !important;
-    gap: 0.25rem !important;
+    gap: 0.35rem !important;
     margin: 0 !important;
     padding: 0 !important;
     height: 100% !important;
@@ -142,17 +142,17 @@ body #header.scrolled {
     padding: 0 !important;
 }
 
-/* Precision Centered Hover Box for Navbar Links */
+/* High-Contrast Clear Readability Navbar Links */
 #header a,
 #header .dropmenu ul > li > a,
 #header .dropmenu > ul > li > a {
-    color: #f1f5f9 !important;
-    font-size: 0.82rem !important;
+    color: #ffffff !important;
+    font-size: 0.85rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
-    opacity: 0.95 !important;
-    padding: 0.4rem 0.75rem !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+    opacity: 0.92 !important;
+    padding: 0.35rem 0.75rem !important;
     margin: 0 !important;
     height: 2.1rem !important;
     display: inline-flex !important;
@@ -161,11 +161,12 @@ body #header.scrolled {
     text-align: center !important;
     line-height: 1 !important;
     box-sizing: border-box !important;
-    border-radius: 5px !important;
+    border: 1px solid transparent !important;
+    border-radius: 6px !important;
     transition: all 0.2s ease-in-out !important;
 }
 
-/* Active & Hover Links */
+/* Crisp Active & Hover Box States */
 #header a:hover,
 #header a:focus,
 #header a.active,
@@ -175,8 +176,10 @@ body #header.scrolled {
 #header .dropmenu > ul > li > a.active {
     color: #00f0ff !important;
     opacity: 1 !important;
-    background: rgba(0, 240, 255, 0.1) !important;
-    text-shadow: 0 0 8px rgba(0, 240, 255, 0.9), 0 0 15px rgba(0, 240, 255, 0.4) !important;
+    background: rgba(0, 240, 255, 0.18) !important;
+    border: 1px solid rgba(0, 240, 255, 0.45) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.35) !important;
 }
 
 /* Language Switcher - Precision Centered Flag Icons */
@@ -184,17 +187,17 @@ nav.language-switcher {
     position: relative !important;
     z-index: 1000001 !important;
     margin-left: 0.5rem !important;
-    display: flex !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     height: 100% !important;
 }
 
 nav.language-switcher ul {
-    display: flex !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 0.35rem !important;
+    gap: 0.4rem !important;
     margin: 0 !important;
     padding: 0 !important;
     height: 100% !important;
@@ -202,7 +205,7 @@ nav.language-switcher ul {
 }
 
 nav.language-switcher li {
-    display: flex !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     height: 100% !important;
@@ -215,15 +218,16 @@ nav.language-switcher a {
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    width: 1.85rem !important;
-    height: 1.85rem !important;
+    vertical-align: middle !important;
+    width: 2rem !important;
+    height: 2rem !important;
     padding: 0 !important;
     margin: 0 !important;
-    line-height: 1 !important;
+    line-height: 2rem !important;
     border-radius: 50% !important;
     background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(0, 240, 255, 0.3) !important;
-    font-size: 0.95rem !important;
+    border: 1px solid rgba(0, 240, 255, 0.35) !important;
+    font-size: 1rem !important;
     box-sizing: border-box !important;
     text-decoration: none !important;
     transition: all 0.2s ease-in-out !important;
@@ -231,9 +235,8 @@ nav.language-switcher a {
 
 nav.language-switcher a:hover,
 nav.language-switcher a.active {
-    background: rgba(0, 240, 255, 0.25) !important;
+    background: rgba(0, 240, 255, 0.28) !important;
     border-color: #00f0ff !important;
-    transform: scale(1.08) !important;
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.6) !important;
 }
 
