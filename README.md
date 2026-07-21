@@ -56,9 +56,20 @@ grav-lamp/
 ## ⚡ Quick Start
 
 ### 1. Prerequisites
-Ensure you have the following installed on your machine:
-* [Docker](https://docs.docker.com/get-docker/)
-* [Docker Compose](https://docs.docker.com/compose/install/)
+
+#### 💻 General Prerequisites (Linux / macOS):
+* [Docker Engine](https://docs.docker.com/get-docker/) & [Docker Compose v2](https://docs.docker.com/compose/install/)
+
+#### 🪟 Windows OS Prerequisites:
+To ensure smooth container startup, file mounting, and script execution on Windows:
+* **[Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)**: Installed and running in your system tray.
+* **[WSL 2 (Windows Subsystem for Linux 2)](https://learn.microsoft.com/en-us/windows/wsl/install)**: Enabled as the Docker backend engine:
+  ```powershell
+  wsl --install
+  ```
+  *(Ensure **"Use the WSL 2 based engine"** is checked in Docker Desktop -> Settings -> General)*.
+* **Git for Windows** (Recommended): Provides Git Bash terminal support for running `.sh` and `make` commands on Windows: [https://git-scm.com/download/win](https://git-scm.com/download/win).
+* **Terminal**: Supported in **PowerShell**, **CMD**, **Git Bash**, or **WSL 2** (`ubuntu`).
 
 ### 2. Environment Configuration
 Copy the template environment file to create your local configurations:
