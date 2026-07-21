@@ -22,8 +22,8 @@
 		{% set active_page = (grav.language.getActive == language) ? 'active' : '' %}
 
 		<li>
-			<a href="{{ page_url }}" class="{{ active_page }}" title="{{ macros.lang_name(language) }}" aria-label="{{ macros.lang_name(language) }}">
-				{{ macros.lang_icon(language) }}
+			<a href="{{ page_url }}" class="{{ active_page }}" title="{{ macros.lang_name(language)|trim }}" aria-label="{{ macros.lang_name(language)|trim }}">
+				<span class="flag-icon">{{ macros.lang_icon(language)|trim }}</span>
 			</a>
 		</li>
 	{% endfor %}

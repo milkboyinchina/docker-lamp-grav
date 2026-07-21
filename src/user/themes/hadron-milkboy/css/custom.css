@@ -142,10 +142,9 @@ body #header.scrolled {
     padding: 0 !important;
 }
 
-/* High-Contrast Clear Readability Navbar Links */
-#header a,
-#header .dropmenu ul > li > a,
-#header .dropmenu > ul > li > a {
+/* High-Contrast Clear Readability Navigation Links */
+#header .dropmenu:not(.language-switcher) a,
+#header .dropmenu ul.navigation > li > a {
     color: #ffffff !important;
     font-size: 0.85rem !important;
     font-weight: 600 !important;
@@ -166,14 +165,12 @@ body #header.scrolled {
     transition: all 0.2s ease-in-out !important;
 }
 
-/* Crisp Active & Hover Box States */
-#header a:hover,
-#header a:focus,
-#header a.active,
-#header .dropmenu ul > li > a:hover,
-#header .dropmenu ul > li > a.active,
-#header .dropmenu > ul > li > a:hover,
-#header .dropmenu > ul > li > a.active {
+/* Crisp Active & Hover Box States for Navigation Links */
+#header .dropmenu:not(.language-switcher) a:hover,
+#header .dropmenu:not(.language-switcher) a:focus,
+#header .dropmenu:not(.language-switcher) a.active,
+#header .dropmenu ul.navigation > li > a:hover,
+#header .dropmenu ul.navigation > li > a.active {
     color: #00f0ff !important;
     opacity: 1 !important;
     background: rgba(0, 240, 255, 0.18) !important;
@@ -182,8 +179,9 @@ body #header.scrolled {
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.35) !important;
 }
 
-/* Language Switcher - Precision Centered Flag Icons */
-nav.language-switcher {
+/* Language Switcher - Precision Centered Circular Flag Buttons */
+body #header nav.language-switcher,
+#header nav.language-switcher {
     position: relative !important;
     z-index: 1000001 !important;
     margin-left: 0.5rem !important;
@@ -193,7 +191,8 @@ nav.language-switcher {
     height: 100% !important;
 }
 
-nav.language-switcher ul {
+body #header nav.language-switcher ul,
+#header nav.language-switcher ul {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -204,7 +203,8 @@ nav.language-switcher ul {
     list-style: none !important;
 }
 
-nav.language-switcher li {
+body #header nav.language-switcher ul li,
+#header nav.language-switcher li {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -213,28 +213,43 @@ nav.language-switcher li {
     padding: 0 !important;
 }
 
-nav.language-switcher a {
+body #header nav.language-switcher ul li a,
+#header nav.language-switcher a {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    vertical-align: middle !important;
-    width: 2rem !important;
-    height: 2rem !important;
+    width: 2.1rem !important;
+    height: 2.1rem !important;
+    min-width: 2.1rem !important;
+    min-height: 2.1rem !important;
     padding: 0 !important;
     margin: 0 !important;
-    line-height: 2rem !important;
+    line-height: 1 !important;
     border-radius: 50% !important;
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(0, 240, 255, 0.35) !important;
-    font-size: 1rem !important;
     box-sizing: border-box !important;
     text-decoration: none !important;
     transition: all 0.2s ease-in-out !important;
 }
 
-nav.language-switcher a:hover,
-nav.language-switcher a.active {
+body #header nav.language-switcher ul li a .flag-icon,
+#header nav.language-switcher a .flag-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.05rem !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: translateY(-0.5px) !important;
+}
+
+body #header nav.language-switcher ul li a:hover,
+body #header nav.language-switcher ul li a.active,
+#header nav.language-switcher a:hover,
+#header nav.language-switcher a.active {
     background: rgba(0, 240, 255, 0.28) !important;
     border-color: #00f0ff !important;
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.6) !important;
