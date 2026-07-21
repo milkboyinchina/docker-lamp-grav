@@ -1,7 +1,7 @@
 ---
 title: My Portfolio
 hero_classes: parallax text-light
-hero_image: header.webp
+hero_image: header.jpg
 ---
 
 # Hi, I'm [span class="hadron-font"]**Milkboy**[/span] 👋
