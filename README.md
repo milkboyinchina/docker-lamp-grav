@@ -18,7 +18,8 @@ grav-lamp/
 ├── .env                     # Local environment variables (created from env.example)
 ├── env.example              # Template for environment configuration
 ├── project-structure        # Reference map of the project
-├── index.php.testing.example# Environment & Database diagnostic script
+├── index.php.testing.example# Grav CMS & Database diagnostic script
+├── index.php.wordpress-testing.example# WordPress CMS & Database diagnostic script
 ├── config/                  # Configuration files mounted to the container
 │   ├── apache/
 │   │   └── 000-default.conf # VirtualHost and ServerName configuration
@@ -113,18 +114,21 @@ Here are the essential Docker Compose commands to manage your LAMP stack environ
 
 ## 🔍 Verification & Diagnostics
 
-The project includes an `index.php.testing.example` script to verify that your environment is fully compatible with Grav CMS and can successfully connect to the database.
+The project includes pre-configured diagnostic scripts to verify environment compatibility and database connections:
 
-### Using the Diagnostic Script:
-1. Temporarily replace your `src/index.php` or copy the file as `src/diagnostics.php`:
-   ```bash
-   cp index.php.testing.example src/diagnostics.php
-   ```
-2. Navigate to [http://localhost/diagnostics.php](http://localhost/diagnostics.php) in your browser.
-3. This page checks and reports:
-   * Loaded PHP Extensions (Required, Recommended, and Optional).
-   * Active database connection status.
-   * Path/directory details and PHP versions.
+### 1. Grav CMS Diagnostic Script (`index.php.testing.example`)
+Checks Grav required/recommended extensions (`gd`, `mbstring`, `yaml`, `opcache`, `apcu`, `redis`, etc.) and PDO MariaDB connection:
+```bash
+cp index.php.testing.example src/diagnostics.php
+```
+Access at [http://localhost/diagnostics.php](http://localhost/diagnostics.php).
+
+### 2. WordPress CMS Diagnostic Script (`index.php.wordpress-testing.example`)
+Checks WordPress core runtime compatibility (`mysqli`, `gd`, `curl`, `mbstring`, `xml`, `zip`, `zlib`, `fileinfo`, `openssl`, memory limits, and MySQLi database connectivity):
+```bash
+cp index.php.wordpress-testing.example src/wp-diagnostics.php
+```
+Access at [http://localhost/wp-diagnostics.php](http://localhost/wp-diagnostics.php).
 
 ---
 
