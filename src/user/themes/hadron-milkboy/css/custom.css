@@ -142,7 +142,7 @@ body #header.scrolled {
     padding: 0 !important;
 }
 
-/* High-Contrast Clear Readability Navigation Links */
+/* Clean Box-Free Navigation Menu Links (No Background Selection Box) */
 #header .dropmenu:not(.language-switcher) a,
 #header .dropmenu ul.navigation > li > a {
     color: #ffffff !important;
@@ -150,22 +150,24 @@ body #header.scrolled {
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
-    opacity: 0.92 !important;
-    padding: 0.35rem 0.75rem !important;
+    opacity: 0.9 !important;
+    padding: 0.35rem 0.6rem !important;
     margin: 0 !important;
-    height: 2.1rem !important;
+    height: auto !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
     line-height: 1 !important;
     box-sizing: border-box !important;
-    border: 1px solid transparent !important;
-    border-radius: 6px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     transition: all 0.2s ease-in-out !important;
 }
 
-/* Crisp Active & Hover Box States for Navigation Links */
+/* Crisp Clean Active & Hover State for Navigation Links - Text Glow Only */
 #header .dropmenu:not(.language-switcher) a:hover,
 #header .dropmenu:not(.language-switcher) a:focus,
 #header .dropmenu:not(.language-switcher) a.active,
@@ -173,10 +175,10 @@ body #header.scrolled {
 #header .dropmenu ul.navigation > li > a:active {
     color: #00f0ff !important;
     opacity: 1 !important;
-    background: rgba(0, 240, 255, 0.18) !important;
-    border: 1px solid rgba(0, 240, 255, 0.45) !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.35) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.85), 0 0 20px rgba(0, 240, 255, 0.4) !important;
 }
 
 /* Language Switcher - Clean Box-Free Flag Icon Selector */
@@ -287,13 +289,11 @@ body #header nav.language-switcher ul li a.active .flag-icon,
     padding: 0.4rem 0 !important;
 }
 
-/* Mobile Toggle Hamburger Button - Hide on Desktop */
-.mobile-menu {
-    display: none;
-}
-
-.mobile-container {
-    display: none;
+/* Hide Mobile Toggle Hamburger & Drawer Menu */
+.mobile-menu,
+.mobile-container,
+#overlay {
+    display: none !important;
 }
 
 /* Ensure hero section sits below header in stack layer */
@@ -312,7 +312,7 @@ body #header nav.language-switcher ul li a.active .flag-icon,
 }
 
 /* ==========================================================================
-   Mobile Responsive Expand-Down Toggle Styling Rules (Media Queries)
+   Mobile Responsive Styling Rules (Media Queries)
    ========================================================================== */
 
 @media (max-width: 840px) {
@@ -320,150 +320,47 @@ body #header nav.language-switcher ul li a.active .flag-icon,
     #header,
     body.header-fixed #header,
     body:is(.header-light, .header-transparent) #header {
-        padding: 0 0.85rem !important;
+        padding: 0 0.75rem !important;
         height: 3.5rem !important;
     }
 
-    /* Hide Inline Desktop Menu on Mobile */
     #header .navbar-section.desktop-menu {
-        display: none !important;
+        display: flex !important;
+        gap: 0.35rem !important;
+        flex-wrap: wrap !important;
     }
 
     /* Brand Logo & Title Scaling on Mobile */
     #header .navbar-brand {
-        gap: 0.4rem !important;
+        gap: 0.3rem !important;
         flex: 0 0 auto !important;
     }
 
     #header .navbar-brand .title {
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
         letter-spacing: 0px !important;
     }
 
     #header .navbar-brand img {
-        max-height: 24px !important;
+        max-height: 22px !important;
     }
 
-    /* Mobile Hamburger Toggle Button Position */
-    .mobile-menu {
-        display: block !important;
-        position: fixed !important;
-        top: 0.7rem !important;
-        right: 1rem !important;
-        z-index: 1000005 !important;
-        cursor: pointer !important;
+    /* Navigation Links on Mobile */
+    #header .dropmenu:not(.language-switcher) a,
+    #header .dropmenu ul.navigation > li > a {
+        font-size: 0.78rem !important;
+        padding: 0.25rem 0.4rem !important;
     }
 
-    .mobile-menu #toggle {
-        width: 34px !important;
-        height: 34px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        background: rgba(0, 240, 255, 0.15) !important;
-        border: 1px solid rgba(0, 240, 255, 0.4) !important;
-        border-radius: 6px !important;
-        padding: 4px !important;
+    /* Language Switcher on Mobile */
+    body #header nav.language-switcher,
+    #header nav.language-switcher {
+        margin-left: 0.2rem !important;
     }
 
-    .mobile-menu #toggle span {
-        display: block !important;
-        width: 20px !important;
-        height: 2px !important;
-        background: #00f0ff !important;
-        margin: 2.5px 0 !important;
-        transition: all 0.3s ease-in-out !important;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.8) !important;
-    }
-
-    /* Animated Hamburger X Icon when active */
-    .mobile-menu #toggle.active span.top {
-        transform: translateY(7px) rotate(45deg) !important;
-    }
-
-    .mobile-menu #toggle.active span.middle {
-        opacity: 0 !important;
-    }
-
-    .mobile-menu #toggle.active span.bottom {
-        transform: translateY(-7px) rotate(-45deg) !important;
-    }
-
-    /* Expand-Down Mobile Dropdown Menu Container */
-    .mobile-container,
-    #overlay {
-        display: block !important;
-        position: fixed !important;
-        top: 3.5rem !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        background: rgba(10, 15, 30, 0.97) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-bottom: 1px solid rgba(0, 240, 255, 0.35) !important;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.85) !important;
-        z-index: 1000004 !important;
-        max-height: 0 !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        overflow: hidden !important;
-        padding: 0 1.25rem !important;
-        transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, padding 0.3s ease-in-out !important;
-    }
-
-    /* Expand Down When Toggle is Active */
-    #overlay.open {
-        max-height: 80vh !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        overflow-y: auto !important;
-        padding: 1.25rem 1.5rem 2rem 1.5rem !important;
-    }
-
-    /* Expanded Mobile Menu Links */
-    .overlay-menu ul {
-        list-style: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .overlay-menu ul li {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .overlay-menu ul li a {
-        color: #ffffff !important;
-        font-size: 1.05rem !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.5px !important;
-        display: block !important;
-        padding: 0.85rem 0.5rem !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-        text-align: left !important;
-        text-decoration: none !important;
-        transition: all 0.2s ease !important;
-    }
-
-    .overlay-menu ul li a:hover,
-    .overlay-menu ul li a.active {
-        color: #00f0ff !important;
-        background: rgba(0, 240, 255, 0.12) !important;
-        padding-left: 1rem !important;
-        border-radius: 6px !important;
-    }
-
-    /* Expanded Language Switcher inside Dropdown Menu */
-    .overlay nav.language-switcher {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 0.75rem !important;
-        margin-bottom: 1rem !important;
-        padding-bottom: 0.75rem !important;
-        border-bottom: 1px solid rgba(0, 240, 255, 0.25) !important;
+    body #header nav.language-switcher ul li a .flag-icon,
+    #header nav.language-switcher a .flag-icon {
+        font-size: 1.1rem !important;
     }
 
     /* Responsive Grid Columns & Cards */
@@ -481,7 +378,7 @@ body #header nav.language-switcher ul li a.active .flag-icon,
 @media (max-width: 600px) {
     /* Narrow Mobile Phone Adjustments */
     #header .navbar-brand .title {
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
     }
 
     /* Hero Typography on Small Screens */
