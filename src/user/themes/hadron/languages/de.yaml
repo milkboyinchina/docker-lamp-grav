@@ -1,0 +1,369 @@
+LANGUAGE:
+  LANGUAGE: 🌐 Sprache
+  NAME: Deutsch
+  SLUG: de
+  ICON: 🇩🇪
+
+TEMPLATE:
+  DEFAULT:
+    BODY_CLASSES:
+      DESCRIPTION: 'Verfügbare Klassen im Quark Theme (Leerzeichen getrennt):<br />`header-fixed`, `header-animated`, `header-dark`, `header-transparent`, `sticky-footer`'
+  BLOG:
+    TITLE: Blog Konfiguration
+    CONTENT:
+      TITLE: Inhalt Definition
+    CONTENT_LIMIT:
+      LABEL: Maximale Anzahl Elemente
+    CONTENT_PAGINATION:
+      LABEL: Seitennummerierung
+    CONTENT_TAXONOMY_FILTER:
+      LABEL: URL Taxonomie Filter
+    APPEARANCE:
+      TITLE: Erscheinungsbild
+    BRICKLAYER_LAYOUT:
+      LABEL: Verwende Bricklayer Layout
+    POST_SUMMARY:
+      LABEL: Verstecke Zusammenfassungen auf Blog beitragsseiten
+    POST_ICON:
+      LABEL: Standard Blog Element Font Awesome Icon
+      DESCRIPTION: Kurzer Name, z.B. 'newspaper-o'.
+      HELP: Bestimmt das Standard Font Awesome Icon für die Blog Beiträge.
+    METADATA:
+      TITLE: Seiten Metadaten
+    METADATA_ITEMS:
+      LABEL: Metadaten Elemente
+  ITEM:
+    CONTENT:
+      DEFAULT: 'Deine Seitenzusammenfassung kommt hierhin.\n\n===\n\nDein Seiteninhalt kommt hierhin.'
+    BLOG:
+      TITLE: Blog Beitrag
+      HEADER_IMAGE_SECTION:
+        TITLE: Header Bild
+      HEADER_IMAGE:
+        LABEL: Zeige Header Bild
+        HELP: Aktiviert die Anzeige eines Header Bildes
+      HEADER_IMAGE_FILE:
+        LABEL: Bild Datei
+        HELP: Bild Dateiname, der im Seitenordner existiert. Wenn nicht angegeben, wird das erste gefundene Bild verwendet.
+        PLACEHOLDER: 'Zum Beispiel: bild.jpg'
+      HEADER_IMAGE_WIDTH:
+        LABEL: Bild Breite
+        HELP: Header Breite in px
+        PLACEHOLDER: Standard ist 900
+      HEADER_IMAGE_HEIGHT:
+        LABEL: Bild Höhe
+        HELP: Header Höhe in px
+        PLACEHOLDER: Standard ist 300
+      SUMMARY_SECTION:
+        TITLE: Zusammenfassung
+      SUMMARY:
+        LABEL: Zeige Zusammenfassung
+      SUMMARY_FORMAT:
+        LABEL: Format
+        OPTIONS:
+          SHORT: Verwende das erste Vorkommen von Trennzeichen oder Länge
+          LONG: Zusammenfassungstrennzeichen wird ignoriert
+        SUMMARY_SIZE:
+          LABEL: Länge
+        SUMMARY_DELIMITER:
+          LABEL: Zusammenfassungstrennzeichen
+  SECTIONS:
+    SECTION_PAGES:
+      TITLE: Sektionen
+    SECTION_CONFIG:
+      TITLE: Abschnitt Konfiguration
+    APPEARANCE:
+      TITLE: Erscheinungsbild
+    HIDE_NEXT_PREV_BUTTONS:
+      LABEL: Verstecke Nächste/Vorherige Schaltflächen
+  PARTIALS:
+    COLLECTION:
+      ITEMS:
+        LABEL: Elemente
+      ORDER_BY:
+        LABEL: Sortieren nach
+        OPTIONS:
+          FOLDER: Ordner
+          TITLE: Titel
+          DATE: Datum
+          DEFAULT: Standard
+      ORDER_DIR:
+        LABEL: Reihenfolge
+        OPTIONS:
+          ASC: Aufsteigend
+          DESC: Absteigend
+    SIDEBAR:
+      TITLE: Seitenleiste
+      DISPLAY:
+        LABEL: Zeige Seitenleiste
+      SHOW_POPULAR_TAGS:
+        LABEL: Zeige beliebte Tags
+      SHOW_FEED:
+        LABEL: Zeige Feed
+      SHOW_TOC:
+        LABEL: Zeige Inhaltsverzeichnis
+      SHOW_TNTSEARCH:
+        LABEL: Zeige TNTSearch Box
+    BLOG:
+      HERO_TITLE:
+        TITLE: Hero Abschnitt
+      HERO_CLASSES:
+        LABEL: Hero Klassen
+        DESCRIPTION: Es gibt mehrere Hero-Klassenoptionen, die hier aufgelistet werden können (durch Leerzeichen getrennt):<br />`text-light`, `text-dark`, `title-h1h2`, `parallax`, `overlay-dark-gradient`, `overlay-light-gradient`, `overlay-dark`, `overlay-light`, `hero-fullscreen`, `hero-large`, `hero-medium`, `hero-small`, `hero-tiny`<br />Bitte konsultiere die [Quark Dokumentation](https://github.com/getgrav/grav-theme-quark#hero-options) für weitere Details.
+      HERO_IMAGE:
+        LABEL: Hero Bild
+        DESCRIPTION: Wenn nicht angegeben, wird das erste Bild im Seitenordner verwendet
+      HERO_IMAGE_ALT_TEXT:
+        LABEL: Bild Alternativtext
+      HERO_IMAGE_CREDIT:
+        LABEL: Bildunterschrift
+      HERO_IMAGE_CREDITLINK:
+        LABEL: Bildunterschrift URL
+      TOGGLES_TITLE:
+        TITLE: Konfiguration
+      BLOG_URL:
+        LABEL: Blog URL
+        HELP: Der Pfad zu dieser Hauptblogseite, die diese Konfiguration enthält
+      SHOW_BREADCRUMBS:
+        LABEL: Zeige Breadcrumbs
+      SHOW_PAGINATION:
+        LABEL: Zeige Seitennummerierung
+    SECTION:
+      PAGE_TITLE:
+        TITLE: Seitentitel
+      HIDE_PAGE_TITLE:
+        LABEL: Titel am oberen Rand der Seite anzeigen
+        HELP: Bestimmt, ob der Seitentitel am oberen Rand einer Seite angezeigt wird
+  MODULAR:
+    ALERT:
+      CONTENT_TITLE:
+        LABEL: Titel
+      ALERT_COLOR:
+        LABEL: Mitteilungsfarbe
+        OPTIONS:
+          YELLOW: Gelb
+          RED: Rot
+          BLUE: Blau
+          GREEN: Grün
+    HERO:
+      HERO_CLASSES:
+        LABEL: Hero Klassen
+        DESCRIPTION: 'Es gibt mehrere Hero-Klassenoptionen, die hier aufgelistet werden können (durch Leerzeichen getrennt):<br />`text-light`, `text-dark`, `title-h1h2`, `parallax`, `overlay-dark-gradient`, `overlay-light-gradient`, `overlay-dark`, `overlay-light`, `hero-fullscreen`, `hero-large`, `hero-medium`, `hero-small`, `hero-tiny`<br />Bitte konsultiere die [Quark Dokumentation](https://github.com/getgrav/grav-theme-quark#hero-options) für weitere Details.'
+      HERO_IMAGE:
+        LABEL: Hero Bild
+        DESCRIPTION: Wenn nicht angegeben, wird das erste Bild im Seitenordner verwendet
+  CARDS:
+    TAB_TITLE: Karten
+    IMAGE:
+      LABEL: Bild
+    TITLE:
+      LABEL: Titel
+    TEXT:
+      LABEL: Text
+    PAGE:
+      LABEL: Seite
+    LINK_TEXT:
+      LABEL: Link Text
+  SBS:
+    TAB_TITLE: SBS (Seite an Seite)
+    ELEMENTS: Elemente
+    LAYOUT:
+      LABEL: Layout
+      OPTIONS:
+        LEFT: Links
+        RIGHT: Rechts
+    ALIGNMENT:
+      LABEL: Inhalts Ausrichtung
+      OPTIONS:
+        TOP_LEFT: 'Oben Links'
+        TOP_CENTER: 'Oben Mitte'
+        TOP_RIGHT: 'Oben Rechts'
+        CENTER_LEFT: 'Mitte Links'
+        CENTER_CENTER: 'Mitte Mitte'
+        CENTER_RIGHT: 'Mitte Rechts'
+        BOTTOM_LEFT: 'Unten Links'
+        BOTTOM_CENTER: 'Unten Mitte'
+        BOTTOM_RIGHT: 'Unten Rechts'
+    IMAGE:
+      LABEL: Bild
+    IMAGE_ALT:
+      LABEL: Bildbeschreibung
+    TITLE:
+      LABEL: Titel
+    TEXT:
+      LABEL: Text
+    PAGE:
+      LABEL: Seite
+    LINK_TEXT:
+      LABEL: Link Text
+  EMBEDLY:
+    CONTENT_TITLE:
+      LABEL: Seiten Titel
+    CARD_TITLE:
+      LABEL: Embedly Karten Titel
+    DISPLAY_CARD_TITLE:
+      LABEL: Embedly Karten Titel anzeigen
+    CARD_ALIGNMENT:
+      LABEL: Embedly Karten Ausrichtung
+      OPTIONS:
+        LEFT: Links
+        CENTER: Zentriert
+        RIGHT: Rechts
+    CARD_URL:
+      LABEL: Embedly Card URL
+  H5P:
+    TITLE:
+      LABEL: Seiten Titel
+    CONTENT_TITLE:
+      LABEL: H5P Inhaltstitel
+    DISPLAY_CONTENT_TITLE:
+      LABEL: H5P Inhaltstitel anzeigen
+    CONTENT_ID:
+      LABEL: H5P Inhalts-ID (Node)
+      DESCRIPTION: 'Beispiel: Für die URL https://h5p.org/node/712 wäre die ID 712.'
+    INFO:
+      LABEL: 'How-to Tipp'
+      CONTENT: 'Um dieses Element innerhalb einer anderen Seite anzuzeigen, geben Sie `[plugin:page-inject](/h5p/PAGE)` in Ihrem Markdown-Inhaltsbereich ein.'
+
+ADMIN:
+  PAGES:
+    MODALS:
+      NEW_BLOG_ITEM:
+        BAR:
+          LABEL: Neuer Blog Beitrag
+        MODAL:
+          TITLE: Blog Beitrag hinzufügen
+        TITLE:
+          LABEL: Beitragstitel
+        PARENT:
+          LABEL: übergeordnete Seite
+      NEW_STANDARD_PAGE:
+        BAR:
+          LABEL: Neue Standardseite
+        MODAL:
+          TITLE: Standardseite hinzufügen
+        TITLE:
+          LABEL: Seitentitel
+        PARENT:
+          LABEL: übergeordnete Seite
+
+THEME:
+  HADRON:
+    TITLE: Hadron Optionen
+    H5P:
+      TITLE: H5P Setup
+      EMBED_URL:
+        LABEL: H5P Quelle URL einbetten
+        HELP: Gib die URL der Quelle ein, bis, aber nicht einschliesslich, der H5P Content ID.
+        DESCRIPTION: URL der Quelle, bis, aber nicht einschliesslich, der H5P Content ID. Zum Beispiel https://h5p.org/h5p/embed/ oder https://[organization].h5p.com/content/.
+    MENU:
+      TITLE: Menü
+      HIDE_TITLE:
+        LABEL: Verstecke Titel
+        HELP: Versteckt den Titel der Seite in der Navigation
+      DISPLAY_DROPDOWNS:
+        LABEL: Zeige Dropdowns im Menü
+      DISPLAY_CUSTOM_MENUS:
+        LABEL: Zeige benutzerdefinierte Menüs
+        HELP: Definiert, ob benutzerdefinierte Menüeinträge im Menü angezeigt werden.
+      ITEMS:
+        LABEL: Menüeinträge
+        TEXT:
+          LABEL: Text
+          DESCRIPTION: Text für Menüeintrag
+        ICON:
+          LABEL: Icon
+          DESCRIPTION: Font Awesome Icon für Menüeintrag, z.B. 'external-link'
+        URL:
+          LABEL: URL
+          DESCRIPTION: URL für Menüeintrag
+        TARGET:
+          LABEL: Ziel
+          OPTIONS:
+            BLANK: Öffne in einem neuen Fenster / Tab
+            PARENT: Öffne im übergeordneten Fenster
+            TOP: Öffne im Hauptfenster
+            SELF: Öffne im aktuellen Fenster / Tab
+    LANGSWITCHER:
+      TITLE: Language Switcher
+      ENABLE:
+        LABEL: Aktiviere  Language Switcher
+      DISPLAY:
+        LABEL: Anzeigemodus
+        OPTIONS:
+          DROPDOWN: Dropdown
+          INLINE: Inline
+      FORMAT:
+        LABEL: Format
+        OPTIONS:
+          COMBINED: kombiniert
+          SHORT: kurz
+          LONG: lang
+          ICON: Flagge
+    FONTAWESOME:
+      TITLE: Fontawesome Icons
+      ENABLE_SOLID:
+        LABEL: Aktiviere Solid Icons
+      ENABLE_REGULAR:
+        LABEL: Aktiviere Regular Icons
+      ENABLE_BRAND:
+        LABEL: Aktiviere Brands Icons
+  QUARK:
+    TITLE: Quark Optionen
+    PRODUCTION_MODE:
+      LABEL: Produktionsmodus
+      HELP: Wenn aktiviert, wird Quark mit minimiertem CSS angezeigt
+    GRID_SIZE:
+      LABEL: Grid Grösse
+      HELP: Die maximale Grösse des Themes
+      OPTIONS:
+        NONE: Keine (volle Breite)
+        GRID_XL: Extra Breit
+        GRID_LG: Breit
+        GRID_MD: Mittel
+    HEADER:
+      TITLE: Header Standards
+      INVERT_LOGO:
+        LABEL: Logo invertieren
+        HELP: Wenn aktiviert, wird das Logo auf hellen Hintergründen invertiert. Vorgeschlagen für schwarz / weisse Logos.
+      FAVICON:
+        LABEL: Benutzerdefiniertes Favicon
+        DESCRIPTION: Wird verwendet anstelle des Standard Favicons `theme://images/favicon.png`
+      CUSTOM_LOGO:
+        LABEL: Benutzerdefiniertes Logo
+        DESCRIPTION: Wird verwendet anstelle des Standardlogos `theme://images/grav-logo.svg`
+      CUSTOM_LOGO_MOBILE:
+        LABEL: Mobiles benutzerdefiniertes Logo
+      HEADER_FIXED:
+        LABEL: Fester Header
+        HELP: Wenn aktiviert, wird der Header oben im Browser fixiert
+      HEADER_ANIMATED:
+        LABEL: Header animieren
+        HELP: Wenn aktiviert, wird der Header beim Scrollen animiert
+      HEADER_DARK:
+        LABEL: Dunkler Stil
+        HELP: Wenn aktiviert, wird ein dunkler Stil verwendet
+      HEADER_TRANSPARENT:
+        LABEL: Transparenter Header
+        HELP: Wenn aktiviert, wird der Header transparent
+    FOOTER:
+      TITLE: Footer Standards
+      STICKY_FOOTER:
+        LABEL: Sticky Footer
+        HELP: Wenn aktiviert, wird der Footer am unteren Rand des Browsers fixiert
+    BLOG:
+      TITLE: Blog Standards
+      BLOG_PAGE:
+        LABEL: Blog Seite
+        HELP: Der Pfad zur Blogseite bei Verwendung der Blog-Seitenleiste
+      HERO_CLASSES:
+        LABEL: Hero Klassen
+        DESCRIPTION: Es gibt mehrere Hero-Klassenoptionen, die hier aufgelistet werden können (durch Leerzeichen getrennt):<br />`text-light`, `text-dark`, `title-h1h2`, `parallax`, `overlay-dark-gradient`, `overlay-light-gradient`, `overlay-dark`, `overlay-light`, `hero-fullscreen`, `hero-large`, `hero-medium`, `hero-small`, `hero-tiny`<br />Bitte konsultiere die [Quark Dokumentation](https://github.com/getgrav/grav-theme-quark#hero-options) für weitere Details.
+    SPECTRE:
+      TITLE: Spectre.css Optionen
+      EXPERIMENTAL:
+        LABEL: Experimentelles CSS
+        HELP: Wenn aktiviert, wird die `spectre-exp.css` Datei eingebunden
+      ICONS:
+        LABEL: Icons CSS
+        HELP: Wenn aktiviert, wird die `spectre-icons.css` Datei eingebunden

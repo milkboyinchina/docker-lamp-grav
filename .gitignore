@@ -1,0 +1,74 @@
+# ==========================================
+# Environment & Secrets
+# ==========================================
+.env
+!.env.example
+
+# ==========================================
+# Docker Host Logs
+# ==========================================
+logs/apache/*
+!logs/apache/.gitkeep
+logs/php/*
+!logs/php/.gitkeep
+
+# ==========================================
+# Grav CMS Cache & Runtime Directories
+# ==========================================
+src/assets/*
+!src/assets/.gitkeep
+src/backup/*
+!src/backup/.gitkeep
+src/cache/*
+!src/cache/.gitkeep
+src/images/*
+!src/images/.gitkeep
+src/logs/*
+!src/logs/.gitkeep
+src/tmp/*
+!src/tmp/.gitkeep
+
+# Grav Vendor Dependencies (if using Composer directly)
+src/vendor/
+
+# ==========================================
+# Grav Sensitive User Data & Credentials
+# ==========================================
+# Exclude admin account YAML files containing password hashes
+src/user/accounts/*
+!src/user/accounts/.gitkeep
+
+# Exclude user session & plugin runtime data
+src/user/data/*
+!src/user/data/.gitkeep
+
+# Exclude Package Manager cache state
+src/user/config/gpm.yaml
+
+# ==========================================
+# Operating System & IDE Files
+# ==========================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Database Backups & Temporary Dumps
+# ==========================================
+*.sql
+*.sql.gz

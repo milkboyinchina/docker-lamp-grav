@@ -1,0 +1,65 @@
+title: H5P Content Options
+'@extends':
+  type: default
+  context: blueprints://pages
+
+form:
+  fields:
+    tabs:
+      type: tabs
+      active: 1
+      fields:
+        content:
+          fields:
+            header.title:
+              replace@: true
+              type: text
+              size: long
+              label: TEMPLATE.H5P.TITLE.LABEL
+
+            header.h5p_content_title:
+              ordering@: 2
+              type: text
+              size: long
+              label: TEMPLATE.H5P.CONTENT_TITLE.LABEL
+
+            header.display_h5p_content_title:
+              ordering@: 3
+              type: toggle
+              label: TEMPLATE.H5P.DISPLAY_CONTENT_TITLE.LABEL
+              default: 0
+              highlight: 1
+              options:
+                1:  PLUGIN_ADMIN.YES
+                0:  PLUGIN_ADMIN.NO
+              validate:
+                type: bool
+
+            header.h5p_content_id:
+              ordering@: 4
+              type: integer
+              size: short
+              label: TEMPLATE.H5P.CONTENT_ID.LABEL
+              description: TEMPLATE.H5P.CONTENT_ID.DESCRIPTION
+
+            info:
+              ordering@: 5
+              type: display
+              size: large
+              label: TEMPLATE.H5P.INFO.LABEL
+              markdown: false
+              content: TEMPLATE.H5P.INFO.CONTENT
+
+        options:
+          fields:
+            publishing:
+              fields:
+                header.published:
+                  default: 1
+
+        advanced:
+          fields:
+            overrides:
+              fields:
+                header.visible:
+                  default: 1

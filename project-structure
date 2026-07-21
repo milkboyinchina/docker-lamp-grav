@@ -1,0 +1,15 @@
+grav-lamp/
+├── docker-compose.yml
+├── Dockerfile
+├── config/                   <-- Edit your configs here on the host
+│   ├── php/
+│   │   └── custom.ini
+│   ├── apache/
+│   │   └── 000-default.conf
+│   └── mysql/
+│       └── custom.cnf
+├── logs/
+│   ├── apache/
+│   └── php/
+└── src/                      <-- Place your app here
+    └── index.php

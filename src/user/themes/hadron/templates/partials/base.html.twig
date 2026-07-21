@@ -1,0 +1,122 @@
+{% extends '@quark/partials/base.html.twig' %}
+
+{% block head deferred %}
+	<meta charset="utf-8" />
+	<title>{% if page.title %}{{ page.title|e('html') }} | {% endif %}{{ site.title|e('html') }}</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% include 'partials/metadata.html.twig' %}
+
+	{# get favicon from theme config if it exists #}
+	{% set favicon = theme_var('favicon') %}
+	{% if favicon %}
+		{% set favicon_file = (favicon|first).name %}
+		{% set file_type = favicon_file|split('.')|last %}
+		<link rel="icon" type="image/{{ file_type }}" href="{{ url('theme://images/' ~ favicon_file) }}" />
+	{% else %}
+		<link rel="icon" type="image/png" href="{{ url('theme://images/favicon.png') }}" />
+	{% endif %}
+
+	<link rel="canonical" href="{{ page.url(true, true) }}" />
+{% endblock head %}
+
+{% block stylesheets %}
+	{% set enable_fa_solid = theme.fontawesome.solid %}
+	{% set enable_fa_regular = theme.fontawesome.regular %}
+	{% set enable_fa_brand = theme.fontawesome.brand %}
+	{% if (enable_fa_solid or enable_fa_regular or enable_fa_brand) %}
+		{% set enable_fa = true %}
+	{% else %}
+		{% set enable_fa = false %}
+	{% endif %}
+
+	{% do assets.addCss('theme://css-compiled/spectre'~compress, 100) %}
+	{% if theme_var('spectre.exp') %}{% do assets.addCss('theme://css-compiled/spectre-exp'~compress, 100) %}{% endif %}
+	{% if theme_var('spectre.icons') %}{% do assets.addCss('theme://css-compiled/spectre-icons'~compress, 100) %}{% endif %}
+
+	{% do assets.addCss('theme://css/quark.css',100) %}
+	{% do assets.addCss('theme://css/hadron.css',10) %}
+	{% do assets.addCss('theme://css/custom.css', 0) %}
+
+	{% if not enable_fa %}
+		{% do assets.addCss('theme://css/line-awesome.min.css') %}
+	{% else %}
+		{% do assets.addCss('theme://css/fontawesome.min.css') %}
+	{% endif %}
+	{% if enable_fa_solid %}    {% do assets.addCss('theme://css/fontawesome-solid.min.css') %}     {% endif %}
+	{% if enable_fa_regular %}  {% do assets.addCss('theme://css/fontawesome-regular.min.css') %}   {% endif %}
+	{% if enable_fa_brand %}    {% do assets.addCss('theme://css/fontawesome-brands.min.css') %}    {% endif %}
+{% endblock stylesheets %}
+
+{% block javascripts %}
+	{% do assets.addJs('jquery', 101) %}
+	{% do assets.addJs('theme://js/jquery.treemenu.js', {group:'bottom'}) %}
+	{% do assets.addJs('theme://js/hadron.js', {group:'bottom'}) %}
+{% endblock javascripts %}
+
+{% block header %}
+    <section id="header" class="section">
+	    <section class="container {{ grid_size }}">
+		    <nav class="navbar">
+			    <section class="navbar-section logo">
+				    {% include 'partials/logo.html.twig' %}
+			    </section>
+			    <section class="navbar-section desktop-menu">
+
+				    <nav class="dropmenu animated">
+					    {% block header_navigation %}
+						    {% include 'partials/navigation.html.twig' %}
+					    {% endblock header_navigation %}
+				    </nav>
+
+				    <nav class="dropmenu language-switcher">
+					    {% block language_switcher %}
+						    {% include 'partials/langauge-switcher.html.twig' %}
+					    {% endblock language_switcher %}
+				    </nav>
+
+				    {% if config.plugins.login.enabled and grav.user.username %}
+					    <span class="login-status-wrapper"><i class="fa fa-user"></i> {% include 'partials/login-status.html.twig' %}</span>
+				    {% endif %}
+
+			    </section>
+		    </nav>
+	    </section>
+    </section>
+    <div class="mobile-menu">
+	    <div class="button_container" id="toggle">
+		    <span class="top"></span>
+		    <span class="middle"></span>
+		    <span class="bottom"></span>
+	    </div>
+    </div>
+{% endblock header %}
+
+{% block footer %}
+	<section id="footer" class="section bg-gray">
+		<section class="container {{ grid_size }}">
+			{# display footer markdown page #}
+			{% set content = pages.find('/footer').content %}
+			{% if content %}
+				{{ content|raw }}
+			{% endif %}
+		</section>
+	</section>
+{% endblock footer %}
+
+{% block mobile %}
+    <div class="mobile-container">
+	    <div class="overlay" id="overlay">
+		    <div class="mobile-logo">
+			    {% include 'partials/logo.html.twig' with {mobile: true} %}
+		    </div>
+		    <nav class="language-switcher">
+			    {% include 'partials/langauge-switcher.html.twig' with {mobile: true} %}
+		    </nav>
+		    <nav class="overlay-menu">
+			    {% include 'partials/navigation.html.twig' with {tree: true} %}
+		    </nav>
+	    </div>
+    </div>
+{% endblock mobile %}

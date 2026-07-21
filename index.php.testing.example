@@ -1,0 +1,139 @@
+<?php
+/**
+ * Grav CMS & MariaDB Diagnostic Test Script
+ */
+
+// Retrieve Database credentials from environment variables or set defaults
+$dbHost = getenv('MARIADB_HOST') ?: 'db';
+$dbName = getenv('MARIADB_DATABASE') ?: 'grav_db';
+$dbUser = getenv('MARIADB_USER') ?: 'grav_user';
+$dbPass = getenv('MARIADB_PASSWORD') ?: 'userpassword';
+
+// List of extensions to check
+$extensions = [
+    // Grav Required
+    'gd'        => ['type' => 'Required', 'desc' => 'Image processing & thumbnails'],
+    'mbstring'  => ['type' => 'Required', 'desc' => 'Multibyte string support'],
+    'xml'       => ['type' => 'Required', 'desc' => 'XML parsing'],
+    'zip'       => ['type' => 'Required', 'desc' => 'Package installation & archives'],
+    'zlib'      => ['type' => 'Required', 'desc' => 'Compression support'],
+    'curl'      => ['type' => 'Required', 'desc' => 'Remote package downloads'],
+    'yaml'      => ['type' => 'Required', 'desc' => 'Grav configuration files'],
+    
+    // Performance & Optional
+    'opcache'   => ['type' => 'Recommended', 'desc' => 'PHP Bytecode Caching'],
+    'apcu'      => ['type' => 'Optional',    'desc' => 'In-memory user caching'],
+    'redis'     => ['type' => 'Optional',    'desc' => 'Redis cache driver'],
+    'memcache'  => ['type' => 'Optional',    'desc' => 'Memcached support'],
+    'exif'      => ['type' => 'Optional',    'desc' => 'Image EXIF metadata reader'],
+    'intl'      => ['type' => 'Optional',    'desc' => 'Internationalization & localization'],
+    'pdo'       => ['type' => 'Optional',    'desc' => 'PHP Data Objects'],
+    'pdo_mysql' => ['type' => 'Optional',    'desc' => 'MariaDB/MySQL PDO driver'],
+];
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grav & DB Diagnostic Test</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 40px 20px; }
+        .container { max-width: 850px; margin: 0 auto; }
+        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        h1 { margin: 0 0 8px 0; font-size: 1.5rem; color: #0f172a; }
+        h2 { margin: 0 0 16px 0; font-size: 1.2rem; color: #334155; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        p { margin: 4px 0; color: #475569; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
+        th { background: #f8fafc; color: #64748b; font-weight: 600; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; }
+        .badge-warning { background: #fef3c7; color: #b45309; }
+        code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #0f172a; }
+        .error-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; margin-top: 12px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>Grav CMS & Database Environment Diagnostics</h1>
+        <p><strong>PHP Version:</strong> <code><?php echo PHP_VERSION; ?></code></p>
+        <p><strong>Server Name:</strong> <code><?php echo $_SERVER['SERVER_NAME'] ?? 'localhost'; ?></code></p>
+        <p><strong>Document Root:</strong> <code><?php echo $_SERVER['DOCUMENT_ROOT']; ?></code></p>
+    </div>
+
+    <!-- Database Connection Test -->
+    <div class="card">
+        <h2>MariaDB Connection Test</h2>
+        <?php
+        try {
+            $dsn = "mysql:host=$dbHost;dbname=$dbName;charset=utf8mb4";
+            $pdo = new PDO($dsn, $dbUser, $dbPass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_TIMEOUT => 5
+            ]);
+            
+            $serverVersion = $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+            echo "<p><span class='badge badge-success'>Connected</span> Successfully connected to MariaDB!</p>";
+            echo "<p><strong>Host:</strong> <code>$dbHost</code> | <strong>Database:</strong> <code>$dbName</code> | <strong>User:</strong> <code>$dbUser</code></p>";
+            echo "<p><strong>MariaDB Server Version:</strong> <code>$serverVersion</code></p>";
+        } catch (PDOException $e) {
+            echo "<p><span class='badge badge-danger'>Connection Failed</span> Could not establish database connection.</p>";
+            echo "<div class='error-box'>";
+            echo "<strong>Error Message:</strong> <code>" . htmlspecialchars($e->getMessage()) . "</code>";
+            echo "</div>";
+            echo "<p style='margin-top:8px;'><strong>Attempted Credentials:</strong> Host: <code>$dbHost</code> | DB: <code>$dbName</code> | User: <code>$dbUser</code></p>";
+        }
+        ?>
+    </div>
+
+    <!-- PHP Extensions Test -->
+    <div class="card">
+        <h2>PHP Extensions Status</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Extension</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($extensions as $ext => $info): ?>
+                    <?php
+                    $isLoaded = extension_loaded($ext);
+                    
+                    // Special check for Zend OPcache
+                    if ($ext === 'opcache') {
+                        $isLoaded = extension_loaded('Zend OPcache') || extension_loaded('opcache');
+                    }
+
+                    if ($isLoaded) {
+                        $badgeClass = 'badge-success';
+                        $statusText = 'Loaded';
+                    } elseif ($info['type'] === 'Required') {
+                        $badgeClass = 'badge-danger';
+                        $statusText = 'Missing';
+                    } else {
+                        $badgeClass = 'badge-warning';
+                        $statusText = 'Disabled';
+                    }
+                    ?>
+                    <tr>
+                        <td><code><?php echo $ext; ?></code></td>
+                        <td><?php echo $info['type']; ?></td>
+                        <td><?php echo $info['desc']; ?></td>
+                        <td><span class="badge <?php echo $badgeClass; ?>"><?php echo $statusText; ?></span></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

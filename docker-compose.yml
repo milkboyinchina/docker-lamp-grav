@@ -1,0 +1,65 @@
+services:
+  # LAMP Web Application
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.3-apache}
+    container_name: grav-lamp-web
+    restart: always
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-localhost}
+      SERVER_ADMIN: ${SERVER_ADMIN:-webmaster@localhost}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./logs/apache:/var/log/apache2
+      - ./logs/php:/var/log/php
+      - ./config/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./config/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+
+  ## Comment out for Mariadb fuctionality
+    # depends_on:
+    #   - db
+    networks:
+      - grav-network
+
+  ## Comment out for Mariadb and Adminer fuctionality
+  # # MariaDB Database
+  # db:
+  #   image: mariadb:${MARIADB_VERSION:-latest}
+  #   container_name: grav-lamp-db
+  #   restart: always
+  #   environment:
+  #     MARIADB_DATABASE: ${MARIADB_DATABASE:-grav_db}
+  #     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-rootpassword}
+  #     MARIADB_USER: ${MARIADB_USER:-grav_user}
+  #     MARIADB_PASSWORD: ${MARIADB_PASSWORD:-userpassword}
+  #   volumes:
+  #     - dbdata:/var/lib/mysql
+  #     - ./config/mysql/custom.cnf:/etc/mysql/conf.d/custom.cnf
+  #   networks:
+  #     - grav-network
+
+  # # Adminer Database Manager
+  # adminer:
+  #   image: adminer:latest
+  #   container_name: grav-lamp-adminer
+  #   restart: always
+  #   ports:
+  #     - "${ADMINER_PORT:-8080}:8080"
+  #   environment:
+  #     ADMINER_DEFAULT_SERVER: db
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - grav-network
+
+networks:
+  grav-network:
+    driver: bridge
+
+volumes:
+  dbdata:

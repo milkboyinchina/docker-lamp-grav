@@ -1,0 +1,27 @@
+extends@: default
+
+form:
+  fields:
+    tabs:
+      fields:
+
+        options:
+          type: tab
+          fields:
+            sidebar:
+              type: section
+              underline: true
+              title: TEMPLATE.PARTIALS.SIDEBAR.TITLE
+              import@:
+                type: partials/sidebar
+                context: blueprints://pages
+
+        advanced:
+          fields:
+            columns:
+              fields:
+                column1:
+                  fields:
+                    header.body_classes:
+                      markdown: true
+                      description: TEMPLATE.DEFAULT.BODY_CLASSES.DESCRIPTION
