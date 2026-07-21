@@ -12,13 +12,10 @@ features:
     icon: fa fa-desktop
     text: Modern JavaScript, TypeScript, HTML5, CSS3/SCSS, Responsive Web Design.
   - header: DevOps & Infrastructure
-    icon: fa fa-docker
+    icon: fab fa-docker
     text: Docker, Docker Compose, Linux/Unix Administration, Webserver Configuration (Apache, Nginx).
-  - header: Database Management
-    icon: fa fa-database
-    text: MariaDB, MySQL, SQL Optimization, PDO Data Abstraction, Schema Architecture.
   - header: CMS & Custom Solutions
-    icon: fa fa-grav
+    icon: fab fa-grav
     text: Grav CMS Theme & Plugin Development, Flat-File Architecture, Content Engineering.
   - header: Caching & Performance
     icon: fa fa-tachometer

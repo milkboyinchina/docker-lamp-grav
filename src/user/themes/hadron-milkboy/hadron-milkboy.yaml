@@ -27,8 +27,8 @@ langswitcher:
   display: inline
   format: icon
 fontawesome:
-  brands: false
-  brand: false
+  brands: true
+  brand: true
 blog_page_hero_classes: 'text-light title-h1h2 overlay-dark-gradient hero-large parallax'
 invert_logo: false
 favicon:

@@ -12,13 +12,10 @@ features:
     icon: fa fa-desktop
     text: JavaScript Modern, TypeScript, HTML5, CSS3/SCSS, Desain Web Responsif.
   - header: DevOps & Infrastruktur
-    icon: fa fa-docker
+    icon: fab fa-docker
     text: Docker, Docker Compose, Administrasi Linux/Unix, Konfigurasi Webserver (Apache, Nginx).
-  - header: Pengelolaan Basis Data
-    icon: fa fa-database
-    text: MariaDB, MySQL, Optimasi Query SQL, Abstraksi Data PDO, Arsitektur Skema Basis Data.
   - header: CMS & Solusi Kustom
-    icon: fa fa-grav
+    icon: fab fa-grav
     text: Pengembangan Tema & Plugin Grav CMS, Arsitektur Flat-File, Rekayasa Konten Web.
   - header: Caching & Performa
     icon: fa fa-tachometer
