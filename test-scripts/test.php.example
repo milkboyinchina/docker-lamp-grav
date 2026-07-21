@@ -208,7 +208,7 @@ $wpGrade = get_grade($wpScore);
         <div class="grid">
             <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; background: #f8fafc;">
                 <div style="display:flex; justify-style:space-between; align-items:center;">
-                    <h3 style="margin:0; font-size:1.1rem; color:#0f172a;">🌌 Grav CMS</h3>
+                    <h3 style="margin:0; font-size:1.1rem; color:#0f172a;">Grav CMS</h3>
                     <span class="badge" style="background:<?php echo $gravGrade['bg']; ?>; color:<?php echo $gravGrade['color']; ?>; font-size:0.85rem; padding:4px 10px;">Grade <?php echo $gravGrade['grade']; ?></span>
                 </div>
                 <div style="font-size:2.2rem; font-weight:700; color:#0f172a; margin: 10px 0 6px 0;"><?php echo $gravScore; ?>%</div>
@@ -222,7 +222,7 @@ $wpGrade = get_grade($wpScore);
 
             <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; background: #f8fafc;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="margin:0; font-size:1.1rem; color:#0f172a;">📝 WordPress Core</h3>
+                    <h3 style="margin:0; font-size:1.1rem; color:#0f172a;">WordPress Core</h3>
                     <span class="badge" style="background:<?php echo $wpGrade['bg']; ?>; color:<?php echo $wpGrade['color']; ?>; font-size:0.85rem; padding:4px 10px;">Grade <?php echo $wpGrade['grade']; ?></span>
                 </div>
                 <div style="font-size:2.2rem; font-weight:700; color:#0f172a; margin: 10px 0 6px 0;"><?php echo $wpScore; ?>%</div>
