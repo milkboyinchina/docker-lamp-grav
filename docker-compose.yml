@@ -3,7 +3,7 @@ services:
   webserver:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
       args:
         PHP_VERSION: ${PHP_VERSION:-8.3-apache}
     container_name: grav-lamp-web

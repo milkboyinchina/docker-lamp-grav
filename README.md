@@ -13,8 +13,9 @@ This setup automatically takes care of system dependencies, required/optional PH
 ```text
 grav-lamp/
 ├── docker-compose.yml       # Docker Compose services definition
-├── Dockerfile               # Custom PHP-Apache image definition with Grav extensions
-├── docker-entrypoint.sh     # Auto-runs on container startup (handles permissions)
+├── docker/                  # Docker build files and entrypoint scripts
+│   ├── Dockerfile           # Custom PHP-Apache image definition with extensions
+│   └── docker-entrypoint.sh # Auto-runs on container startup (handles permissions)
 ├── .env                     # Local environment variables (created from env.example)
 ├── env.example              # Template for environment configuration
 ├── .gitattributes           # Enforces LF line endings for Windows/Linux/macOS

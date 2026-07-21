@@ -46,7 +46,7 @@ RUN mkdir -p /var/log/php && chown -R www-data:www-data /var/log/php
 WORKDIR /var/www/html
 
 # Copy entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY docker/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
