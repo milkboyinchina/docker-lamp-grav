@@ -170,7 +170,7 @@ body #header.scrolled {
 #header .dropmenu:not(.language-switcher) a:focus,
 #header .dropmenu:not(.language-switcher) a.active,
 #header .dropmenu ul.navigation > li > a:hover,
-#header .dropmenu ul.navigation > li > a.active {
+#header .dropmenu ul.navigation > li > a:active {
     color: #00f0ff !important;
     opacity: 1 !important;
     background: rgba(0, 240, 255, 0.18) !important;
@@ -179,7 +179,7 @@ body #header.scrolled {
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.35) !important;
 }
 
-/* Language Switcher - Precision Centered Circular Flag Buttons */
+/* Language Switcher - Clean Box-Free Flag Icon Selector */
 body #header nav.language-switcher,
 #header nav.language-switcher {
     position: relative !important;
@@ -196,7 +196,7 @@ body #header nav.language-switcher ul,
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 0.4rem !important;
+    gap: 0.45rem !important;
     margin: 0 !important;
     padding: 0 !important;
     height: 100% !important;
@@ -219,40 +219,63 @@ body #header nav.language-switcher ul li a,
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    width: 2.1rem !important;
-    height: 2.1rem !important;
-    min-width: 2.1rem !important;
-    min-height: 2.1rem !important;
-    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    padding: 0.2rem 0.3rem !important;
     margin: 0 !important;
     line-height: 1 !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(0, 240, 255, 0.35) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     box-sizing: border-box !important;
     text-decoration: none !important;
-    transition: all 0.2s ease-in-out !important;
+    opacity: 0.55 !important;
+    filter: grayscale(40%) !important;
+    transition: all 0.25s ease-in-out !important;
 }
 
 body #header nav.language-switcher ul li a .flag-icon,
 #header nav.language-switcher a .flag-icon {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 1.05rem !important;
+    display: inline-block !important;
+    font-size: 1.25rem !important;
     line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
-    transform: translateY(-0.5px) !important;
+    transition: transform 0.25s ease-in-out, filter 0.25s ease-in-out !important;
 }
 
+/* Hover State - Scale & Full Color */
 body #header nav.language-switcher ul li a:hover,
+#header nav.language-switcher a:hover {
+    opacity: 0.9 !important;
+    filter: grayscale(0%) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+body #header nav.language-switcher ul li a:hover .flag-icon,
+#header nav.language-switcher a:hover .flag-icon {
+    transform: scale(1.2) !important;
+}
+
+/* Active State - Full Color, Bright Glow & Scale */
 body #header nav.language-switcher ul li a.active,
-#header nav.language-switcher a:hover,
 #header nav.language-switcher a.active {
-    background: rgba(0, 240, 255, 0.28) !important;
-    border-color: #00f0ff !important;
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.6) !important;
+    opacity: 1 !important;
+    filter: grayscale(0%) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+body #header nav.language-switcher ul li a.active .flag-icon,
+#header nav.language-switcher a.active .flag-icon {
+    transform: scale(1.18) !important;
+    filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.85)) !important;
 }
 
 /* Dropdown Sub-menus */
