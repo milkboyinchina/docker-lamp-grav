@@ -1,20 +1,20 @@
-# 🐳 Dockerized LAMP Stack (PHP 8.3 + Apache + MariaDB)
+# Dockerized LAMP Stack (PHP 8.3 + Apache + MariaDB)
 
 A lightweight, high-performance, and developer-friendly Docker environment running Apache and PHP 8.3, pre-configured for **Grav CMS**, **WordPress**, or any custom PHP web application.
 
-> **💡 Flexible & General-Purpose PHP Stack**:  
+> **Flexible & General-Purpose PHP Stack**:  
 > While this Docker environment is pre-configured and thoroughly tested with **Grav CMS**, it is **not restricted to Grav**. You can clear the contents of `src/` and drop in **WordPress**, **Laravel**, **Symfony**, or any custom PHP scripts. Standalone diagnostic test scripts are included for both Grav and WordPress out of the box!
 
-### ✨ Key Features
-* 🚀 **PHP 8.3 & Apache 2.4**: Pre-built with required and performance PHP extensions (`GD`, `ZIP`, `OPcache`, `APCu`, `Redis`, `YAML`, `MySQLi`, `PDO_MySQL`, `mbstring`, `exif`, `intl`).
-* 🗄️ **Optional MariaDB & Adminer**: Pre-configured database and web-based database management interface ready to enable with 1 click.
-* 🛠️ **Cross-Platform Readiness**: Includes 1-word `Makefile` shortcuts, Windows `.bat` double-click scripts, Linux/macOS `.sh` scripts, and `.gitattributes` line-ending protection.
-* 🔒 **Automatic Permission Management**: Self-healing entrypoint script fixes file permissions inside `/var/www/html/` on container startup.
-* 🧪 **Built-in Diagnostic Suite**: Pre-packaged test scripts to verify runtime compatibility for Grav CMS and WordPress.
+### Key Features
+* **PHP 8.3 & Apache 2.4**: Pre-built with required and performance PHP extensions (`GD`, `ZIP`, `OPcache`, `APCu`, `Redis`, `YAML`, `MySQLi`, `PDO_MySQL`, `mbstring`, `exif`, `intl`).
+* **Optional MariaDB & Adminer**: Pre-configured database and web-based database management interface ready to enable with 1 click.
+* **Cross-Platform Readiness**: Includes 1-word `Makefile` shortcuts, Windows `.bat` double-click scripts, Linux/macOS `.sh` scripts, and `.gitattributes` line-ending protection.
+* **Automatic Permission Management**: Self-healing entrypoint script fixes file permissions inside `/var/www/html/` on container startup.
+* **Built-in Diagnostic Suite**: Pre-packaged test scripts to verify runtime compatibility for Grav CMS and WordPress.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 grav-lamp/
@@ -52,14 +52,14 @@ grav-lamp/
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 1. Prerequisites
 
-#### 💻 General Prerequisites (Linux / macOS):
+#### General Prerequisites (Linux / macOS):
 * [Docker Engine](https://docs.docker.com/get-docker/) & [Docker Compose v2](https://docs.docker.com/compose/install/)
 
-#### 🪟 Windows OS Prerequisites:
+#### Windows OS Prerequisites:
 To ensure smooth container startup, file mounting, and script execution on Windows:
 * **[Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)**: Installed and running in your system tray.
 * **[WSL 2 (Windows Subsystem for Linux 2)](https://learn.microsoft.com/en-us/windows/wsl/install)**: Enabled as the Docker backend engine:
@@ -91,18 +91,16 @@ Once running, you can access your site at:
 * **Main Website**: [http://localhost](http://localhost) (or the port defined in `HTTP_PORT`).
 * **Grav Admin Panel**: [http://localhost/admin](http://localhost/admin).
 
-> **📘 First-Time Grav User & Admin Reset Guide**:  
+> **First-Time Grav User & Admin Reset Guide**:  
 > Check out [`GRAV-QUICKSTART.md`](file:///home/milkboy/Documents/grav-lamp-docker/GRAV-QUICKSTART.md) for detailed instructions on first-time setup, creating admin users via CLI, and resetting admin accounts if locked out.
 
 ---
 
----
-
-## 🛠️ Cross-Platform Easy Shortcuts (Windows, Linux, macOS)
+## Cross-Platform Easy Shortcuts (Windows, Linux, macOS)
 
 To make running and managing `docker-compose.yml` seamless on any operating system, the stack includes **Makefile** shortcuts and **1-click OS helper scripts**:
 
-### 1. 🧰 Makefile Shortcuts (Linux, macOS, WSL, Windows Git Bash)
+### 1. Makefile Shortcuts (Linux, macOS, WSL, Windows Git Bash)
 If you have `make` installed, run these 1-word commands from your terminal:
 * **`make up`**: Start containers in the background (automatically creates `.env` if missing).
 * **`make stop`**: Stop running containers.
@@ -113,13 +111,13 @@ If you have `make` installed, run these 1-word commands from your terminal:
 * **`make test`**: Deploy unified diagnostic test page to `http://localhost/test.php`.
 * **`make clean-test`**: Remove diagnostic test page from `src/`.
 
-### 2. 🪟 Windows (Double-Click Batch Scripts)
+### 2. Windows (Double-Click Batch Scripts)
 For Windows Command Prompt / PowerShell users:
 * **`scripts\start.bat`**: Double-click to start stack.
 * **`scripts\stop.bat`**: Double-click to stop stack.
 * **`scripts\rebuild.bat`**: Double-click to rebuild stack without cache.
 
-### 3. 🐧 Linux / macOS (Shell Scripts)
+### 3. Linux / macOS (Shell Scripts)
 For terminal users on Linux / macOS / WSL:
 * **`./start.sh`**: Start containers in background.
 * **`./stop.sh`**: Stop running containers.
@@ -127,11 +125,11 @@ For terminal users on Linux / macOS / WSL:
 
 ---
 
-## 🐳 Container Operations (Run, Stop, Remove & Rebuild)
+## Container Operations (Run, Stop, Remove & Rebuild)
 
 Here are the essential Docker Compose commands to manage your LAMP stack environment:
 
-### 1. ▶️ Run / Start Containers
+### 1. Run / Start Containers
 * **Start containers in background (detached mode)**:
   ```bash
   docker compose up -d
@@ -141,7 +139,7 @@ Here are the essential Docker Compose commands to manage your LAMP stack environ
   docker compose up
   ```
 
-### 2. ⏹️ Stop Containers
+### 2. Stop Containers
 * **Stop running containers (without removing them)**:
   ```bash
   docker compose stop
@@ -151,7 +149,7 @@ Here are the essential Docker Compose commands to manage your LAMP stack environ
   docker compose down
   ```
 
-### 3. 🗑️ Remove Containers & Database Volumes
+### 3. Remove Containers & Database Volumes
 * **Stop containers, remove networks, and purge persistent database volumes**:
   ```bash
   docker compose down -v
@@ -161,7 +159,7 @@ Here are the essential Docker Compose commands to manage your LAMP stack environ
   docker compose rm -f
   ```
 
-### 4. 🔄 Rebuild Images & Container Stack
+### 4. Rebuild Images & Container Stack
 * **Rebuild the PHP/Apache image without cache and restart containers**:
   ```bash
   docker compose up -d --build --no-cache
@@ -174,7 +172,7 @@ Here are the essential Docker Compose commands to manage your LAMP stack environ
 
 ---
 
-## 🔍 Verification & Diagnostics
+## Verification & Diagnostics
 
 The project includes a unified diagnostic test script in [`test-scripts/test.php.example`](file:///home/milkboy/Documents/grav-lamp-docker/test-scripts/test.php.example) to verify environment compatibility, PHP extensions, and database connections for **Grav CMS** and **WordPress**:
 
@@ -193,7 +191,7 @@ Access at **[http://localhost/test.php](http://localhost/test.php)** to view the
 
 ---
 
-## 🗄️ Enabling MariaDB & Adminer (Optional)
+## Enabling MariaDB & Adminer (Optional)
 
 By default, the MariaDB database and Adminer database manager services are commented out in `docker-compose.yml` to keep the stack super lightweight. If your project/plugins require a database:
 
@@ -205,7 +203,7 @@ By default, the MariaDB database and Adminer database manager services are comme
 
 ---
 
-## 🔧 Customizing Configuration & Logs
+## Customizing Configuration & Logs
 
 This stack mounts configuration files from the host directly into the container so you can make edits without rebuilding:
 
@@ -216,7 +214,7 @@ This stack mounts configuration files from the host directly into the container 
 
 ---
 
-## 🔒 Permissions & Security
+## Permissions & Security
 
 Grav CMS requires write access to several system directories. To make this seamless, the `docker-entrypoint.sh` script automatically fixes permissions inside the container for the following directories on startup:
 * `/var/www/html/cache`
@@ -231,16 +229,16 @@ It assigns ownership to the `www-data` user and ensures files are writable (perm
 
 ---
 
-## 💡 Other Use Cases
+## Other Use Cases
 
 While pre-configured and optimized for **Grav CMS**, this Docker environment is built as a general-purpose, high-performance PHP 8.3 + Apache stack. You can clear the contents of `src/` and deploy:
 
-### 1. 📝 WordPress Local Development & Staging
+### 1. WordPress Local Development & Staging
 * Delete files inside `src/` and extract a fresh WordPress package.
 * Uncomment the `db` (MariaDB) and `adminer` services in `docker-compose.yml`.
 * Run `make up` and navigate to [http://localhost](http://localhost) to complete the 5-minute WordPress installation.
 
-### 2. 🚀 Modern PHP Frameworks (Laravel, Symfony, CodeIgniter, Slim)
+### 2. Modern PHP Frameworks (Laravel, Symfony, CodeIgniter, Slim)
 * Drop your **Laravel**, **Symfony**, or **CodeIgniter** project files into `src/`.
 * Modify `config/apache/000-default.conf` to set `DocumentRoot /var/www/html/public` for framework routing.
 * Run Composer commands directly inside the webserver container:
@@ -248,9 +246,9 @@ While pre-configured and optimized for **Grav CMS**, this Docker environment is 
   docker compose exec webserver composer install
   ```
 
-### 3. 🧪 PHP Extension Prototyping & Custom Web Apps
+### 3. PHP Extension Prototyping & Custom Web Apps
 * Prototype custom PHP 8.3 applications utilizing pre-built performance and graphic libraries (`imagick`, `gd --with-webp`, `redis`, `apcu`, `yaml`, `bcmath`, `sockets`, `opcache`).
 * Use `make test` to verify extension availability and compatibility scores.
 
-### 4. 📄 Flat-File CMS Alternatives (Kirby, Pico, Statamic)
+### 4. Flat-File CMS Alternatives (Kirby, Pico, Statamic)
 * Deploy database-less flat-file CMS platforms like **Kirby**, **Pico**, or **Statamic** directly into `src/` with zero database configuration required.

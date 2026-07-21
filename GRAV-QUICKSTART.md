@@ -1,10 +1,10 @@
-# 🌌 Grav CMS First-Time Quickstart & Admin Reset Guide
+# Grav CMS First-Time Quickstart & Admin Reset Guide
 
 This guide provides step-by-step instructions for getting started with **Grav CMS** inside your Docker environment, configuring initial admin credentials, installing plugins/themes, and resetting admin accounts if locked out.
 
 ---
 
-## ⚡ First-Time Grav Setup
+## First-Time Grav Setup
 
 ### 1. Start the Container Stack
 Run your Docker stack using Makefile or Docker Compose:
@@ -21,7 +21,7 @@ Open your browser and navigate to:
 
 ---
 
-## 👤 Creating & Managing Admin Users
+## Creating & Managing Admin Users
 
 ### Method 1: Creating Admin via Admin Panel UI
 1. Navigate to **[http://localhost/admin](http://localhost/admin)** in your browser.
@@ -41,11 +41,11 @@ Follow the interactive terminal prompts to set the username, email, password, an
 
 ---
 
-## 🔑 How to Reset Admin User & Password
+## How to Reset Admin User & Password
 
 If you forgot your password or get locked out of the Grav Admin panel, use one of the following methods:
 
-### 🛠️ Method 1: CLI Password Reset (Recommended & Fast)
+### Method 1: CLI Password Reset (Recommended & Fast)
 Reset an existing user's password using the Grav Admin CLI command inside the container:
 
 ```bash
@@ -57,7 +57,7 @@ docker compose exec webserver php bin/plugin admin reset-password
 
 ---
 
-### 🛠️ Method 2: Remove Account File (Force Web Re-registration)
+### Method 2: Remove Account File (Force Web Re-registration)
 Deleting the admin account YAML file forces Grav to display the first-time admin setup form again:
 
 ```bash
@@ -71,7 +71,7 @@ Now navigate to **[http://localhost/admin](http://localhost/admin)** to register
 
 ---
 
-### 🛠️ Method 3: Manual Password Hash Update
+### Method 3: Manual Password Hash Update
 To manually set a known password hash inside the user account file:
 
 1. Open `src/user/accounts/<username>.yaml` (e.g., `src/user/accounts/admin.yaml`).
@@ -95,7 +95,7 @@ To manually set a known password hash inside the user account file:
 
 ---
 
-## 📦 Useful Grav CLI Commands
+## Useful Grav CLI Commands
 
 Run any Grav CLI command directly inside your Docker container:
 
@@ -118,7 +118,7 @@ Run any Grav CLI command directly inside your Docker container:
 
 ---
 
-## 📂 Key Directory Locations
+## Key Directory Locations
 
 * **Pages & Content**: `src/user/pages/`
 * **Site Configuration**: `src/user/config/site.yaml` & `src/user/config/system.yaml`
