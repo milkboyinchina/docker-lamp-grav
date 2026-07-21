@@ -3,11 +3,12 @@ production-mode: true
 streams:
   schemes:
     theme:
-      type: ReadOnly
+      type: ReadOnlyStream
       prefixes:
         '':
           - user/themes/hadron-milkboy
           - user/themes/hadron
+          - user/themes/quark
 
 grid-size: grid-lg
 blog-page: /blog
