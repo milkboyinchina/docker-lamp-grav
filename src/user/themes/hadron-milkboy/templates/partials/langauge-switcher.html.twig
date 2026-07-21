@@ -1,0 +1,58 @@
+{% set enabled = enabled ?? theme_var('langswitcher.enable', true) %}
+{% set display = display ?? theme_var('langswitcher.display', 'inline') %}
+{% set format = format ?? theme_var('langswitcher.format', 'combined') %}
+
+{% macro lang_name(language) %}
+	{{ 'LANGUAGE.NAME'|tl([language]) }}
+{% endmacro %}
+
+{% macro lang_icon(language) %}
+	{{ 'LANGUAGE.ICON'|tl([language]) }}
+{% endmacro %}
+
+{% macro lang_switcher(page, display, format) %}
+	{% import _self as macros %}
+
+	{% if display=='dropdown' %}
+		<li><a href="#">{{ 'LANGUAGE.LANGUAGE'|tl }}</a><ul>
+	{% endif %}
+
+	{% for language in grav.language.languages %}
+		{% set page_url = base_url_simple ~ "/" ~ language ~ (page.route == '/' ? '' : page.route|e) %}
+		{% set active_page = (grav.language.getActive == language) ? 'active' : '' %}
+
+		<li>
+			<a href="{{ page_url }}" class="{{ active_page }}">
+				{% if format == 'long' %}
+					{{ macros.lang_name(language) }}
+				{% elseif format == 'short' %}
+					{{ language|upper }}
+				{% elseif format == 'icon' %}
+					{{ macros.lang_icon(language) }}
+				{% elseif format == 'combined' %}
+					{{ macros.lang_icon(language) }} {{ language|upper }}
+				{% else %}
+					{{ macros.lang_icon(language) }} {{ language|upper }}
+				{% endif %}
+			</a>
+		</li>
+	{% endfor %}
+
+	{% if display=='dropdown' %}
+		</ul></li>
+	{% endif %}
+{% endmacro %}
+
+{% if enabled and not mobile %}
+	<ul>
+		{% import _self as macros %}
+		{{ macros.lang_switcher(page, display, format) }}
+	</ul>
+{% endif %}
+
+{% if enabled and mobile %}
+	<ul {{ tree ? 'class="tree"' : '' }}>
+		{% import _self as macros %}
+		{{ macros.lang_switcher(page, 'mobile', format) }}
+	</ul>
+{% endif %}
