@@ -1,0 +1,9 @@
+# Enforce LF line endings for scripts & containers across Windows, macOS, and Linux
+*.sh text eol=lf
+*.example text eol=lf
+*.ini text eol=lf
+*.conf text eol=lf
+*.cnf text eol=lf
+docker-entrypoint.sh text eol=lf
+Dockerfile text eol=lf
+Makefile text eol=lf

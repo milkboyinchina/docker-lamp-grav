@@ -17,7 +17,14 @@ grav-lamp/
 ├── docker-entrypoint.sh     # Auto-runs on container startup (handles permissions)
 ├── .env                     # Local environment variables (created from env.example)
 ├── env.example              # Template for environment configuration
-├── project-structure        # Reference map of the project
+├── .gitattributes           # Enforces LF line endings for Windows/Linux/macOS
+├── Makefile                 # Cross-platform 1-word command shortcuts
+├── start.sh / stop.sh       # Linux/macOS/WSL 1-click shell scripts
+├── rebuild.sh               # Rebuild container image shell script
+├── scripts/                 # Windows CMD/PowerShell batch scripts
+│   ├── start.bat            # Windows 1-click start batch script
+│   ├── stop.bat             # Windows 1-click stop batch script
+│   └── rebuild.bat          # Windows 1-click rebuild batch script
 ├── test-scripts/            # Diagnostic & compatibility test scripts
 │   ├── README.md            # Documentation for test scripts
 │   ├── index.php.grav.testing.example      # Grav CMS & Database diagnostic script
@@ -64,6 +71,37 @@ docker compose up -d --build
 
 Once running, you can access your site at:
 * **Main Website**: [http://localhost](http://localhost) (or the port defined in `HTTP_PORT`).
+
+---
+
+---
+
+## 🛠️ Cross-Platform Easy Shortcuts (Windows, Linux, macOS)
+
+To make running and managing `docker-compose.yml` seamless on any operating system, the stack includes **Makefile** shortcuts and **1-click OS helper scripts**:
+
+### 1. 🧰 Makefile Shortcuts (Linux, macOS, WSL, Windows Git Bash)
+If you have `make` installed, run these 1-word commands from your terminal:
+* **`make up`**: Start containers in the background (automatically creates `.env` if missing).
+* **`make stop`**: Stop running containers.
+* **`make down`**: Stop and remove containers & network interfaces.
+* **`make rebuild`**: Rebuild PHP image without cache & restart stack.
+* **`make logs`**: Stream live webserver logs.
+* **`make status`**: Check status of running containers.
+* **`make test-grav`**: Deploy Grav diagnostic page to `http://localhost/diagnostics.php`.
+* **`make test-wp`**: Deploy WordPress diagnostic page to `http://localhost/wp-diagnostics.php`.
+
+### 2. 🪟 Windows (Double-Click Batch Scripts)
+For Windows Command Prompt / PowerShell users:
+* **`scripts\start.bat`**: Double-click to start stack.
+* **`scripts\stop.bat`**: Double-click to stop stack.
+* **`scripts\rebuild.bat`**: Double-click to rebuild stack without cache.
+
+### 3. 🐧 Linux / macOS (Shell Scripts)
+For terminal users on Linux / macOS / WSL:
+* **`./start.sh`**: Start containers in background.
+* **`./stop.sh`**: Stop running containers.
+* **`./rebuild.sh`**: Rebuild PHP image & restart stack.
 
 ---
 
