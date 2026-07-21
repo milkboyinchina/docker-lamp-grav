@@ -228,3 +228,29 @@ Grav CMS requires write access to several system directories. To make this seaml
 * `/var/www/html/user`
 
 It assigns ownership to the `www-data` user and ensures files are writable (permissions set to `777` fallback).
+
+---
+
+## 💡 Other Use Cases
+
+While pre-configured and optimized for **Grav CMS**, this Docker environment is built as a general-purpose, high-performance PHP 8.3 + Apache stack. You can clear the contents of `src/` and deploy:
+
+### 1. 📝 WordPress Local Development & Staging
+* Delete files inside `src/` and extract a fresh WordPress package.
+* Uncomment the `db` (MariaDB) and `adminer` services in `docker-compose.yml`.
+* Run `make up` and navigate to [http://localhost](http://localhost) to complete the 5-minute WordPress installation.
+
+### 2. 🚀 Modern PHP Frameworks (Laravel, Symfony, CodeIgniter, Slim)
+* Drop your **Laravel**, **Symfony**, or **CodeIgniter** project files into `src/`.
+* Modify `config/apache/000-default.conf` to set `DocumentRoot /var/www/html/public` for framework routing.
+* Run Composer commands directly inside the webserver container:
+  ```bash
+  docker compose exec webserver composer install
+  ```
+
+### 3. 🧪 PHP Extension Prototyping & Custom Web Apps
+* Prototype custom PHP 8.3 applications utilizing pre-built performance and graphic libraries (`imagick`, `gd --with-webp`, `redis`, `apcu`, `yaml`, `bcmath`, `sockets`, `opcache`).
+* Use `make test` to verify extension availability and compatibility scores.
+
+### 4. 📄 Flat-File CMS Alternatives (Kirby, Pico, Statamic)
+* Deploy database-less flat-file CMS platforms like **Kirby**, **Pico**, or **Statamic** directly into `src/` with zero database configuration required.
