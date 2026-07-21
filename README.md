@@ -24,6 +24,7 @@ grav-lamp/
 │   └── docker-entrypoint.sh # Auto-runs on container startup (handles permissions)
 ├── .env                     # Local environment variables (created from env.example)
 ├── env.example              # Template for environment configuration
+├── GRAV-QUICKSTART.md       # First-time Grav setup & admin user reset guide
 ├── .gitattributes           # Enforces LF line endings for Windows/Linux/macOS
 ├── Makefile                 # Cross-platform 1-word command shortcuts
 ├── start.sh / stop.sh       # Linux/macOS/WSL 1-click shell scripts
@@ -78,6 +79,10 @@ docker compose up -d --build
 
 Once running, you can access your site at:
 * **Main Website**: [http://localhost](http://localhost) (or the port defined in `HTTP_PORT`).
+* **Grav Admin Panel**: [http://localhost/admin](http://localhost/admin).
+
+> **📘 First-Time Grav User & Admin Reset Guide**:  
+> Check out [`GRAV-QUICKSTART.md`](file:///home/milkboy/Documents/grav-lamp-docker/GRAV-QUICKSTART.md) for detailed instructions on first-time setup, creating admin users via CLI, and resetting admin accounts if locked out.
 
 ---
 
