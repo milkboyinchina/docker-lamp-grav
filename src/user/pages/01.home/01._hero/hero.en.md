@@ -5,7 +5,7 @@ hero_image: header.jpg
 ---
 
 # Hi, I'm [span class="hadron-font"]**Milkboy**[/span] 👋
-## Full-Stack Software Engineer & DevOps Enthusiast
+## Part-Time Software Engineer & DevOps Enthusiast
 
 ![Milkboy Avatar](milkboy-avatar.png?max_width=300&classes=avatar-img,center-block)
 

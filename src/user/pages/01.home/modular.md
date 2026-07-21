@@ -12,5 +12,5 @@ page-toc:
   anchors:
     link: false
 metadata:
-  description: 'Milkboy - Software Engineer, Full-Stack Developer & DevOps Specialist Personal CV and Portfolio.'
+  description: 'Milkboy - Part-Time Software Engineer & DevOps Specialist Personal CV and Portfolio.'
 ---
