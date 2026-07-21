@@ -1,6 +1,6 @@
 ---
 title: My Portfolio
-hero_classes: parallax text-light
+hero_classes: parallax text-light overlay-dark-gradient
 hero_image: header.jpg
 ---
 
