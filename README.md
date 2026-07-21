@@ -1,4 +1,4 @@
-# Dockerized LAMP Stack for Grav CMS
+# Dockerized LAMP Stack + Grav CMS Included
 
 A pre-configured, lightweight, and developer-friendly Docker environment running an Apache/PHP container, with optional support for **MariaDB** and **Adminer**.
 
