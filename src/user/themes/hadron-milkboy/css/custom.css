@@ -13,9 +13,9 @@ body #header.scrolled {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    height: 4.25rem !important;
+    height: 3.5rem !important;
     margin: 0 !important;
-    padding: 0 1.5rem !important;
+    padding: 0 1.25rem !important;
     display: flex !important;
     align-items: center !important;
     z-index: 999999 !important;
@@ -64,7 +64,7 @@ body #header.scrolled {
     margin-left: auto !important;
     display: flex !important;
     align-items: center !important;
-    gap: 1.25rem !important;
+    gap: 0.85rem !important;
 }
 
 /* Ensure navbar sections and interactive elements sit on top and accept pointer events */
@@ -85,25 +85,25 @@ body #header.scrolled {
 #header .navbar-brand {
     display: flex !important;
     align-items: center !important;
-    gap: 0.75rem !important;
+    gap: 0.5rem !important;
     text-decoration: none !important;
     height: 100% !important;
 }
 
 #header .navbar-brand .title {
     font-family: 'Hadron', 'Nasalization', sans-serif !important;
-    font-size: 1.4rem !important;
+    font-size: 1.15rem !important;
     font-weight: 700 !important;
     color: #ffffff !important;
-    letter-spacing: 1px !important;
+    letter-spacing: 0.5px !important;
     text-transform: uppercase !important;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.7), 0 2px 4px rgba(0, 0, 0, 0.8) !important;
 }
 
 #header .navbar-brand img {
-    max-height: 38px !important;
+    max-height: 28px !important;
     width: auto !important;
-    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6)) !important;
+    filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.6)) !important;
 }
 
 /* Navigation Dropmenu & Links */
@@ -116,7 +116,7 @@ body #header.scrolled {
 #header .dropmenu ul.navigation {
     display: flex !important;
     align-items: center !important;
-    gap: 0.5rem !important;
+    gap: 0.25rem !important;
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
@@ -126,15 +126,15 @@ body #header.scrolled {
 #header .dropmenu ul > li > a,
 #header .dropmenu > ul > li > a {
     color: #f1f5f9 !important;
-    font-size: 0.95rem !important;
+    font-size: 0.82rem !important;
     font-weight: 600 !important;
-    letter-spacing: 0.5px !important;
+    letter-spacing: 0.3px !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
     opacity: 0.95 !important;
-    padding: 0.5rem 0.85rem !important;
+    padding: 0.35rem 0.65rem !important;
     display: inline-flex !important;
     align-items: center !important;
-    border-radius: 6px !important;
+    border-radius: 5px !important;
     transition: all 0.2s ease-in-out !important;
 }
 
@@ -149,14 +149,14 @@ body #header.scrolled {
     color: #00f0ff !important;
     opacity: 1 !important;
     background: rgba(0, 240, 255, 0.1) !important;
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.9), 0 0 20px rgba(0, 240, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.9), 0 0 15px rgba(0, 240, 255, 0.4) !important;
 }
 
-/* Language Switcher - Flag Icon Only Format */
+/* Language Switcher - Compact Flag Icon Only Format */
 nav.language-switcher {
     position: relative !important;
     z-index: 1000001 !important;
-    margin-left: 0.75rem !important;
+    margin-left: 0.5rem !important;
     display: flex !important;
     align-items: center !important;
 }
@@ -164,7 +164,7 @@ nav.language-switcher {
 nav.language-switcher ul {
     display: flex !important;
     align-items: center !important;
-    gap: 0.4rem !important;
+    gap: 0.3rem !important;
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
@@ -180,16 +180,16 @@ nav.language-switcher a {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 2.25rem !important;
-    height: 2.25rem !important;
+    width: 1.75rem !important;
+    height: 1.75rem !important;
     padding: 0 !important;
     border-radius: 50% !important;
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(0, 240, 255, 0.3) !important;
-    font-size: 1.25rem !important;
+    font-size: 0.95rem !important;
     line-height: 1 !important;
     text-decoration: none !important;
-    transition: all 0.25s ease-in-out !important;
+    transition: all 0.2s ease-in-out !important;
 }
 
 nav.language-switcher a:hover,
@@ -197,7 +197,7 @@ nav.language-switcher a.active {
     background: rgba(0, 240, 255, 0.25) !important;
     border-color: #00f0ff !important;
     transform: scale(1.08) !important;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.6) !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.6) !important;
 }
 
 /* Dropdown Sub-menus */
@@ -206,7 +206,7 @@ nav.language-switcher a.active {
     border: 1px solid rgba(0, 240, 255, 0.3) !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7) !important;
     border-radius: 8px !important;
-    padding: 0.5rem 0 !important;
+    padding: 0.4rem 0 !important;
 }
 
 /* Mobile Toggle Hamburger Button */
