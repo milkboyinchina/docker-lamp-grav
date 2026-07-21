@@ -11,8 +11,13 @@ body #header.scrolled {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
+    right: 0 !important;
     width: 100% !important;
-    height: 4rem !important;
+    height: 4.25rem !important;
+    margin: 0 !important;
+    padding: 0 1.5rem !important;
+    display: flex !important;
+    align-items: center !important;
     z-index: 999999 !important;
     pointer-events: auto !important;
     background: rgba(10, 15, 30, 0.92) !important;
@@ -21,6 +26,45 @@ body #header.scrolled {
     border-bottom: 1px solid rgba(0, 240, 255, 0.3) !important;
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6) !important;
     transition: all 0.3s ease-in-out !important;
+}
+
+/* Container & Navbar Flex Alignment */
+#header .container {
+    width: 100% !important;
+    max-width: 1280px !important;
+    height: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+#header .navbar {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#header .navbar-section {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+
+#header .navbar-section.logo {
+    flex: 0 0 auto !important;
+}
+
+#header .navbar-section.desktop-menu {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
 }
 
 /* Ensure navbar sections and interactive elements sit on top and accept pointer events */
@@ -43,6 +87,7 @@ body #header.scrolled {
     align-items: center !important;
     gap: 0.75rem !important;
     text-decoration: none !important;
+    height: 100% !important;
 }
 
 #header .navbar-brand .title {
@@ -61,7 +106,22 @@ body #header.scrolled {
     filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6)) !important;
 }
 
-/* Header Navigation Links */
+/* Navigation Dropmenu & Links */
+#header .dropmenu {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+
+#header .dropmenu ul.navigation {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
 #header a,
 #header .dropmenu ul > li > a,
 #header .dropmenu > ul > li > a {
@@ -71,7 +131,11 @@ body #header.scrolled {
     letter-spacing: 0.5px !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
     opacity: 0.95 !important;
-    transition: color 0.2s ease, text-shadow 0.2s ease !important;
+    padding: 0.5rem 0.85rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease-in-out !important;
 }
 
 /* Active & Hover Links */
@@ -84,15 +148,17 @@ body #header.scrolled {
 #header .dropmenu > ul > li > a.active {
     color: #00f0ff !important;
     opacity: 1 !important;
+    background: rgba(0, 240, 255, 0.1) !important;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.9), 0 0 20px rgba(0, 240, 255, 0.5) !important;
 }
 
-/* Language Switcher Styling & Z-Index */
+/* Language Switcher - Flag Icon Only Format */
 nav.language-switcher {
     position: relative !important;
     z-index: 1000001 !important;
-    margin-left: 1rem !important;
-    display: inline-block !important;
+    margin-left: 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 nav.language-switcher ul {
@@ -105,30 +171,32 @@ nav.language-switcher ul {
 }
 
 nav.language-switcher li {
-    display: inline-block !important;
+    display: inline-flex !important;
+    align-items: center !important;
     margin: 0 !important;
 }
 
 nav.language-switcher a {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 0.3rem !important;
-    padding: 0.3rem 0.75rem !important;
-    border-radius: 6px !important;
+    justify-content: center !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
     background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(0, 240, 255, 0.35) !important;
-    color: #f1f5f9 !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
+    border: 1px solid rgba(0, 240, 255, 0.3) !important;
+    font-size: 1.25rem !important;
+    line-height: 1 !important;
     text-decoration: none !important;
-    transition: all 0.2s ease-in-out !important;
+    transition: all 0.25s ease-in-out !important;
 }
 
 nav.language-switcher a:hover,
 nav.language-switcher a.active {
     background: rgba(0, 240, 255, 0.25) !important;
     border-color: #00f0ff !important;
-    color: #ffffff !important;
+    transform: scale(1.08) !important;
     box-shadow: 0 0 12px rgba(0, 240, 255, 0.6) !important;
 }
 

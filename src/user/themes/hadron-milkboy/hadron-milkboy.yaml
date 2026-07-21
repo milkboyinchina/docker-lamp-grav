@@ -24,6 +24,8 @@ menu:
     target: _blank
 langswitcher:
   enable: true
+  display: inline
+  format: icon
 fontawesome:
   brands: false
   brand: false
