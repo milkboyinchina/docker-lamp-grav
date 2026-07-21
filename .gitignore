@@ -2,15 +2,21 @@
 # Environment & Secrets
 # ==========================================
 .env
+.env.local
+.env.*.local
 !.env.example
+!.env.example.php
 
 # ==========================================
-# Docker Host Logs
+# Docker & Database Host Directories
 # ==========================================
 logs/apache/*
 !logs/apache/.gitkeep
 logs/php/*
 !logs/php/.gitkeep
+/dbdata/
+/data/
+/mysql_data/
 
 # ==========================================
 # Grav CMS Cache & Runtime Directories
@@ -28,11 +34,14 @@ src/logs/*
 src/tmp/*
 !src/tmp/.gitkeep
 
-# Grav Vendor Dependencies (if using Composer directly)
+# Grav Vendor Dependencies
 src/vendor/
 
+# Temporary / Testing Scripts
+src/diagnostics.php
+
 # ==========================================
-# Grav Sensitive User Data & Credentials
+# Grav Sensitive User Data & Runtime Cache
 # ==========================================
 # Exclude admin account YAML files containing password hashes
 src/user/accounts/*
@@ -41,12 +50,31 @@ src/user/accounts/*
 # Exclude user session & plugin runtime data
 src/user/data/*
 !src/user/data/.gitkeep
+src/user/data/cache/*
+src/user/data/tmp/*
 
-# Exclude Package Manager cache state
+# Exclude Package Manager & local config state
 src/user/config/gpm.yaml
+src/user/env.php
 
 # ==========================================
-# Operating System & IDE Files
+# General Logs & Dumps
+# ==========================================
+*.log
+*.sql
+*.sql.gz
+
+# ==========================================
+# Node.js & Frontend Build Tools (Themes/Plugins)
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ==========================================
+# Operating System, IDEs & AI Tools
 # ==========================================
 # macOS
 .DS_Store
@@ -60,15 +88,14 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# IDEs & Editors
+# IDEs, Editors & Assistants
 .vscode/
 .idea/
+.vs/
+.zed/
+.gemini/
+.claude/
+.cursor/
 *.swp
 *.swo
 *~
-
-# ==========================================
-# Database Backups & Temporary Dumps
-# ==========================================
-*.sql
-*.sql.gz

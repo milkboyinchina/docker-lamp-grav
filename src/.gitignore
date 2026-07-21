@@ -1,0 +1,57 @@
+# ==========================================
+# Grav CMS Cache & Runtime Directories
+# ==========================================
+/assets/*
+!/assets/.gitkeep
+
+/backup/*
+!/backup/.gitkeep
+
+/cache/*
+!/cache/.gitkeep
+
+/images/*
+!/images/.gitkeep
+
+/logs/*
+!/logs/.gitkeep
+
+/tmp/*
+!/tmp/.gitkeep
+
+# ==========================================
+# Composer Dependencies
+# ==========================================
+/vendor/
+
+# ==========================================
+# Diagnostics & Testing Scripts
+# ==========================================
+diagnostics.php
+
+# ==========================================
+# Sensitive User Data & Runtime Cache
+# ==========================================
+# Exclude admin account YAML files containing password hashes
+/user/accounts/*
+!/user/accounts/.gitkeep
+
+# Exclude user sessions and runtime plugin data
+/user/data/*
+!/user/data/.gitkeep
+/user/data/cache/*
+/user/data/tmp/*
+
+# Exclude Package Manager state & local env file
+/user/config/gpm.yaml
+/user/env.php
+
+# ==========================================
+# Logs, OS Files & Editor Files
+# ==========================================
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
