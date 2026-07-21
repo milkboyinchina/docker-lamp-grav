@@ -250,5 +250,5 @@ While pre-configured and optimized for **Grav CMS**, this Docker environment is 
 * Prototype custom PHP 8.3 applications utilizing pre-built performance and graphic libraries (`imagick`, `gd --with-webp`, `redis`, `apcu`, `yaml`, `bcmath`, `sockets`, `opcache`).
 * Use `make test` to verify extension availability and compatibility scores.
 
-### 4. Flat-File CMS Alternatives (Kirby, Pico, Statamic)
-* Deploy database-less flat-file CMS platforms like **Kirby**, **Pico**, or **Statamic** directly into `src/` with zero database configuration required.
+### 4. Flat-File PHP scripts (Kirby, Pico, Statamic, or standalone PHP apps)
+* Deploy database-less flat-file CMS platforms or custom standalone PHP scripts directly into `src/` with zero database configuration required.
