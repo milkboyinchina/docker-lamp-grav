@@ -1,6 +1,8 @@
 # Dockerized LAMP Stack for Grav CMS
 
-A pre-configured, lightweight, and developer-friendly Docker environment tailored for running **Grav CMS** inside a Apache/PHP container, with optional support for **MariaDB** and **Adminer**.
+A pre-configured, lightweight, and developer-friendly Docker environment running an Apache/PHP container, with optional support for **MariaDB** and **Adminer**.
+
+> **Note**: While this Docker stack is pre-configured and thoroughly tested using **Grav CMS**, it is **not exclusively for Grav**. You can delete the contents of the `src/` directory and place a fresh Grav CMS installation, a custom PHP application, or any other PHP scripts you prefer.
 
 This setup automatically takes care of system dependencies, required/optional PHP extensions (like OPcache, APCu, YAML, Redis, GD, etc.), file permissions, and custom server configurations.
 
