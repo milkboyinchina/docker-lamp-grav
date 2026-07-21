@@ -2,12 +2,19 @@
    Hadron Milkboy Custom Header & Styling Rules
    ========================================================================== */
 
-/* Fixed Header Container & High Z-Index */
+/* Fixed Header Container & High Z-Index - Identical Design for Scrolled and Non-Scrolled */
 #header,
+#header.scrolled,
+body #header,
+body #header.scrolled,
 body.header-fixed #header,
+body.header-fixed #header.scrolled,
 body:is(.header-light, .header-transparent) #header,
+body:is(.header-light, .header-transparent) #header.scrolled,
 body.header-dark #header:not(.scrolled),
-body #header.scrolled {
+body.header-dark #header.scrolled,
+body.header-fixed.header-animated #header,
+body.header-fixed.header-animated #header.scrolled {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -29,7 +36,8 @@ body #header.scrolled {
 }
 
 /* Container & Navbar Flex Alignment */
-#header .container {
+#header .container,
+#header.scrolled .container {
     width: 100% !important;
     max-width: 1280px !important;
     height: 100% !important;
@@ -39,7 +47,8 @@ body #header.scrolled {
     align-items: center !important;
 }
 
-#header .navbar {
+#header .navbar,
+#header.scrolled .navbar {
     width: 100% !important;
     height: 100% !important;
     display: flex !important;
@@ -49,17 +58,21 @@ body #header.scrolled {
     padding: 0 !important;
 }
 
-#header .navbar-section {
+#header .navbar-section,
+#header.scrolled .navbar-section,
+body.header-fixed.header-animated #header.scrolled .navbar-section {
     display: flex !important;
     align-items: center !important;
     height: 100% !important;
 }
 
-#header .navbar-section.logo {
+#header .navbar-section.logo,
+#header.scrolled .navbar-section.logo {
     flex: 0 0 auto !important;
 }
 
-#header .navbar-section.desktop-menu {
+#header .navbar-section.desktop-menu,
+#header.scrolled .navbar-section.desktop-menu {
     flex: 0 0 auto !important;
     margin-left: auto !important;
     display: flex !important;
@@ -70,11 +83,17 @@ body #header.scrolled {
 
 /* Ensure navbar sections and interactive elements sit on top and accept pointer events */
 #header .navbar,
+#header.scrolled .navbar,
 #header .navbar-section,
+#header.scrolled .navbar-section,
 #header .desktop-menu,
+#header.scrolled .desktop-menu,
 #header .dropmenu,
+#header.scrolled .dropmenu,
 #header nav.language-switcher,
+#header.scrolled nav.language-switcher,
 #header a,
+#header.scrolled a,
 #header button {
     position: relative !important;
     z-index: 1000000 !important;
@@ -83,7 +102,8 @@ body #header.scrolled {
 }
 
 /* Header Navbar Brand & Title */
-#header .navbar-brand {
+#header .navbar-brand,
+#header.scrolled .navbar-brand {
     display: flex !important;
     align-items: center !important;
     gap: 0.5rem !important;
@@ -91,7 +111,8 @@ body #header.scrolled {
     height: 100% !important;
 }
 
-#header .navbar-brand .title {
+#header .navbar-brand .title,
+#header.scrolled .navbar-brand .title {
     font-family: 'Hadron', 'Nasalization', sans-serif !important;
     font-size: 1.15rem !important;
     font-weight: 700 !important;
@@ -101,20 +122,25 @@ body #header.scrolled {
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.7), 0 2px 4px rgba(0, 0, 0, 0.8) !important;
 }
 
-#header .navbar-brand img {
+#header .navbar-brand img,
+#header.scrolled .navbar-brand img,
+body.header-fixed.header-animated #header.scrolled .logo img,
+body.header-fixed.header-animated #header.scrolled .navbar-brand.inverted img {
     max-height: 28px !important;
-    width: auto !important;
+    height: auto !important;
     filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.6)) !important;
 }
 
 /* Navigation Dropmenu & Links */
-#header .dropmenu {
+#header .dropmenu,
+#header.scrolled .dropmenu {
     display: flex !important;
     align-items: center !important;
     height: 100% !important;
 }
 
-#header .dropmenu ul.navigation {
+#header .dropmenu ul.navigation,
+#header.scrolled .dropmenu ul.navigation {
     display: flex !important;
     align-items: center !important;
     gap: 0.35rem !important;
@@ -124,7 +150,8 @@ body #header.scrolled {
     list-style: none !important;
 }
 
-#header .dropmenu ul.navigation li {
+#header .dropmenu ul.navigation li,
+#header.scrolled .dropmenu ul.navigation li {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -135,7 +162,9 @@ body #header.scrolled {
 
 /* Reset Pseudo-elements that cause off-center alignment */
 #header .dropmenu ul.navigation > li > a:before,
-#header .dropmenu ul.navigation > li > a:after {
+#header.scrolled .dropmenu ul.navigation > li > a:before,
+#header .dropmenu ul.navigation > li > a:after,
+#header.scrolled .dropmenu ul.navigation > li > a:after {
     display: none !important;
     content: none !important;
     margin: 0 !important;
@@ -144,7 +173,9 @@ body #header.scrolled {
 
 /* Clean Box-Free Navigation Menu Links (No Background Selection Box) */
 #header .dropmenu:not(.language-switcher) a,
-#header .dropmenu ul.navigation > li > a {
+#header.scrolled .dropmenu:not(.language-switcher) a,
+#header .dropmenu ul.navigation > li > a,
+#header.scrolled .dropmenu ul.navigation > li > a {
     color: #ffffff !important;
     font-size: 0.85rem !important;
     font-weight: 600 !important;
@@ -169,10 +200,15 @@ body #header.scrolled {
 
 /* Crisp Clean Active & Hover State for Navigation Links - Text Glow Only */
 #header .dropmenu:not(.language-switcher) a:hover,
+#header.scrolled .dropmenu:not(.language-switcher) a:hover,
 #header .dropmenu:not(.language-switcher) a:focus,
+#header.scrolled .dropmenu:not(.language-switcher) a:focus,
 #header .dropmenu:not(.language-switcher) a.active,
+#header.scrolled .dropmenu:not(.language-switcher) a.active,
 #header .dropmenu ul.navigation > li > a:hover,
-#header .dropmenu ul.navigation > li > a:active {
+#header.scrolled .dropmenu ul.navigation > li > a:hover,
+#header .dropmenu ul.navigation > li > a.active,
+#header.scrolled .dropmenu ul.navigation > li > a.active {
     color: #00f0ff !important;
     opacity: 1 !important;
     background: transparent !important;
@@ -183,7 +219,9 @@ body #header.scrolled {
 
 /* Language Switcher - Clean Box-Free Flag Icon Selector */
 body #header nav.language-switcher,
-#header nav.language-switcher {
+body #header.scrolled nav.language-switcher,
+#header nav.language-switcher,
+#header.scrolled nav.language-switcher {
     position: relative !important;
     z-index: 1000001 !important;
     margin-left: 0.5rem !important;
@@ -194,7 +232,9 @@ body #header nav.language-switcher,
 }
 
 body #header nav.language-switcher ul,
-#header nav.language-switcher ul {
+body #header.scrolled nav.language-switcher ul,
+#header nav.language-switcher ul,
+#header.scrolled nav.language-switcher ul {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -206,7 +246,9 @@ body #header nav.language-switcher ul,
 }
 
 body #header nav.language-switcher ul li,
-#header nav.language-switcher li {
+body #header.scrolled nav.language-switcher ul li,
+#header nav.language-switcher li,
+#header.scrolled nav.language-switcher li {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -216,7 +258,9 @@ body #header nav.language-switcher ul li,
 }
 
 body #header nav.language-switcher ul li a,
-#header nav.language-switcher a {
+body #header.scrolled nav.language-switcher ul li a,
+#header nav.language-switcher a,
+#header.scrolled nav.language-switcher a {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -240,7 +284,9 @@ body #header nav.language-switcher ul li a,
 }
 
 body #header nav.language-switcher ul li a .flag-icon,
-#header nav.language-switcher a .flag-icon {
+body #header.scrolled nav.language-switcher ul li a .flag-icon,
+#header nav.language-switcher a .flag-icon,
+#header.scrolled nav.language-switcher a .flag-icon {
     display: inline-block !important;
     font-size: 1.25rem !important;
     line-height: 1 !important;
@@ -251,7 +297,9 @@ body #header nav.language-switcher ul li a .flag-icon,
 
 /* Hover State - Scale & Full Color */
 body #header nav.language-switcher ul li a:hover,
-#header nav.language-switcher a:hover {
+body #header.scrolled nav.language-switcher ul li a:hover,
+#header nav.language-switcher a:hover,
+#header.scrolled nav.language-switcher a:hover {
     opacity: 0.9 !important;
     filter: grayscale(0%) !important;
     background: transparent !important;
@@ -260,13 +308,17 @@ body #header nav.language-switcher ul li a:hover,
 }
 
 body #header nav.language-switcher ul li a:hover .flag-icon,
-#header nav.language-switcher a:hover .flag-icon {
+body #header.scrolled nav.language-switcher ul li a:hover .flag-icon,
+#header nav.language-switcher a:hover .flag-icon,
+#header.scrolled nav.language-switcher a:hover .flag-icon {
     transform: scale(1.2) !important;
 }
 
 /* Active State - Full Color, Bright Glow & Scale */
 body #header nav.language-switcher ul li a.active,
-#header nav.language-switcher a.active {
+body #header.scrolled nav.language-switcher ul li a.active,
+#header nav.language-switcher a.active,
+#header.scrolled nav.language-switcher a.active {
     opacity: 1 !important;
     filter: grayscale(0%) !important;
     background: transparent !important;
@@ -275,7 +327,9 @@ body #header nav.language-switcher ul li a.active,
 }
 
 body #header nav.language-switcher ul li a.active .flag-icon,
-#header nav.language-switcher a.active .flag-icon {
+body #header.scrolled nav.language-switcher ul li a.active .flag-icon,
+#header nav.language-switcher a.active .flag-icon,
+#header.scrolled nav.language-switcher a.active .flag-icon {
     transform: scale(1.18) !important;
     filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.85)) !important;
 }
@@ -318,48 +372,61 @@ body #header nav.language-switcher ul li a.active .flag-icon,
 @media (max-width: 840px) {
     /* Header Container Padding on Mobile */
     #header,
+    #header.scrolled,
     body.header-fixed #header,
-    body:is(.header-light, .header-transparent) #header {
+    body.header-fixed #header.scrolled,
+    body:is(.header-light, .header-transparent) #header,
+    body:is(.header-light, .header-transparent) #header.scrolled {
         padding: 0 0.75rem !important;
         height: 3.5rem !important;
     }
 
-    #header .navbar-section.desktop-menu {
+    #header .navbar-section.desktop-menu,
+    #header.scrolled .navbar-section.desktop-menu {
         display: flex !important;
         gap: 0.35rem !important;
         flex-wrap: wrap !important;
     }
 
     /* Brand Logo & Title Scaling on Mobile */
-    #header .navbar-brand {
+    #header .navbar-brand,
+    #header.scrolled .navbar-brand {
         gap: 0.3rem !important;
         flex: 0 0 auto !important;
     }
 
-    #header .navbar-brand .title {
+    #header .navbar-brand .title,
+    #header.scrolled .navbar-brand .title {
         font-size: 0.95rem !important;
         letter-spacing: 0px !important;
     }
 
-    #header .navbar-brand img {
+    #header .navbar-brand img,
+    #header.scrolled .navbar-brand img {
         max-height: 22px !important;
     }
 
     /* Navigation Links on Mobile */
     #header .dropmenu:not(.language-switcher) a,
-    #header .dropmenu ul.navigation > li > a {
+    #header.scrolled .dropmenu:not(.language-switcher) a,
+    #header .dropmenu ul.navigation > li > a,
+    #header.scrolled .dropmenu ul.navigation > li > a {
         font-size: 0.78rem !important;
         padding: 0.25rem 0.4rem !important;
     }
 
     /* Language Switcher on Mobile */
     body #header nav.language-switcher,
-    #header nav.language-switcher {
+    body #header.scrolled nav.language-switcher,
+    #header nav.language-switcher,
+    #header.scrolled nav.language-switcher {
         margin-left: 0.2rem !important;
     }
 
     body #header nav.language-switcher ul li a .flag-icon,
-    #header nav.language-switcher a .flag-icon {
+    body #header.scrolled nav.language-switcher ul li a .flag-icon,
+    #header nav.language-switcher a .flag-icon,
+    #header.scrolled nav.language-switcher a .flag-icon {
         font-size: 1.1rem !important;
     }
 
@@ -377,7 +444,8 @@ body #header nav.language-switcher ul li a.active .flag-icon,
 
 @media (max-width: 600px) {
     /* Narrow Mobile Phone Adjustments */
-    #header .navbar-brand .title {
+    #header .navbar-brand .title,
+    #header.scrolled .navbar-brand .title {
         font-size: 0.85rem !important;
     }
 
