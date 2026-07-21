@@ -1,5 +1,11 @@
 timezone: null
 custom_base_url: null
+languages:
+  supported:
+    - en
+    - de
+  default_lang: en
+  include_default_lang: false
 pages:
   theme: hadron
   append_url_extension: null
