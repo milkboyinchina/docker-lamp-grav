@@ -223,7 +223,7 @@ body #header nav.language-switcher ul li a,
     height: auto !important;
     min-width: 0 !important;
     min-height: 0 !important;
-    padding: 0.2rem 0.3rem !important;
+    padding: 0.3rem 0.4rem !important;
     margin: 0 !important;
     line-height: 1 !important;
     background: transparent !important;
@@ -310,4 +310,131 @@ body #header nav.language-switcher ul li a.active .flag-icon,
 .hero .container {
     position: relative !important;
     z-index: 2 !important;
+}
+
+/* ==========================================================================
+   Mobile & Tablet Responsive Styling Rules (Media Queries)
+   ========================================================================== */
+
+@media (max-width: 840px) {
+    /* Header Container Padding on Mobile */
+    #header,
+    body.header-fixed #header,
+    body:is(.header-light, .header-transparent) #header {
+        padding: 0 0.85rem !important;
+        height: 3.5rem !important;
+    }
+
+    /* Brand Logo & Title Scaling on Mobile */
+    #header .navbar-brand {
+        gap: 0.4rem !important;
+    }
+
+    #header .navbar-brand .title {
+        font-size: 1rem !important;
+        letter-spacing: 0px !important;
+    }
+
+    #header .navbar-brand img {
+        max-height: 24px !important;
+    }
+
+    /* Desktop Menu & Language Switcher Adjustments on Mobile */
+    #header .navbar-section.desktop-menu {
+        gap: 0.4rem !important;
+    }
+
+    /* Language Switcher Touch Targets on Mobile */
+    body #header nav.language-switcher,
+    #header nav.language-switcher {
+        margin-left: 0.25rem !important;
+    }
+
+    body #header nav.language-switcher ul li a,
+    #header nav.language-switcher a {
+        padding: 0.4rem 0.5rem !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+    }
+
+    body #header nav.language-switcher ul li a .flag-icon,
+    #header nav.language-switcher a .flag-icon {
+        font-size: 1.2rem !important;
+    }
+
+    /* Mobile Navigation Drawer Styling */
+    .mobile-container,
+    .mobile-menu .dropmenu {
+        background: rgba(10, 15, 30, 0.98) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-left: 1px solid rgba(0, 240, 255, 0.3) !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .mobile-menu .dropmenu ul li a {
+        color: #ffffff !important;
+        font-size: 1rem !important;
+        padding: 0.85rem 1.25rem !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    /* Responsive Grid Columns & Cards */
+    .column,
+    .col-12,
+    .col-6,
+    .col-4,
+    .col-3 {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Narrow Mobile Phone Adjustments */
+    #header .navbar-brand .title {
+        font-size: 0.9rem !important;
+    }
+
+    /* Hero Typography on Small Screens */
+    .hero h1,
+    .hero h2,
+    .hero-title {
+        font-size: 1.75rem !important;
+        line-height: 1.25 !important;
+    }
+
+    .hero p.lead,
+    .hero-subtitle {
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+    }
+
+    /* Hero Action Buttons - Stacked on Mobile */
+    .hero .buttons,
+    .hero-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 0.75rem !important;
+    }
+
+    .hero .btn,
+    .hero-actions .btn {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.65rem 1.25rem !important;
+    }
+
+    /* Mobile Section Padding */
+    section.section,
+    .modular-row {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
 }
