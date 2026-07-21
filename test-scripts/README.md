@@ -4,6 +4,20 @@ This directory contains the unified PHP environment diagnostic script (`test.php
 
 ---
 
+## 📊 Compatibility Scoreboard
+
+The diagnostic script automatically calculates real-time **Compatibility Scores & Letter Grades** for both platforms:
+
+* 🌌 **Grav CMS Score**: Calculated based on 7 required core extensions (`10 pts` each) and 8 performance extensions (`2 pts` each).
+* 📝 **WordPress Core Score**: Calculated based on required extensions (`8 pts` each), recommended extensions (`3 pts` each), and database connectivity (`15 pts`).
+* 🏅 **Grade Scale**:
+  * **Grade A+ (98% - 100%)**: 🚀 Perfect - Stack fully optimized for production!
+  * **Grade A (85% - 97%)**: ✅ Excellent - Core features fully operational.
+  * **Grade B (70% - 84%)**: ⚠️ Good - Core operational, some optional extensions disabled.
+  * **Grade F (< 70%)**: ⛔ Action Required - Missing required extensions or database service.
+
+---
+
 ## 📂 Diagnostic Script (`test.php.example`)
 
 * **File**: `test-scripts/test.php.example`

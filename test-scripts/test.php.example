@@ -112,6 +112,53 @@ if (extension_loaded('mysqli')) {
 }
 
 $dbConnected = $pdoConnected || $mysqliConnected;
+
+// Calculate Grav CMS Score (Weighted 100 points)
+$gravTotal = 0;
+$gravMax = 0;
+foreach ($extensions as $ext => $info) {
+    if ($info['grav'] === 'Required') {
+        $gravMax += 10;
+        if (extension_loaded($ext)) $gravTotal += 10;
+    } elseif ($info['grav'] === 'Recommended' || $info['grav'] === 'Optional') {
+        $gravMax += 2;
+        $isLoaded = extension_loaded($ext);
+        if ($ext === 'opcache') $isLoaded = extension_loaded('Zend OPcache') || extension_loaded('opcache');
+        if ($isLoaded) $gravTotal += 2;
+    }
+}
+$gravScore = round(($gravTotal / $gravMax) * 100);
+
+// Calculate WordPress Score (Weighted 100 points)
+$wpTotal = 0;
+$wpMax = 0;
+foreach ($extensions as $ext => $info) {
+    if ($info['wp'] === 'Required') {
+        $wpMax += 8;
+        if (extension_loaded($ext)) $wpTotal += 8;
+    } elseif ($info['wp'] === 'Recommended' || $info['wp'] === 'Optional') {
+        $wpMax += 3;
+        $isLoaded = extension_loaded($ext);
+        if ($ext === 'opcache') $isLoaded = extension_loaded('Zend OPcache') || extension_loaded('opcache');
+        if ($isLoaded) $wpTotal += 3;
+    }
+}
+$wpMax += 15;
+if ($dbConnected) $wpTotal += 15;
+
+$wpScore = round(($wpTotal / $wpMax) * 100);
+
+// Grade Calculator
+function get_grade($score) {
+    if ($score >= 98) return ['grade' => 'A+', 'color' => '#15803d', 'bg' => '#dcfce7'];
+    if ($score >= 85) return ['grade' => 'A',  'color' => '#16a34a', 'bg' => '#dcfce7'];
+    if ($score >= 70) return ['grade' => 'B',  'color' => '#b45309', 'bg' => '#fef3c7'];
+    if ($score >= 50) return ['grade' => 'C',  'color' => '#c2410c', 'bg' => '#ffedd5'];
+    return ['grade' => 'F', 'color' => '#b91c1c', 'bg' => '#fee2e2'];
+}
+
+$gravGrade = get_grade($gravScore);
+$wpGrade = get_grade($wpScore);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -153,6 +200,40 @@ $dbConnected = $pdoConnected || $mysqliConnected;
     <div class="card">
         <h1>🧪 LAMP Stack Environment Diagnostic Check</h1>
         <p>Unified diagnostic suite for <strong>Grav CMS</strong>, <strong>WordPress</strong>, and custom PHP applications.</p>
+    </div>
+
+    <!-- Compatibility Scoreboard Card -->
+    <div class="card">
+        <h2>Compatibility Scoreboard</h2>
+        <div class="grid">
+            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; background: #f8fafc;">
+                <div style="display:flex; justify-style:space-between; align-items:center;">
+                    <h3 style="margin:0; font-size:1.1rem; color:#0f172a;">🌌 Grav CMS</h3>
+                    <span class="badge" style="background:<?php echo $gravGrade['bg']; ?>; color:<?php echo $gravGrade['color']; ?>; font-size:0.85rem; padding:4px 10px;">Grade <?php echo $gravGrade['grade']; ?></span>
+                </div>
+                <div style="font-size:2.2rem; font-weight:700; color:#0f172a; margin: 10px 0 6px 0;"><?php echo $gravScore; ?>%</div>
+                <div style="background:#e2e8f0; border-radius:6px; height:10px; overflow:hidden;">
+                    <div style="width:<?php echo $gravScore; ?>%; background:<?php echo $gravGrade['color']; ?>; height:100%;"></div>
+                </div>
+                <p style="font-size:0.85rem; color:#64748b; margin-top:8px;">
+                    <?php if ($gravScore >= 90): ?>Flat-file CMS runtime optimal!<?php else: ?>Required extensions missing.<?php endif; ?>
+                </p>
+            </div>
+
+            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; background: #f8fafc;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0; font-size:1.1rem; color:#0f172a;">📝 WordPress Core</h3>
+                    <span class="badge" style="background:<?php echo $wpGrade['bg']; ?>; color:<?php echo $wpGrade['color']; ?>; font-size:0.85rem; padding:4px 10px;">Grade <?php echo $wpGrade['grade']; ?></span>
+                </div>
+                <div style="font-size:2.2rem; font-weight:700; color:#0f172a; margin: 10px 0 6px 0;"><?php echo $wpScore; ?>%</div>
+                <div style="background:#e2e8f0; border-radius:6px; height:10px; overflow:hidden;">
+                    <div style="width:<?php echo $wpScore; ?>%; background:<?php echo $wpGrade['color']; ?>; height:100%;"></div>
+                </div>
+                <p style="font-size:0.85rem; color:#64748b; margin-top:8px;">
+                    <?php if ($wpScore >= 90): ?>WordPress core runtime optimal!<?php elseif (!$dbConnected): ?>MariaDB database disconnected.<?php else: ?>Some optional extensions disabled.<?php endif; ?>
+                </p>
+            </div>
+        </div>
     </div>
 
     <!-- Executive Summary Banners -->
