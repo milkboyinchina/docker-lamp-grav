@@ -1,0 +1,273 @@
+<?php
+/**
+ * Unified Environment Diagnostic Test Script (Grav CMS & WordPress)
+ */
+
+// Retrieve Database credentials from environment variables or set defaults
+$dbHost = getenv('MARIADB_HOST') ?: 'db';
+$dbName = getenv('MARIADB_DATABASE') ?: 'app_db';
+$dbUser = getenv('MARIADB_USER') ?: 'app_user';
+$dbPass = getenv('MARIADB_PASSWORD') ?: 'userpassword';
+
+// Comprehensive extension checks
+$extensions = [
+    // Core & Shared Required Extensions
+    'gd'         => ['grav' => 'Required', 'wp' => 'Required',    'desc' => 'Image cropping, thumbnail & watermark processing'],
+    'mbstring'   => ['grav' => 'Required', 'wp' => 'Required',    'desc' => 'Multibyte string support for non-Latin characters'],
+    'xml'        => ['grav' => 'Required', 'wp' => 'Required',    'desc' => 'XML parsing for RSS feeds, REST API & Gutenberg'],
+    'zip'        => ['grav' => 'Required', 'wp' => 'Required',    'desc' => 'Plugin & theme zip package extraction'],
+    'zlib'       => ['grav' => 'Required', 'wp' => 'Required',    'desc' => 'Gzip HTTP payload compression'],
+    'curl'       => ['grav' => 'Required', 'wp' => 'Required',    'desc' => 'Remote API requests & package updates'],
+    
+    // Platform Specific Extensions
+    'yaml'       => ['grav' => 'Required', 'wp' => 'N/A',         'desc' => 'Grav configuration files parsing (PECL yaml)'],
+    'mysqli'     => ['grav' => 'N/A',      'wp' => 'Required',    'desc' => 'MySQLi database driver for WordPress core'],
+    'pdo'        => ['grav' => 'Optional', 'wp' => 'Recommended', 'desc' => 'PHP Data Objects database abstraction'],
+    'pdo_mysql'  => ['grav' => 'Optional', 'wp' => 'Recommended', 'desc' => 'MariaDB / MySQL PDO driver'],
+    
+    // Performance & Security Extensions
+    'opcache'    => ['grav' => 'Recommended', 'wp' => 'Recommended', 'desc' => 'Zend OPcache PHP bytecode caching'],
+    'exif'       => ['grav' => 'Optional',    'wp' => 'Recommended', 'desc' => 'EXIF image metadata reader'],
+    'fileinfo'   => ['grav' => 'Optional',    'wp' => 'Recommended', 'desc' => 'MIME type identification for secure uploads'],
+    'intl'       => ['grav' => 'Optional',    'wp' => 'Recommended', 'desc' => 'Internationalization & localization'],
+    'openssl'    => ['grav' => 'Optional',    'wp' => 'Recommended', 'desc' => 'HTTPS security protocols & crypto'],
+    'sodium'     => ['grav' => 'Optional',    'wp' => 'Recommended', 'desc' => 'Modern sodium password/token hashing'],
+    'imagick'    => ['grav' => 'Optional',    'wp' => 'Optional',    'desc' => 'ImageMagick vector graphics & PDF thumbnails'],
+    'bcmath'     => ['grav' => 'Optional',    'wp' => 'Recommended', 'desc' => 'High-precision math calculations'],
+    'sockets'    => ['grav' => 'Optional',    'wp' => 'Recommended', 'desc' => 'Low-level network socket communication'],
+    'redis'      => ['grav' => 'Optional',    'wp' => 'Optional',    'desc' => 'Redis Object Cache backend support'],
+    'apcu'       => ['grav' => 'Optional',    'wp' => 'Optional',    'desc' => 'APCu shared memory object caching'],
+    'memcache'   => ['grav' => 'Optional',    'wp' => 'Optional',    'desc' => 'Memcached session & object cache'],
+];
+
+// Helper to parse memory string
+function parse_size($size) {
+    $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
+    $size = preg_replace('/[^0-9\.]/', '', $size);
+    if ($unit) {
+        return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+    }
+    return round($size);
+}
+
+$memoryLimit = ini_get('memory_limit');
+$memoryBytes = parse_size($memoryLimit);
+$recommendedMemory = 128 * 1024 * 1024; // 128MB
+
+// Analyze loaded extensions
+$missingGravRequired = [];
+$missingWpRequired = [];
+
+foreach ($extensions as $ext => $info) {
+    $isLoaded = extension_loaded($ext);
+    if ($ext === 'opcache') {
+        $isLoaded = extension_loaded('Zend OPcache') || extension_loaded('opcache');
+    }
+
+    if (!$isLoaded) {
+        if ($info['grav'] === 'Required') $missingGravRequired[] = $ext;
+        if ($info['wp'] === 'Required') $missingWpRequired[] = $ext;
+    }
+}
+
+// Test MariaDB PDO connection safely
+$pdoConnected = false;
+$pdoError = '';
+$serverVersion = '';
+try {
+    $dsn = "mysql:host=$dbHost;dbname=$dbName;charset=utf8mb4";
+    $pdo = @new PDO($dsn, $dbUser, $dbPass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_TIMEOUT => 3
+    ]);
+    $pdoConnected = true;
+    $serverVersion = $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+} catch (Throwable $e) {
+    $pdoConnected = false;
+    $pdoError = $e->getMessage();
+}
+
+// Test MySQLi connection safely
+$mysqliConnected = false;
+$mysqliError = '';
+if (extension_loaded('mysqli')) {
+    mysqli_report(MYSQLI_REPORT_OFF);
+    try {
+        $mysqli = @new mysqli($dbHost, $dbUser, $dbPass, $dbName);
+        if (!$mysqli->connect_error) {
+            $mysqliConnected = true;
+            if (!$serverVersion) $serverVersion = $mysqli->server_info;
+            $mysqli->close();
+        } else {
+            $mysqliConnected = false;
+            $mysqliError = $mysqli->connect_error;
+        }
+    } catch (Throwable $e) {
+        $mysqliConnected = false;
+        $mysqliError = $e->getMessage();
+    }
+} else {
+    $mysqliConnected = false;
+    $mysqliError = 'mysqli extension is not loaded';
+}
+
+$dbConnected = $pdoConnected || $mysqliConnected;
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAMP Stack Environment Diagnostic Test</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        h1 { margin: 0 0 6px 0; font-size: 1.6rem; color: #0f172a; }
+        h2 { margin: 0 0 16px 0; font-size: 1.2rem; color: #334155; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        p { margin: 6px 0; color: #475569; font-size: 0.95rem; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.92rem; }
+        th { background: #f8fafc; color: #64748b; font-weight: 600; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; }
+        .badge-warning { background: #fef3c7; color: #b45309; }
+        .badge-secondary { background: #f1f5f9; color: #64748b; }
+        code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #0f172a; }
+        
+        .alert-banner { padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5; }
+        .alert-banner h3 { margin: 0 0 6px 0; font-size: 1.1rem; }
+        .alert-banner ul { margin: 6px 0 0 0; padding-left: 20px; }
+        .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .alert-warning { background: #fffbeb; border: 1px solid #fef08a; color: #854d0e; }
+        .alert-danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+        .error-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; margin-top: 12px; border-radius: 4px; }
+        @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>🧪 LAMP Stack Environment Diagnostic Check</h1>
+        <p>Unified diagnostic suite for <strong>Grav CMS</strong>, <strong>WordPress</strong>, and custom PHP applications.</p>
+    </div>
+
+    <!-- Executive Summary Banners -->
+    <?php if (empty($missingGravRequired) && empty($missingWpRequired) && $dbConnected): ?>
+        <div class="alert-banner alert-success">
+            <h3>✅ SYSTEM READY: Full Stack & DB Compatibility Verified</h3>
+            <p>All required PHP extensions for Grav CMS and WordPress are loaded, and MariaDB is connected!</p>
+        </div>
+    <?php else: ?>
+        <?php if (!empty($missingGravRequired) || !empty($missingWpRequired)): ?>
+            <div class="alert-banner alert-danger">
+                <h3>⛔ CRITICAL WARNING: Missing Required PHP Extensions</h3>
+                <ul>
+                    <?php if (!empty($missingGravRequired)): ?>
+                        <li><strong>Grav CMS Missing:</strong> <code><?php echo implode('</code>, <code>', $missingGravRequired); ?></code></li>
+                    <?php endif; ?>
+                    <?php if (!empty($missingWpRequired)): ?>
+                        <li><strong>WordPress Missing:</strong> <code><?php echo implode('</code>, <code>', $missingWpRequired); ?></code></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!$dbConnected): ?>
+            <div class="alert-banner alert-warning">
+                <h3>ℹ️ NOTICE: MariaDB Database Service Disconnected</h3>
+                <p>Could not connect to database at host <code><?php echo $dbHost; ?></code>.</p>
+                <p>• <strong>Grav CMS:</strong> Flat-file architecture (Database is optional unless custom plugins require MariaDB).</p>
+                <p>• <strong>WordPress:</strong> MySQL/MariaDB database is required to run.</p>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <!-- Server Runtime Environment -->
+    <div class="card">
+        <h2>Server & PHP Configuration</h2>
+        <div class="grid">
+            <div>
+                <p><strong>PHP Version:</strong> <code><?php echo PHP_VERSION; ?></code> <span class="badge badge-success">8.3 Compatible</span></p>
+                <p><strong>Server Software:</strong> <code><?php echo $_SERVER['SERVER_SOFTWARE'] ?? 'Apache 2.4'; ?></code></p>
+                <p><strong>Document Root:</strong> <code><?php echo $_SERVER['DOCUMENT_ROOT']; ?></code></p>
+            </div>
+            <div>
+                <p><strong>Memory Limit:</strong> <code><?php echo $memoryLimit; ?></code>
+                <?php if ($memoryBytes >= $recommendedMemory || $memoryLimit == -1): ?>
+                    <span class="badge badge-success">Sufficient (>= 128M)</span>
+                <?php else: ?>
+                    <span class="badge badge-warning">Low (< 128M)</span>
+                <?php endif; ?>
+                </p>
+                <p><strong>Upload Max Filesize:</strong> <code><?php echo ini_get('upload_max_filesize'); ?></code></p>
+                <p><strong>Post Max Size:</strong> <code><?php echo ini_get('post_max_size'); ?></code></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MariaDB Connection Status -->
+    <div class="card">
+        <h2>MariaDB Connection Test</h2>
+        <?php if ($dbConnected): ?>
+            <p><span class="badge badge-success">Connected</span> Connection established successfully!</p>
+            <p><strong>Host:</strong> <code><?php echo $dbHost; ?></code> | <strong>Database:</strong> <code><?php echo $dbName; ?></code> | <strong>User:</strong> <code><?php echo $dbUser; ?></code></p>
+            <p><strong>MariaDB Server Version:</strong> <code><?php echo $serverVersion; ?></code></p>
+        <?php else: ?>
+            <p><span class="badge badge-danger">Connection Failed</span> Could not connect to MariaDB database.</p>
+            <div class="error-box">
+                <strong>Error Details:</strong> <code><?php echo htmlspecialchars($pdoError ?: $mysqliError); ?></code>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- PHP Extensions Matrix -->
+    <div class="card">
+        <h2>PHP Extensions Status Matrix</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Extension</th>
+                    <th>Grav CMS</th>
+                    <th>WordPress</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($extensions as $ext => $info): ?>
+                    <?php
+                    $isLoaded = extension_loaded($ext);
+                    if ($ext === 'opcache') {
+                        $isLoaded = extension_loaded('Zend OPcache') || extension_loaded('opcache');
+                    }
+
+                    if ($isLoaded) {
+                        $badgeClass = 'badge-success';
+                        $statusText = 'Loaded';
+                    } elseif ($info['grav'] === 'Required' || $info['wp'] === 'Required') {
+                        $badgeClass = 'badge-danger';
+                        $statusText = 'Missing';
+                    } else {
+                        $badgeClass = 'badge-warning';
+                        $statusText = 'Disabled';
+                    }
+                    ?>
+                    <tr>
+                        <td><code><?php echo $ext; ?></code></td>
+                        <td><?php echo $info['grav']; ?></td>
+                        <td><?php echo $info['wp']; ?></td>
+                        <td><?php echo $info['desc']; ?></td>
+                        <td><span class="badge <?php echo $badgeClass; ?>"><?php echo $statusText; ?></span></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

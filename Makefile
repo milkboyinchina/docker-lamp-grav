@@ -2,7 +2,7 @@
 # Cross-Platform Docker Compose Helper Makefile (Linux, macOS, Windows)
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs status test-grav test-wp clean-test help
+.PHONY: up down stop restart rebuild logs status test clean-test help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -43,20 +43,15 @@ logs:
 status:
 	docker compose ps
 
-## 🧪 Deploy Grav CMS diagnostic test page to src/diagnostics.php
-test-grav:
-	cp test-scripts/index.php.grav.testing.example src/diagnostics.php
-	@echo "✅ Grav test script deployed! Open http://localhost/diagnostics.php"
+## 🧪 Deploy diagnostic test page to src/test.php
+test:
+	cp test-scripts/test.php.example src/test.php
+	@echo "✅ Diagnostic test script deployed! Open http://localhost/test.php"
 
-## 🧪 Deploy WordPress CMS diagnostic test page to src/wp-diagnostics.php
-test-wp:
-	cp test-scripts/index.php.wordpress.testing.example src/wp-diagnostics.php
-	@echo "✅ WordPress test script deployed! Open http://localhost/wp-diagnostics.php"
-
-## 🧹 Clean up diagnostic test pages from src/
+## 🧹 Clean up diagnostic test page from src/
 clean-test:
-	rm -f src/diagnostics.php src/wp-diagnostics.php
-	@echo "✅ Diagnostic test pages removed from src/"
+	rm -f src/test.php src/diagnostics.php src/wp-diagnostics.php
+	@echo "✅ Diagnostic test page removed from src/"
 
 ## ❓ Show available commands
 help:
@@ -70,7 +65,6 @@ help:
 	@echo "  make rebuild     - Rebuild PHP image without cache & restart"
 	@echo "  make logs        - Stream live webserver logs"
 	@echo "  make status      - Display status of running containers"
-	@echo "  make test-grav   - Deploy Grav diagnostic page (http://localhost/diagnostics.php)"
-	@echo "  make test-wp     - Deploy WordPress diagnostic page (http://localhost/wp-diagnostics.php)"
-	@echo "  make clean-test  - Remove diagnostic pages from src/"
+	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
+	@echo "  make clean-test  - Remove diagnostic page from src/"
 	@echo "======================================================================"

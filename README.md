@@ -35,8 +35,7 @@ grav-lamp/
 │   └── rebuild.bat          # Windows 1-click rebuild batch script
 ├── test-scripts/            # Diagnostic & compatibility test scripts
 │   ├── README.md            # Documentation for test scripts
-│   ├── index.php.grav.testing.example      # Grav CMS & Database diagnostic script
-│   └── index.php.wordpress.testing.example # WordPress CMS & Database diagnostic script
+│   └── test.php.example     # Unified diagnostic script for Grav CMS & WordPress
 ├── config/                  # Configuration files mounted to the container
 │   ├── apache/
 │   │   └── 000-default.conf # VirtualHost and ServerName configuration
@@ -111,8 +110,8 @@ If you have `make` installed, run these 1-word commands from your terminal:
 * **`make rebuild`**: Rebuild PHP image without cache & restart stack.
 * **`make logs`**: Stream live webserver logs.
 * **`make status`**: Check status of running containers.
-* **`make test-grav`**: Deploy Grav diagnostic page to `http://localhost/diagnostics.php`.
-* **`make test-wp`**: Deploy WordPress diagnostic page to `http://localhost/wp-diagnostics.php`.
+* **`make test`**: Deploy unified diagnostic test page to `http://localhost/test.php`.
+* **`make clean-test`**: Remove diagnostic test page from `src/`.
 
 ### 2. 🪟 Windows (Double-Click Batch Scripts)
 For Windows Command Prompt / PowerShell users:
@@ -177,23 +176,20 @@ Here are the essential Docker Compose commands to manage your LAMP stack environ
 
 ## 🔍 Verification & Diagnostics
 
-The project includes pre-configured diagnostic scripts in the `test-scripts/` directory to verify environment compatibility and database connections:
+The project includes a unified diagnostic test script in [`test-scripts/test.php.example`](file:///home/milkboy/Documents/grav-lamp-docker/test-scripts/test.php.example) to verify environment compatibility, PHP extensions, and database connections for **Grav CMS** and **WordPress**:
 
-### 1. Grav CMS Diagnostic Script (`test-scripts/index.php.grav.testing.example`)
-Checks Grav required/recommended extensions (`gd`, `mbstring`, `yaml`, `opcache`, `apcu`, `redis`, etc.) and PDO MariaDB connection:
+### Deploying the Test Script:
 ```bash
-cp test-scripts/index.php.grav.testing.example src/diagnostics.php
-```
-Access at [http://localhost/diagnostics.php](http://localhost/diagnostics.php).
+# Using Makefile shortcut:
+make test
 
-### 2. WordPress CMS Diagnostic Script (`test-scripts/index.php.wordpress.testing.example`)
-Checks WordPress core runtime compatibility (`mysqli`, `gd`, `curl`, `mbstring`, `xml`, `zip`, `zlib`, `fileinfo`, `openssl`, memory limits, and MySQLi database connectivity):
-```bash
-cp test-scripts/index.php.wordpress.testing.example src/wp-diagnostics.php
+# Or manual copy:
+cp test-scripts/test.php.example src/test.php
 ```
-Access at [http://localhost/wp-diagnostics.php](http://localhost/wp-diagnostics.php).
 
-> For detailed documentation on all test scripts, check out [`test-scripts/README.md`](file:///home/milkboy/Documents/grav-lamp-docker/test-scripts/README.md).
+Access at **[http://localhost/test.php](http://localhost/test.php)** to view the compatibility summary and extension matrix.
+
+> For detailed documentation on the test script, check out [`test-scripts/README.md`](file:///home/milkboy/Documents/grav-lamp-docker/test-scripts/README.md).
 
 ---
 
