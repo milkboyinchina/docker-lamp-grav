@@ -7,7 +7,7 @@ languages:
   default_lang: en
   include_default_lang: false
 pages:
-  theme: hadron
+  theme: hadron-milkboy
   append_url_extension: null
   redirect_default_code: '302'
 cache:

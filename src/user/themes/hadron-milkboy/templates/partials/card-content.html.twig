@@ -1,0 +1,28 @@
+<div class="card">
+	{% if card.image %}
+	<div class="card-image">
+		<img src="{{ page.media[card.image].url ?? card.image }}" alt="{{ card.title ?? '' }}" class="img-responsive">
+	</div>
+	{% endif %}
+
+	<div class="card-header">
+		<div class="card-title">
+			{% if card.title %}
+			<h4 class="card-title-text">{{ card.title }}</h4>
+			{% endif %}
+		</div>
+	</div>
+
+	{% if card.text or card.link_text %}
+	<div class="card-body">
+		{% if card.text %}
+		<p>{{ card.text }}</p>
+		{% endif %}
+	</div>
+	<div class="card-footer">
+		{% if card.link_text and card.page %}
+		<a href="{{ card.page }}" class="btn btn-primary">{{ card.link_text }}</a>
+		{% endif %}
+	</div>
+	{% endif %}
+</div>
