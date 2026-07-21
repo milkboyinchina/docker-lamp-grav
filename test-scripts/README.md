@@ -4,6 +4,17 @@ This directory contains standalone PHP diagnostic scripts to verify environment 
 
 ---
 
+## ⚠️ Automatic Warning Banners & Alerts
+
+Both diagnostic scripts automatically scan your PHP environment and database services on load, rendering prominent **Visual Warning Banners**:
+
+* ⛔ **CRITICAL ALERT (Red)**: Triggered immediately if any **Required PHP Extension** (e.g. `gd`, `zip`, `mbstring`, `mysqli`, `yaml`) is missing.
+* ⚠️ **WARNING ALERT (Yellow)**: Triggered if any **Recommended Extension** (e.g. `opcache`, `imagick`, `exif`) is disabled, or if PHP `memory_limit` is below 128MB.
+* ℹ️ **DATABASE ALERT (Yellow / Red)**: Triggered if the MariaDB service is disconnected or unavailable. (For Grav CMS, database disconnection is noted as optional; for WordPress, it is flagged as critical).
+* ✅ **SYSTEM READY (Green)**: Displayed when all required and recommended extensions are loaded and database is fully connected!
+
+---
+
 ## 📂 Available Test Scripts
 
 ### 1. 🌌 Grav CMS Diagnostic Script

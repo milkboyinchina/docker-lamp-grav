@@ -1,6 +1,6 @@
 <?php
 /**
- * Grav CMS & MariaDB Diagnostic Test Script
+ * Grav CMS & MariaDB Environment Diagnostic Test Script
  */
 
 // Retrieve Database credentials from environment variables or set defaults
@@ -12,24 +12,59 @@ $dbPass = getenv('MARIADB_PASSWORD') ?: 'userpassword';
 // List of extensions to check
 $extensions = [
     // Grav Required
-    'gd'        => ['type' => 'Required', 'desc' => 'Image processing & thumbnails'],
-    'mbstring'  => ['type' => 'Required', 'desc' => 'Multibyte string support'],
-    'xml'       => ['type' => 'Required', 'desc' => 'XML parsing'],
-    'zip'       => ['type' => 'Required', 'desc' => 'Package installation & archives'],
-    'zlib'      => ['type' => 'Required', 'desc' => 'Compression support'],
-    'curl'      => ['type' => 'Required', 'desc' => 'Remote package downloads'],
-    'yaml'      => ['type' => 'Required', 'desc' => 'Grav configuration files'],
+    'gd'        => ['type' => 'Required',    'desc' => 'Image processing, crop, resize & thumbnails'],
+    'mbstring'  => ['type' => 'Required',    'desc' => 'Multibyte string support for non-Latin text'],
+    'xml'       => ['type' => 'Required',    'desc' => 'XML parsing and data transformation'],
+    'zip'       => ['type' => 'Required',    'desc' => 'Package installation & archive extraction'],
+    'zlib'      => ['type' => 'Required',    'desc' => 'Gzip HTTP payload compression'],
+    'curl'      => ['type' => 'Required',    'desc' => 'Remote package downloads & GPM updates'],
+    'yaml'      => ['type' => 'Required',    'desc' => 'Grav configuration parsing (PECL yaml)'],
     
     // Performance & Optional
-    'opcache'   => ['type' => 'Recommended', 'desc' => 'PHP Bytecode Caching'],
-    'apcu'      => ['type' => 'Optional',    'desc' => 'In-memory user caching'],
-    'redis'     => ['type' => 'Optional',    'desc' => 'Redis cache driver'],
-    'memcache'  => ['type' => 'Optional',    'desc' => 'Memcached support'],
+    'opcache'   => ['type' => 'Recommended', 'desc' => 'Zend OPcache PHP bytecode caching'],
+    'apcu'      => ['type' => 'Optional',    'desc' => 'In-memory user cache driver'],
+    'redis'     => ['type' => 'Optional',    'desc' => 'Redis object cache driver'],
+    'memcache'  => ['type' => 'Optional',    'desc' => 'Memcached session & object cache'],
     'exif'      => ['type' => 'Optional',    'desc' => 'Image EXIF metadata reader'],
     'intl'      => ['type' => 'Optional',    'desc' => 'Internationalization & localization'],
-    'pdo'       => ['type' => 'Optional',    'desc' => 'PHP Data Objects'],
-    'pdo_mysql' => ['type' => 'Optional',    'desc' => 'MariaDB/MySQL PDO driver'],
+    'pdo'       => ['type' => 'Optional',    'desc' => 'PHP Data Objects driver'],
+    'pdo_mysql' => ['type' => 'Optional',    'desc' => 'MariaDB/MySQL PDO database driver'],
 ];
+
+// Pre-check extension loaded status
+$missingRequired = [];
+$missingRecommended = [];
+
+foreach ($extensions as $ext => $info) {
+    $isLoaded = extension_loaded($ext);
+    if ($ext === 'opcache') {
+        $isLoaded = extension_loaded('Zend OPcache') || extension_loaded('opcache');
+    }
+
+    if (!$isLoaded) {
+        if ($info['type'] === 'Required') {
+            $missingRequired[] = $ext;
+        } elseif ($info['type'] === 'Recommended') {
+            $missingRecommended[] = $ext;
+        }
+    }
+}
+
+// Pre-check database status
+$dbConnected = false;
+$dbErrorMsg = '';
+try {
+    $dsn = "mysql:host=$dbHost;dbname=$dbName;charset=utf8mb4";
+    $pdo = @new PDO($dsn, $dbUser, $dbPass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_TIMEOUT => 3
+    ]);
+    $dbConnected = true;
+    $serverVersion = $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+} catch (PDOException $e) {
+    $dbConnected = false;
+    $dbErrorMsg = $e->getMessage();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,11 +74,11 @@ $extensions = [
     <title>Grav & DB Diagnostic Test</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 40px 20px; }
-        .container { max-width: 850px; margin: 0 auto; }
+        .container { max-width: 880px; margin: 0 auto; }
         .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         h1 { margin: 0 0 8px 0; font-size: 1.5rem; color: #0f172a; }
         h2 { margin: 0 0 16px 0; font-size: 1.2rem; color: #334155; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-        p { margin: 4px 0; color: #475569; }
+        p { margin: 6px 0; color: #475569; }
         table { width: 100%; border-collapse: collapse; margin-top: 12px; }
         th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
         th { background: #f8fafc; color: #64748b; font-weight: 600; }
@@ -52,6 +87,13 @@ $extensions = [
         .badge-danger { background: #fee2e2; color: #b91c1c; }
         .badge-warning { background: #fef3c7; color: #b45309; }
         code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #0f172a; }
+        
+        .alert-banner { padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5; }
+        .alert-banner h3 { margin: 0 0 6px 0; font-size: 1.1rem; }
+        .alert-banner ul { margin: 6px 0 0 0; padding-left: 20px; }
+        .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .alert-warning { background: #fffbeb; border: 1px solid #fef08a; color: #854d0e; }
+        .alert-danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
         .error-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; margin-top: 12px; border-radius: 4px; }
     </style>
 </head>
@@ -65,25 +107,57 @@ $extensions = [
         <p><strong>Document Root:</strong> <code><?php echo $_SERVER['DOCUMENT_ROOT']; ?></code></p>
     </div>
 
+    <!-- Executive Summary Banners -->
+    <?php if (!empty($missingRequired)): ?>
+        <div class="alert-banner alert-danger">
+            <h3>⛔ CRITICAL WARNING: Missing Required PHP Extensions</h3>
+            <p>Grav CMS requires the following PHP extensions to function properly:</p>
+            <ul>
+                <?php foreach ($missingRequired as $missingExt): ?>
+                    <li><code><?php echo $missingExt; ?></code> - <?php echo $extensions[$missingExt]['desc']; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($missingRecommended)): ?>
+        <div class="alert-banner alert-warning">
+            <h3>⚠️ WARNING: Missing Recommended PHP Extensions</h3>
+            <p>The following performance extensions are currently disabled:</p>
+            <ul>
+                <?php foreach ($missingRecommended as $missingExt): ?>
+                    <li><code><?php echo $missingExt; ?></code> - <?php echo $extensions[$missingExt]['desc']; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$dbConnected): ?>
+        <div class="alert-banner alert-warning">
+            <h3>ℹ️ NOTICE: MariaDB Database Disconnected</h3>
+            <p>Could not connect to MariaDB at <code><?php echo $dbHost; ?></code>. Note: Grav CMS is flat-file and does not strictly require a database unless your custom plugins/themes depend on MariaDB. If you need MariaDB, uncomment the <code>db</code> service in <code>docker-compose.yml</code>.</p>
+        </div>
+    <?php endif; ?>
+
+    <?php if (empty($missingRequired) && empty($missingRecommended) && $dbConnected): ?>
+        <div class="alert-banner alert-success">
+            <h3>✅ SYSTEM READY: Full Compatibility Verified</h3>
+            <p>All required and recommended PHP extensions are loaded and MariaDB is connected successfully!</p>
+        </div>
+    <?php endif; ?>
+
     <!-- Database Connection Test -->
     <div class="card">
         <h2>MariaDB Connection Test</h2>
         <?php
-        try {
-            $dsn = "mysql:host=$dbHost;dbname=$dbName;charset=utf8mb4";
-            $pdo = new PDO($dsn, $dbUser, $dbPass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_TIMEOUT => 5
-            ]);
-            
-            $serverVersion = $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+        if ($dbConnected) {
             echo "<p><span class='badge badge-success'>Connected</span> Successfully connected to MariaDB!</p>";
             echo "<p><strong>Host:</strong> <code>$dbHost</code> | <strong>Database:</strong> <code>$dbName</code> | <strong>User:</strong> <code>$dbUser</code></p>";
             echo "<p><strong>MariaDB Server Version:</strong> <code>$serverVersion</code></p>";
-        } catch (PDOException $e) {
+        } else {
             echo "<p><span class='badge badge-danger'>Connection Failed</span> Could not establish database connection.</p>";
             echo "<div class='error-box'>";
-            echo "<strong>Error Message:</strong> <code>" . htmlspecialchars($e->getMessage()) . "</code>";
+            echo "<strong>Error Message:</strong> <code>" . htmlspecialchars($dbErrorMsg) . "</code>";
             echo "</div>";
             echo "<p style='margin-top:8px;'><strong>Attempted Credentials:</strong> Host: <code>$dbHost</code> | DB: <code>$dbName</code> | User: <code>$dbUser</code></p>";
         }

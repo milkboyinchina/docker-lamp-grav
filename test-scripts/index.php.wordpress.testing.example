@@ -48,6 +48,43 @@ function parse_size($size) {
 $memoryLimit = ini_get('memory_limit');
 $memoryBytes = parse_size($memoryLimit);
 $recommendedMemory = 128 * 1024 * 1024; // 128MB
+
+// Pre-check extensions loaded status
+$missingRequired = [];
+$missingRecommended = [];
+
+foreach ($extensions as $ext => $info) {
+    $isLoaded = extension_loaded($ext);
+    if ($ext === 'opcache') {
+        $isLoaded = extension_loaded('Zend OPcache') || extension_loaded('opcache');
+    }
+
+    if (!$isLoaded) {
+        if ($info['type'] === 'Required') {
+            $missingRequired[] = $ext;
+        } elseif ($info['type'] === 'Recommended') {
+            $missingRecommended[] = $ext;
+        }
+    }
+}
+
+// Pre-check database status
+$dbConnected = false;
+$dbErrorMsg = '';
+if (extension_loaded('mysqli')) {
+    $mysqli = @new mysqli($dbHost, $dbUser, $dbPass, $dbName);
+    if (!$mysqli->connect_error) {
+        $dbConnected = true;
+        $serverInfo = $mysqli->server_info;
+        $mysqli->close();
+    } else {
+        $dbConnected = false;
+        $dbErrorMsg = $mysqli->connect_error;
+    }
+} else {
+    $dbConnected = false;
+    $dbErrorMsg = 'The mysqli PHP extension is missing.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,6 +110,13 @@ $recommendedMemory = 128 * 1024 * 1024; // 128MB
         .badge-danger { background: #fee2e2; color: #b91c1c; }
         .badge-warning { background: #fef3c7; color: #b45309; }
         code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #0073aa; }
+        
+        .alert-banner { padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5; }
+        .alert-banner h3 { margin: 0 0 6px 0; font-size: 1.1rem; }
+        .alert-banner ul { margin: 6px 0 0 0; padding-left: 20px; }
+        .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .alert-warning { background: #fffbeb; border: 1px solid #fef08a; color: #854d0e; }
+        .alert-danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
         .error-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; margin-top: 12px; border-radius: 4px; }
         @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
     </style>
@@ -89,6 +133,45 @@ $recommendedMemory = 128 * 1024 * 1024; // 128MB
             </div>
         </div>
     </div>
+
+    <!-- Executive Summary Banners -->
+    <?php if (!empty($missingRequired)): ?>
+        <div class="alert-banner alert-danger">
+            <h3>⛔ CRITICAL WARNING: Missing Required WordPress Extensions</h3>
+            <p>WordPress core requires the following PHP extensions to install and run properly:</p>
+            <ul>
+                <?php foreach ($missingRequired as $missingExt): ?>
+                    <li><code><?php echo $missingExt; ?></code> - <?php echo $extensions[$missingExt]['desc']; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($missingRecommended)): ?>
+        <div class="alert-banner alert-warning">
+            <h3>⚠️ WARNING: Missing Recommended WordPress Extensions</h3>
+            <p>The following performance and security extensions are currently disabled:</p>
+            <ul>
+                <?php foreach ($missingRecommended as $missingExt): ?>
+                    <li><code><?php echo $missingExt; ?></code> - <?php echo $extensions[$missingExt]['desc']; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$dbConnected): ?>
+        <div class="alert-banner alert-danger">
+            <h3>⛔ DATABASE ALERT: MariaDB / MySQL Connection Failed</h3>
+            <p>WordPress requires a relational MySQL/MariaDB database to operate. Could not connect to host <code><?php echo $dbHost; ?></code>. Please ensure the <code>db</code> service is uncommented in <code>docker-compose.yml</code> and container stack is running.</p>
+        </div>
+    <?php endif; ?>
+
+    <?php if (empty($missingRequired) && empty($missingRecommended) && $dbConnected): ?>
+        <div class="alert-banner alert-success">
+            <h3>✅ WORDPRESS READY: Full Core Compatibility Verified</h3>
+            <p>All required and recommended WordPress PHP extensions are loaded and MariaDB database is connected!</p>
+        </div>
+    <?php endif; ?>
 
     <!-- Server Runtime Environment -->
     <div class="card">
@@ -123,22 +206,15 @@ $recommendedMemory = 128 * 1024 * 1024; // 128MB
     <div class="card">
         <h2>Database (MySQLi / MariaDB) Test</h2>
         <?php
-        if (extension_loaded('mysqli')) {
-            $mysqli = @new mysqli($dbHost, $dbUser, $dbPass, $dbName);
-            if (!$mysqli->connect_error) {
-                $serverInfo = $mysqli->server_info;
-                echo "<p><span class='badge badge-success'>MySQLi Connected</span> Successfully connected to database!</p>";
-                echo "<p><strong>Host:</strong> <code>$dbHost</code> | <strong>Database:</strong> <code>$dbName</code> | <strong>User:</strong> <code>$dbUser</code></p>";
-                echo "<p><strong>Database Server Version:</strong> <code>$serverInfo</code></p>";
-                $mysqli->close();
-            } else {
-                echo "<p><span class='badge badge-danger'>MySQLi Connection Failed</span> Could not connect via MySQLi extension.</p>";
-                echo "<div class='error-box'>";
-                echo "<strong>MySQL Error:</strong> <code>" . htmlspecialchars($mysqli->connect_error) . "</code>";
-                echo "</div>";
-            }
+        if ($dbConnected) {
+            echo "<p><span class='badge badge-success'>MySQLi Connected</span> Successfully connected to database!</p>";
+            echo "<p><strong>Host:</strong> <code>$dbHost</code> | <strong>Database:</strong> <code>$dbName</code> | <strong>User:</strong> <code>$dbUser</code></p>";
+            echo "<p><strong>Database Server Version:</strong> <code>$serverInfo</code></p>";
         } else {
-            echo "<p><span class='badge badge-danger'>Missing MySQLi</span> The <code>mysqli</code> PHP extension is not loaded!</p>";
+            echo "<p><span class='badge badge-danger'>MySQLi Connection Failed</span> Could not connect via MySQLi extension.</p>";
+            echo "<div class='error-box'>";
+            echo "<strong>MySQL Error:</strong> <code>" . htmlspecialchars($dbErrorMsg) . "</code>";
+            echo "</div>";
         }
         ?>
     </div>
