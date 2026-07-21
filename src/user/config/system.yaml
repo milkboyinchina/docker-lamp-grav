@@ -3,7 +3,7 @@ custom_base_url: null
 languages:
   supported:
     - en
-    - de
+    - id
   default_lang: en
   include_default_lang: false
 pages:
