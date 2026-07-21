@@ -1,0 +1,101 @@
+/* ==========================================================================
+   Hadron Milkboy Custom Header & Styling Rules
+   ========================================================================== */
+
+/* Header Background & Glassmorphism */
+#header,
+body:is(.header-light, .header-transparent) #header,
+body.header-dark #header:not(.scrolled),
+body #header.scrolled {
+    background: rgba(10, 15, 30, 0.88) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.25) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Header Navbar Brand & Title */
+#header .navbar-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    text-decoration: none !important;
+}
+
+#header .navbar-brand .title {
+    font-family: 'Hadron', 'Nasalization', sans-serif !important;
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.7), 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+#header .navbar-brand img {
+    max-height: 38px !important;
+    width: auto !important;
+    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6)) !important;
+}
+
+/* Header Navigation Links */
+#header a,
+#header .dropmenu ul > li > a,
+#header .dropmenu > ul > li > a,
+nav.language-switcher a {
+    color: #f1f5f9 !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+    opacity: 0.95 !important;
+    transition: color 0.2s ease, text-shadow 0.2s ease !important;
+}
+
+/* Active & Hover Links */
+#header a:hover,
+#header a:focus,
+#header a.active,
+#header .dropmenu ul > li > a:hover,
+#header .dropmenu ul > li > a.active,
+#header .dropmenu > ul > li > a:hover,
+#header .dropmenu > ul > li > a.active,
+nav.language-switcher a.active,
+nav.language-switcher a:hover {
+    color: #00f0ff !important;
+    opacity: 1 !important;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.9), 0 0 20px rgba(0, 240, 255, 0.5) !important;
+}
+
+/* Language Switcher Badges */
+nav.language-switcher ul {
+    gap: 0.4rem !important;
+}
+
+nav.language-switcher a {
+    padding: 0.25rem 0.6rem !important;
+    border-radius: 6px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+nav.language-switcher a.active {
+    background: rgba(0, 240, 255, 0.2) !important;
+    border-color: rgba(0, 240, 255, 0.6) !important;
+}
+
+/* Dropdown Sub-menus */
+.dropmenu ul ul {
+    background: rgba(10, 15, 30, 0.95) !important;
+    border: 1px solid rgba(0, 240, 255, 0.3) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0 !important;
+}
+
+/* Mobile Toggle Hamburger Button */
+.mobile-menu #toggle span {
+    background: #00f0ff !important;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.8) !important;
+}
