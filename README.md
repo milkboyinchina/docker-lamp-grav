@@ -1,10 +1,16 @@
-# Dockerized LAMP Stack + Grav CMS Included
+# 🐳 Dockerized LAMP Stack (PHP 8.3 + Apache + MariaDB)
 
-A pre-configured, lightweight, and developer-friendly Docker environment running an Apache/PHP container, with optional support for **MariaDB** and **Adminer**.
+A lightweight, high-performance, and developer-friendly Docker environment running Apache and PHP 8.3, pre-configured for **Grav CMS**, **WordPress**, or any custom PHP web application.
 
-> **Note**: While this Docker stack is pre-configured and thoroughly tested using **Grav CMS**, it is **not exclusively for Grav**. You can delete the contents of the `src/` directory and place a fresh Grav CMS installation, a custom PHP application, or any other PHP scripts you prefer.
+> **💡 Flexible & General-Purpose PHP Stack**:  
+> While this Docker environment is pre-configured and thoroughly tested with **Grav CMS**, it is **not restricted to Grav**. You can clear the contents of `src/` and drop in **WordPress**, **Laravel**, **Symfony**, or any custom PHP scripts. Standalone diagnostic test scripts are included for both Grav and WordPress out of the box!
 
-This setup automatically takes care of system dependencies, required/optional PHP extensions (like OPcache, APCu, YAML, Redis, GD, etc.), file permissions, and custom server configurations.
+### ✨ Key Features
+* 🚀 **PHP 8.3 & Apache 2.4**: Pre-built with required and performance PHP extensions (`GD`, `ZIP`, `OPcache`, `APCu`, `Redis`, `YAML`, `MySQLi`, `PDO_MySQL`, `mbstring`, `exif`, `intl`).
+* 🗄️ **Optional MariaDB & Adminer**: Pre-configured database and web-based database management interface ready to enable with 1 click.
+* 🛠️ **Cross-Platform Readiness**: Includes 1-word `Makefile` shortcuts, Windows `.bat` double-click scripts, Linux/macOS `.sh` scripts, and `.gitattributes` line-ending protection.
+* 🔒 **Automatic Permission Management**: Self-healing entrypoint script fixes file permissions inside `/var/www/html/` on container startup.
+* 🧪 **Built-in Diagnostic Suite**: Pre-packaged test scripts to verify runtime compatibility for Grav CMS and WordPress.
 
 ---
 
