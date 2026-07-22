@@ -1,6 +1,6 @@
 # Declare build argument with default fallback before FROM
-ARG PHP_VERSION=8.3-apache
-FROM php:${PHP_VERSION}
+ARG PHP_VERSION=php:8.3-apache
+FROM ${PHP_VERSION}
 
 # Install system dependencies & C-libraries for Grav CMS & WordPress extensions
 RUN apt-get update && apt-get install -y \
