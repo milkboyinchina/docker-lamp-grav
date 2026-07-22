@@ -64,8 +64,8 @@ fi
 
 # Restore src/user/pages/ to pre-merge state from main (completely excluding any changes/additions)
 echo -e "${BLUE}ℹ️ Restoring 'src/user/pages' to previous main state...${NC}"
-git restore -s "$PREV_COMMIT" --staged --worktree src/user/pages
-git clean -fd src/user/pages
+git restore -s "$PREV_COMMIT" --staged --worktree src/user/pages 2>/dev/null || true
+git clean -fd src/user/pages 2>/dev/null || true
 
 # Commit the merge
 COMMIT_MSG="Merge branch '$SOURCE_BRANCH' into main (excluding src/user/pages)"

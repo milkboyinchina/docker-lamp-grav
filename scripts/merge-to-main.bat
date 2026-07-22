@@ -39,8 +39,8 @@ if errorlevel 1 (
     git add -A
 )
 
-git restore -s %PREV_COMMIT% --staged --worktree src/user/pages
-git clean -fd src/user/pages
+git restore -s %PREV_COMMIT% --staged --worktree src/user/pages 2>nul
+git clean -fd src/user/pages 2>nul
 
 git commit -m "Merge branch '%SOURCE_BRANCH%' into main (excluding src/user/pages)"
 
