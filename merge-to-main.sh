@@ -8,7 +8,7 @@
 set -e
 
 # Color definitions
-RED='\031[0;31m'
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
@@ -57,14 +57,15 @@ PREV_COMMIT=$(git rev-parse HEAD)
 
 echo -e "${BLUE}ℹ️ Merging '${SOURCE_BRANCH}' into 'main'...${NC}"
 if ! git merge --no-ff --no-commit "$SOURCE_BRANCH"; then
-    echo -e "${YELLOW}⚠️ Conflict detected during merge. Resolving src/user/pages...${NC}"
+    echo -e "${YELLOW}⚠️ Resolving merge conflicts...${NC}"
+    git checkout --theirs -- . 2>/dev/null || true
+    git add . 2>/dev/null || true
 fi
 
 # Restore src/user/pages/ to pre-merge state from main
 echo -e "${BLUE}ℹ️ Restoring 'src/user/pages' to previous main state...${NC}"
-git checkout "$PREV_COMMIT" -- src/user/pages
-
-# Clean untracked files inside src/user/pages/
+git checkout "$PREV_COMMIT" -- src/user/pages 2>/dev/null || true
+git add src/user/pages 2>/dev/null || true
 git clean -fd src/user/pages
 
 # Commit the merge
