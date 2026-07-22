@@ -57,6 +57,10 @@ clean-test:
 backup: env
 	./backup.sh
 
+## 🔀 Merge current branch into main excluding src/user/pages
+merge-main:
+	./merge-to-main.sh
+
 ## ❓ Show available commands
 help:
 	@echo "======================================================================"
@@ -72,4 +76,6 @@ help:
 	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
 	@echo "  make clean-test  - Remove diagnostic page from src/"
 	@echo "  make backup      - Interactive backup helper (WWW files, DB, or both)"
+	@echo "  make merge-main  - Merge branch into main excluding src/user/pages"
 	@echo "======================================================================"
+
