@@ -1,14 +1,12 @@
 ---
-title: My Portfolio
-hero_classes: parallax text-light overlay-dark-gradient
-hero_image: header.jpg
+title: Hero
+hero_classes: parallax text-light
+hero_image: header.webp
 ---
 
-# Hi, I'm [span class="hadron-font"]**Milkboy**[/span] 👋
-## Part-Time Software Engineer & DevOps Enthusiast
+# Welcome to [span class="hadron-font"]**Hadron**[/span]
+## Fast, Modern, and Flexible Grav CMS Stack
 
-![Milkboy Avatar](milkboy-avatar.png?max_width=300&classes=avatar-img,center-block)
+Hadron is a modern, high-performance Grav CMS theme designed for simplicity and versatility. Whether you are building a personal blog, business portal, or online shop, Hadron provides a solid, responsive foundation.
 
-Passionate about building scalable web applications, designing resilient containerized infrastructure, and crafting elegant user experiences. Welcome to my personal CV and developer portfolio!
-
-[View Portfolio](#portfolio?classes=btn,btn-primary,btn-lg) [Core Skills](#skills?classes=btn,btn-secondary,btn-lg) [Contact Me](#contact?classes=btn,btn-outline,btn-lg)
+[Explore Features](#highlights?classes=btn,btn-primary,btn-lg) [Documentation](https://getgrav.org/docs?classes=btn,btn-secondary,btn-lg)

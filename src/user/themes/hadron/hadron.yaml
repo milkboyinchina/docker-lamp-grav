@@ -9,15 +9,15 @@ streams:
 
 grid-size: grid-lg
 blog-page: /blog
-hide_title: false
+hide_title: true
 dropdown:
   enabled: true
 custommenus:
   enabled: false
 menu:
-  - text: GitHub
-    icon: github
-    url: 'https://github.com/milkboyinchina'
+  - text: Grav
+    icon: external-link
+    url: 'https://getgrav.org/'
     target: _blank
 langswitcher:
   enable: true
@@ -39,25 +39,25 @@ fontawesome:
   brands: false
   brand: false
 blog_page_hero_classes: 'text-light title-h1h2 overlay-dark-gradient hero-large parallax'
-invert_logo: false
+invert_logo: true
 favicon:
-  user/themes/hadron/images/milkboy-favicon.png:
-    name: milkboy-favicon.png
-    full_path: milkboy-favicon.png
-    type: image/png
-    size: 8745
-    path: user/themes/hadron/images/milkboy-favicon.png
+  user/themes/hadron/images/hadron-favicon.svg:
+    name: hadron-favicon.svg
+    full_path: hadron-favicon.svg
+    type: image/svg+xml
+    size: 566
+    path: user/themes/hadron/images/hadron-favicon.svg
 custom_logo:
-  user/themes/hadron/images/logo/milkboy-logo.png:
-    name: milkboy-logo.png
-    full_path: milkboy-logo.png
-    type: image/png
-    size: 95284
-    path: user/themes/hadron/images/logo/milkboy-logo.png
+  user/themes/hadron/images/logo/hadron-logo.svg:
+    name: hadron-logo.svg
+    full_path: hadron-logo.svg
+    type: image/svg+xml
+    size: 3076
+    path: user/themes/hadron/images/logo/hadron-logo.svg
 custom_logo_mobile:
-  user/themes/hadron/images/logo/milkboy-logo-mobile.png:
-    name: milkboy-logo-mobile.png
-    full_path: milkboy-logo-mobile.png
-    type: image/png
-    size: 27798
-    path: user/themes/hadron/images/logo/milkboy-logo-mobile.png
+  user/themes/hadron/images/logo/hadron-logo.svg:
+    name: hadron-logo.svg
+    full_path: hadron-logo.svg
+    type: image/svg+xml
+    size: 3076
+    path: user/themes/hadron/images/logo/hadron-logo.svg

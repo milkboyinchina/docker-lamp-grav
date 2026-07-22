@@ -3,11 +3,11 @@ custom_base_url: null
 languages:
   supported:
     - en
-    - id
+    - de
   default_lang: en
   include_default_lang: false
 pages:
-  theme: hadron-milkboy
+  theme: hadron
   append_url_extension: null
   redirect_default_code: '302'
 cache:
