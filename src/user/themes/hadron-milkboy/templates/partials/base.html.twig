@@ -1,0 +1,16 @@
+{% extends '@hadron/partials/base.html.twig' %}
+
+{% block stylesheets %}
+	{% do assets.addCss('theme://css-compiled/spectre'~compress, 100) %}
+	{% if theme_var('spectre.exp') %}{% do assets.addCss('theme://css-compiled/spectre-exp'~compress, 100) %}{% endif %}
+	{% if theme_var('spectre.icons') %}{% do assets.addCss('theme://css-compiled/spectre-icons'~compress, 100) %}{% endif %}
+
+	{% do assets.addCss('theme://css/quark.css', 100) %}
+	{% do assets.addCss('theme://css/hadron.css', 10) %}
+	{% do assets.addCss('theme://css/custom.css', 0) %}
+
+	{# Always load full FontAwesome 5 CSS (Base, Solid, Brands) #}
+	{% do assets.addCss('theme://css/fontawesome.min.css') %}
+	{% do assets.addCss('theme://css/fontawesome-solid.min.css') %}
+	{% do assets.addCss('theme://css/fontawesome-brands.min.css') %}
+{% endblock stylesheets %}

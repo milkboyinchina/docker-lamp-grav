@@ -5,61 +5,94 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       args:
-        PHP_VERSION: ${PHP_VERSION:-8.3-apache}
+        PHP_VERSION: ${PHP_IMAGE:-php:8.3-apache}
     container_name: grav-lamp-web
-    restart: always
+    # Restart policy configured via RESTART_POLICY in .env (unless-stopped, always, on-failure, no)
+    restart: ${RESTART_POLICY:-unless-stopped}
     environment:
-      SERVER_NAME: ${SERVER_NAME:-localhost}
-      SERVER_ADMIN: ${SERVER_ADMIN:-webmaster@localhost}
+      SERVER_NAME: ${SERVER_NAME:-www.mydom.com}
+      SERVER_ADMIN: ${SERVER_ADMIN:-webmaster@mydom.com}
+    # Direct host ports (comment out if using Traefik reverse proxy)
     ports:
       - "${HTTP_PORT:-80}:80"
+    # Host volume mounts configured via .env variables (SRC_PATH, LOGS_*_PATH, CONFIG_*_PATH)
     volumes:
-      - ./src:/var/www/html
-      - ./logs/apache:/var/log/apache2
-      - ./logs/php:/var/log/php
-      - ./config/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ./config/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
-
-  ## Comment out for Mariadb fuctionality
+      - ${SRC_PATH:-./src}:/var/www/html
+      - ${LOGS_APACHE_PATH:-./logs/apache}:/var/log/apache2
+      - ${LOGS_PHP_PATH:-./logs/php}:/var/log/php
+      - ${CONFIG_APACHE_PATH:-./config/apache/000-default.conf}:/etc/apache2/sites-available/000-default.conf
+      - ${CONFIG_PHP_PATH:-./config/php/custom.ini}:/usr/local/etc/php/conf.d/custom.ini
     # depends_on:
     #   - db
     networks:
       - grav-network
+      # - traefik # Uncomment to enable Traefik support
+    # Traefik Reverse Proxy Configuration:
+    # To use Traefik, uncomment the labels below and the traefik network, and comment out 'ports:' above.
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.docker.network=traefik" ### Change this if you change network name
+    #   - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-www.mydom.com}`)"
+    #   - "traefik.http.routers.webserver.entrypoints=web,websecure"
+    #   - "traefik.http.routers.webserver.tls=true"
+    #   - "traefik.http.services.webserver.loadbalancer.server.port=80"
 
-  ## Comment out for Mariadb and Adminer fuctionality
-  # # MariaDB Database
-  # db:
-  #   image: mariadb:${MARIADB_VERSION:-latest}
-  #   container_name: grav-lamp-db
-  #   restart: always
-  #   environment:
-  #     MARIADB_DATABASE: ${MARIADB_DATABASE:-grav_db}
-  #     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-rootpassword}
-  #     MARIADB_USER: ${MARIADB_USER:-grav_user}
-  #     MARIADB_PASSWORD: ${MARIADB_PASSWORD:-userpassword}
-  #   volumes:
-  #     - dbdata:/var/lib/mysql
-  #     - ./config/mysql/custom.cnf:/etc/mysql/conf.d/custom.cnf
-  #   networks:
-  #     - grav-network
+  # MariaDB Database
+  db:
+    # Enabled via COMPOSE_PROFILES=db,adminer (or COMPOSE_PROFILES=db) in .env file
+    profiles: ["db"]
+    image: mariadb:${MARIADB_VERSION:-latest}
+    container_name: grav-lamp-db
+    # Restart policy configured via RESTART_POLICY in .env (unless-stopped, always, on-failure, no)
+    restart: ${RESTART_POLICY:-unless-stopped}
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-grav_db}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-rootpassword}
+      MARIADB_USER: ${MARIADB_USER:-grav_user}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-userpassword}
+    # Host volume mounts & persistent DB storage volume configured via .env variables
+    volumes:
+      - ${DB_VOLUME_NAME:-dbdata}:/var/lib/mysql
+      - ${CONFIG_MYSQL_PATH:-./config/mysql/custom.cnf}:/etc/mysql/conf.d/custom.cnf
+    networks:
+      - grav-network
 
-  # # Adminer Database Manager
-  # adminer:
-  #   image: adminer:latest
-  #   container_name: grav-lamp-adminer
-  #   restart: always
-  #   ports:
-  #     - "${ADMINER_PORT:-8080}:8080"
-  #   environment:
-  #     ADMINER_DEFAULT_SERVER: db
-  #   depends_on:
-  #     - db
-  #   networks:
-  #     - grav-network
+  # Adminer Database Manager
+  adminer:
+    # Enabled via COMPOSE_PROFILES=db,adminer in .env file
+    profiles: ["adminer"]
+    image: adminer:latest
+    container_name: grav-lamp-adminer
+    # Restart policy configured via RESTART_POLICY in .env (unless-stopped, always, on-failure, no)
+    restart: ${RESTART_POLICY:-unless-stopped}
+    # Direct host ports (comment out if using Traefik reverse proxy)
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      - db
+    networks:
+      - grav-network
+      # - traefik # Uncomment to enable Traefik support
+    # Traefik Reverse Proxy Configuration:
+    # To use Traefik, uncomment the labels below and the traefik network, and comment out 'ports:' above.
+    # labels:
+    #   - "traefik.enable=true" 
+    #   - "traefik.docker.network=traefik" ### Change this if you change network name
+    #   - "traefik.http.routers.adminer.rule=Host(`${SERVER_NAME:-www.mydom.com}`) && PathPrefix(`/adminer`)"
+    #   - "traefik.http.routers.adminer.entrypoints=web,websecure"
+    #   - "traefik.http.routers.adminer.tls=true"
+    #   - "traefik.http.routers.adminer.middlewares=adminer-stripprefix"
+    #   - "traefik.http.middlewares.adminer-stripprefix.stripprefix.prefixes=/adminer"
+    #   - "traefik.http.services.adminer.loadbalancer.server.port=8080"
 
 networks:
   grav-network:
     driver: bridge
+  # External network for Traefik reverse proxy (Uncomment to enable)
+  # traefik:
+  #   external: true
 
 volumes:
   dbdata:

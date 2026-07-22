@@ -3,13 +3,13 @@ title: Technical Skills
 class: offset-box
 features:
   - header: Artificial Intelligence & AI Engineering
-    icon: fa fa-magic
+    icon: fas fa-magic
     text: Agentic AI Systems, LLM Integrations, Autonomous Multi-Agent Orchestration, RAG Pipelines, Prompt Engineering.
   - header: Backend Development
-    icon: fa fa-code
+    icon: fas fa-code
     text: PHP 8.x, Node.js, Python, RESTful APIs, OOP, Clean Code Practices.
   - header: Frontend Development
-    icon: fa fa-desktop
+    icon: fas fa-desktop
     text: Modern JavaScript, TypeScript, HTML5, CSS3/SCSS, Responsive Web Design.
   - header: DevOps & Infrastructure
     icon: fab fa-docker
@@ -18,7 +18,7 @@ features:
     icon: fab fa-grav
     text: Grav CMS Theme & Plugin Development, Flat-File Architecture, Content Engineering.
   - header: Caching & Performance
-    icon: fa fa-tachometer
+    icon: fas fa-tachometer-alt
     text: OPcache, APCu, Redis, Asset Minification, Web Vitals & Load Time Optimization.
 ---
 

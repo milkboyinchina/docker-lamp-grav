@@ -7,7 +7,10 @@ A lightweight, high-performance, and developer-friendly Docker environment runni
 
 ### Key Features
 * **PHP 8.3 & Apache 2.4**: Pre-built with required and performance PHP extensions (`GD`, `ZIP`, `OPcache`, `APCu`, `Redis`, `YAML`, `MySQLi`, `PDO_MySQL`, `mbstring`, `exif`, `intl`).
-* **Optional MariaDB & Adminer**: Pre-configured database and web-based database management interface ready to enable with 1 click.
+* **Optional MariaDB & Adminer via Docker Profiles**: Pre-configured database and web-based database management interface ready to enable with `COMPOSE_PROFILES=db,adminer` in `.env`.
+* **Automated Backup Suite with Logging & Warnings**: Integrated Bash and Windows Batch scripts (`backup.sh` and `scripts/backup.bat`) with option-matching file suffixes (`_www`, `_db`, `_all`), pre-flight warnings, and persistent file logging (`logs/backup.log`).
+* **Configurable Environment & Volume Paths**: All volume paths (`src`, `logs`, `config`), restart policies, and ports are customizable via `.env`.
+* **Traefik Reverse Proxy & TLS Ready**: Built-in, commented Traefik labels and external network configuration supporting SSL/TLS termination out of the box.
 * **Cross-Platform Readiness**: Includes 1-word `Makefile` shortcuts, Windows `.bat` double-click scripts, Linux/macOS `.sh` scripts, and `.gitattributes` line-ending protection.
 * **Automatic Permission Management**: Self-healing entrypoint script fixes file permissions inside `/var/www/html/` on container startup.
 * **Built-in Diagnostic Suite**: Pre-packaged test scripts to verify runtime compatibility for Grav CMS and WordPress.
@@ -18,7 +21,7 @@ A lightweight, high-performance, and developer-friendly Docker environment runni
 
 ```text
 grav-lamp/
-├── docker-compose.yml       # Docker Compose services definition
+├── docker-compose.yml       # Docker Compose services definition (webserver, db, adminer)
 ├── docker/                  # Docker build files and entrypoint scripts
 │   ├── Dockerfile           # Custom PHP-Apache image definition with extensions
 │   └── docker-entrypoint.sh # Auto-runs on container startup (handles permissions)
@@ -29,10 +32,12 @@ grav-lamp/
 ├── Makefile                 # Cross-platform 1-word command shortcuts
 ├── start.sh / stop.sh       # Linux/macOS/WSL 1-click shell scripts
 ├── rebuild.sh               # Rebuild container image shell script
+├── backup.sh                # Automated WWW site files & MariaDB backup shell script
 ├── scripts/                 # Windows CMD/PowerShell batch scripts
 │   ├── start.bat            # Windows 1-click start batch script
 │   ├── stop.bat             # Windows 1-click stop batch script
-│   └── rebuild.bat          # Windows 1-click rebuild batch script
+│   ├── rebuild.bat          # Windows 1-click rebuild batch script
+│   └── backup.bat           # Windows 1-click backup batch script
 ├── test-scripts/            # Diagnostic & compatibility test scripts
 │   ├── README.md            # Documentation for test scripts
 │   └── test.php.example     # Unified diagnostic script for Grav CMS & WordPress
@@ -45,7 +50,8 @@ grav-lamp/
 │       └── custom.cnf       # Custom MariaDB server settings
 ├── logs/                    # Host-mounted log directories
 │   ├── apache/              # Apache access.log and error.log
-│   └── php/                 # PHP error.log
+│   ├── php/                 # PHP error.log
+│   └── backup.log           # Automated backup execution logs and warnings
 └── src/                     # Grav CMS application directory (web root)
     └── index.php            # Main entrypoint of your application
 ```
@@ -76,10 +82,13 @@ Copy the template environment file to create your local configurations:
 cp env.example .env
 ```
 Open the `.env` file and customize the variables as needed:
-* **`PHP_VERSION`** (or `PHP_IMAGE`): PHP version target (defaults to `8.3-apache`).
-* **`SERVER_NAME`**: Set to your domain (e.g., `www.example.com` or `localhost`).
-* **`HTTP_PORT`**: Port to expose on your host machine (defaults to `80`).
-* **`MARIADB_*`**: Database credentials for the MariaDB service (if enabled).
+* **`COMPOSE_PROFILES`**: Control active services (`db,adminer` for full database stack, or empty for lightweight webserver-only mode).
+* **`RESTART_POLICY`**: Container restart strategy (defaults to `unless-stopped`; options: `unless-stopped`, `always`, `on-failure`, `no`).
+* **`SERVER_NAME`**: Set to your domain (defaults to `www.mydom.com`).
+* **`HTTP_PORT` / `ADMINER_PORT`**: Ports exposed on host machine (defaults to `80` and `8080`).
+* **`SRC_PATH`, `LOGS_*_PATH`, `CONFIG_*_PATH`**: Host paths for application source, log directories, and configuration files.
+* **`BACKUP_DIR`, `BACKUP_PREFIX`, `LOGS_BACKUP_PATH`**: Output directory, file prefix, and execution log location for automated backups.
+* **`MARIADB_*`**: Database credentials for the MariaDB service.
 
 ### 3. Spin up the Stack
 Build the custom PHP image and start the containers in the background:
@@ -88,8 +97,9 @@ docker compose up -d --build
 ```
 
 Once running, you can access your site at:
-* **Main Website**: [http://localhost](http://localhost) (or the port defined in `HTTP_PORT`).
+* **Main Website**: [http://localhost](http://localhost) (or the domain defined in `SERVER_NAME`).
 * **Grav Admin Panel**: [http://localhost/admin](http://localhost/admin).
+* **Adminer Database Manager**: [http://localhost:8080](http://localhost:8080) (when `COMPOSE_PROFILES=db,adminer` is active).
 
 > **First-Time Grav User & Admin Reset Guide**:  
 > Check out [`GRAV-QUICKSTART.md`](file:///home/milkboy/Documents/grav-lamp-docker/GRAV-QUICKSTART.md) for detailed instructions on first-time setup, creating admin users via CLI, and resetting admin accounts if locked out.
@@ -110,96 +120,104 @@ If you have `make` installed, run these 1-word commands from your terminal:
 * **`make status`**: Check status of running containers.
 * **`make test`**: Deploy unified diagnostic test page to `http://localhost/test.php`.
 * **`make clean-test`**: Remove diagnostic test page from `src/`.
+* **`make backup`**: Run interactive backup helper with logging and pre-flight warning checks.
 
 ### 2. Windows (Double-Click Batch Scripts)
 For Windows Command Prompt / PowerShell users:
 * **`scripts\start.bat`**: Double-click to start stack.
 * **`scripts\stop.bat`**: Double-click to stop stack.
 * **`scripts\rebuild.bat`**: Double-click to rebuild stack without cache.
+* **`scripts\backup.bat`**: Double-click or run from CMD to perform interactive backups with logging.
 
 ### 3. Linux / macOS (Shell Scripts)
 For terminal users on Linux / macOS / WSL:
 * **`./start.sh`**: Start containers in background.
 * **`./stop.sh`**: Stop running containers.
 * **`./rebuild.sh`**: Rebuild PHP image & restart stack.
+* **`./backup.sh`**: Run backup helper script.
 
 ---
 
-## Container Operations (Run, Stop, Remove & Rebuild)
+## Automated Backups (WWW Site Files & MariaDB)
 
-Here are the essential Docker Compose commands to manage your LAMP stack environment:
+The project includes built-in backup scripts (`backup.sh` for Linux/macOS/WSL and `scripts/backup.bat` for Windows) supporting selective and full backups with automatic logging and warning checks.
 
-### 1. Run / Start Containers
-* **Start containers in background (detached mode)**:
-  ```bash
-  docker compose up -d
-  ```
-* **Start containers and attach to terminal logs**:
-  ```bash
-  docker compose up
-  ```
+### 1. Backup Configuration in `.env`
+Backup behavior is configured using variables in `.env`:
+```env
+# Host directory output path for generated backup archives
+BACKUP_DIR=./backups
 
-### 2. Stop Containers
-* **Stop running containers (without removing them)**:
-  ```bash
-  docker compose stop
-  ```
-* **Stop and remove running containers & networks**:
-  ```bash
-  docker compose down
-  ```
+# Custom filename prefix for backup files
+BACKUP_PREFIX=grav_lamp
 
-### 3. Remove Containers & Database Volumes
-* **Stop containers, remove networks, and purge persistent database volumes**:
-  ```bash
-  docker compose down -v
-  ```
-* **Force remove stopped container instances**:
-  ```bash
-  docker compose rm -f
-  ```
-
-### 4. Rebuild Images & Container Stack
-* **Rebuild the PHP/Apache image without cache and restart containers**:
-  ```bash
-  docker compose up -d --build --no-cache
-  ```
-* **Rebuild specific service image (e.g. webserver)**:
-  ```bash
-  docker compose build --no-cache webserver
-  docker compose up -d
-  ```
-
----
-
-## Verification & Diagnostics
-
-The project includes a unified diagnostic test script in [`test-scripts/test.php.example`](file:///home/milkboy/Documents/grav-lamp-docker/test-scripts/test.php.example) to verify environment compatibility, PHP extensions, and database connections for **Grav CMS** and **WordPress**:
-
-### Deploying the Test Script:
-```bash
-# Using Makefile shortcut:
-make test
-
-# Or manual copy:
-cp test-scripts/test.php.example src/test.php
+# Path to append backup operation execution logs and warnings
+LOGS_BACKUP_PATH=./logs/backup.log
 ```
 
-Access at **[http://localhost/test.php](http://localhost/test.php)** to view the compatibility summary and extension matrix.
+### 2. Suffix Rules & Output Files
+Generated backup archives automatically attach a suffix matching the selected option (`_www`, `_db`, `_all`):
 
-> For detailed documentation on the test script, check out [`test-scripts/README.md`](file:///home/milkboy/Documents/grav-lamp-docker/test-scripts/README.md).
+| Target Option | Linux / macOS / WSL File Format | Windows File Format | Description |
+| :--- | :--- | :--- | :--- |
+| **`www`** | `<prefix>_www_<timestamp>.tar.gz` | `<prefix>_www_<timestamp>.zip` | Archives web application files in `src/`. |
+| **`db`** | `<prefix>_db_<timestamp>.sql.gz` | `<prefix>_db_<timestamp>.sql` | Dumps MariaDB database via `mariadb-dump`. |
+| **`all`** | `<prefix>_all_<timestamp>.tar.gz` | `<prefix>_all_<timestamp>.zip` | Combined archive containing both `src/` files and database SQL dump. |
+
+### 3. Execution & Pre-Flight Warnings
+
+#### Interactive Selection:
+Run the script without arguments to open an interactive menu:
+* **Linux / macOS / WSL**: `./backup.sh` (or `make backup`)
+* **Windows**: `scripts\backup.bat`
+
+#### Command-Line Direct Invocation:
+Pass the backup target directly as an argument (`www`, `db`, or `all`):
+```bash
+./backup.sh www       # Backup WWW site files
+./backup.sh db        # Backup MariaDB database
+./backup.sh all       # Backup combined stack archive
+```
+
+#### Pre-Flight Warnings & Logging:
+- **Execution Logs**: All actions, timestamps, generated archive sizes, and completion status are written to `logs/backup.log`.
+- **Pre-Flight Warning Checks**:
+  - Warns if `.env` file is missing.
+  - Warns if available host disk space is low (< 500MB).
+  - Warns if `src/` directory is missing or empty.
+  - Warns if `db` container is stopped or database is unavailable.
 
 ---
 
-## Enabling MariaDB & Adminer (Optional)
+## Enabling MariaDB & Adminer via Compose Profiles
 
-By default, the MariaDB database and Adminer database manager services are commented out in `docker-compose.yml` to keep the stack super lightweight. If your project/plugins require a database:
+The stack uses **Docker Compose Profiles** to easily enable or disable MariaDB and Adminer without editing `docker-compose.yml`:
 
-1. Open `docker-compose.yml`.
-2. Locate the `db` and `adminer` service blocks, and the `depends_on` block under the `webserver` service.
-3. Uncomment those blocks (remove the `#` symbols).
-4. Run `docker compose up -d` to spin up the database and tool.
-5. **Adminer Database Manager**: Access it at [http://localhost:8080](http://localhost:8080) (or the port defined in `ADMINER_PORT`).
+1. Open `.env`.
+2. Edit `COMPOSE_PROFILES`:
+   * `COMPOSE_PROFILES=db,adminer` — Enables Apache + MariaDB + Adminer.
+   * `COMPOSE_PROFILES=db` — Enables Apache + MariaDB only.
+   * `COMPOSE_PROFILES=` — Lightweight mode (Apache Webserver only).
+3. Run `docker compose up -d` to apply changes.
+4. **Adminer Database Manager**: Access it at [http://localhost:8080](http://localhost:8080) (or via `ADMINER_PORT`).
+
+---
+
+## Traefik Reverse Proxy & TLS Setup (Optional)
+
+`docker-compose.yml` includes pre-configured, commented Traefik routing rules and TLS SSL settings for `www.mydom.com` and `www.mydom.com/adminer`:
+
+1. **Create external Traefik network** (if not already existing):
+   ```bash
+   docker network create traefik
+   ```
+2. Open `docker-compose.yml`.
+3. In `webserver` and `adminer` services:
+   * Comment out the direct host `ports:` block.
+   * Uncomment `- traefik` under `networks:`.
+   * Uncomment the `labels:` block (includes `traefik.http.routers.<service>.tls=true` and path rules).
+4. At the bottom of `docker-compose.yml`, uncomment the top-level `traefik:` network definition.
+5. Run `docker compose up -d`.
 
 ---
 
@@ -207,10 +225,10 @@ By default, the MariaDB database and Adminer database manager services are comme
 
 This stack mounts configuration files from the host directly into the container so you can make edits without rebuilding:
 
-* **PHP Settings**: Modify `config/php/custom.ini` to adjust `memory_limit`, `upload_max_filesize`, execution time, or to tune OPcache.
-* **Apache Host**: Modify `config/apache/000-default.conf` to customize rewrite rules, headers, or document paths.
-* **MariaDB (if enabled)**: Modify `config/mysql/custom.cnf` to adjust server limits, character sets, or collation.
-* **Logs**: Check local folders `logs/apache/` and `logs/php/` to view log files in real-time.
+* **PHP Settings**: Modify `config/php/custom.ini` (or path set in `CONFIG_PHP_PATH`) to adjust `memory_limit`, `upload_max_filesize`, execution time, or OPcache settings.
+* **Apache Host**: Modify `config/apache/000-default.conf` (or path set in `CONFIG_APACHE_PATH`) to customize rewrite rules, headers, or document paths.
+* **MariaDB**: Modify `config/mysql/custom.cnf` (or path set in `CONFIG_MYSQL_PATH`) to adjust server limits, character sets, or collation.
+* **Logs**: Check local folders `logs/apache/`, `logs/php/`, and `logs/backup.log` to view log files in real-time.
 
 ---
 
@@ -235,7 +253,7 @@ While pre-configured and optimized for **Grav CMS**, this Docker environment is 
 
 ### 1. WordPress Local Development & Staging
 * Delete files inside `src/` and extract a fresh WordPress package.
-* Uncomment the `db` (MariaDB) and `adminer` services in `docker-compose.yml`.
+* Ensure `COMPOSE_PROFILES=db,adminer` is enabled in `.env`.
 * Run `make up` and navigate to [http://localhost](http://localhost) to complete the 5-minute WordPress installation.
 
 ### 2. Modern PHP Frameworks (Laravel, Symfony, CodeIgniter, Slim)

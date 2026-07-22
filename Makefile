@@ -2,7 +2,7 @@
 # Cross-Platform Docker Compose Helper Makefile (Linux, macOS, Windows)
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs status test clean-test help
+.PHONY: up down stop restart rebuild logs status test clean-test backup help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -53,6 +53,10 @@ clean-test:
 	rm -f src/test.php src/diagnostics.php src/wp-diagnostics.php
 	@echo "✅ Diagnostic test page removed from src/"
 
+## 💾 Backup WWW site files and MariaDB database
+backup: env
+	./backup.sh
+
 ## ❓ Show available commands
 help:
 	@echo "======================================================================"
@@ -67,4 +71,5 @@ help:
 	@echo "  make status      - Display status of running containers"
 	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
 	@echo "  make clean-test  - Remove diagnostic page from src/"
+	@echo "  make backup      - Interactive backup helper (WWW files, DB, or both)"
 	@echo "======================================================================"

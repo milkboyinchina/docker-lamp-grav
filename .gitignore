@@ -19,6 +19,17 @@ logs/php/*
 /mysql_data/
 
 # ==========================================
+# Backup Output Directory & Archives
+# ==========================================
+backups/*
+!backups/.gitkeep
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.gz
+
+# ==========================================
 # Grav CMS Cache & Runtime Directories
 # ==========================================
 src/assets/*
