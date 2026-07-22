@@ -30,8 +30,13 @@ backups/*
 *.gz
 
 # ==========================================
-# Grav CMS Cache & Runtime Directories
+# Grav CMS & Application Source Directory
 # ==========================================
+src/*
+!src/.gitkeep
+
+# Grav CMS Cache & Runtime Directories
+src/assets/*
 src/assets/*
 !src/assets/.gitkeep
 src/backup/*
