@@ -517,3 +517,33 @@ body #header.scrolled nav.language-switcher ul li a.active .flag-icon,
         padding-bottom: 2.5rem !important;
     }
 }
+
+/* FontAwesome 6 Brands Automatic Font-Family Fallback Resolution */
+.fa-github,
+.fa-github-alt,
+.fa-github-square,
+.fa-square-github,
+.fa-docker,
+.fa-grav,
+.fa-wordpress,
+.fa-php,
+.fa-laravel,
+.fa-symfony,
+.fa-twitter,
+.fa-x-twitter,
+.fa-facebook,
+.fa-facebook-f,
+.fa-linkedin,
+.fa-linkedin-in,
+.fa-youtube,
+.fa-instagram,
+.fa-discord,
+.fa-python,
+.fa-git,
+.fa-git-alt,
+.fa-gitlab,
+.fa-bitbucket {
+    font-family: "Font Awesome 6 Brands" !important;
+    font-weight: 400 !important;
+}
+

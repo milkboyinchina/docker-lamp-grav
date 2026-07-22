@@ -1,27 +1,37 @@
 # Unified Diagnostic Test Script
 
-This directory contains the unified PHP environment diagnostic script (`test.php.example`) to verify PHP extensions, server settings, and database connectivity for **Grav CMS**, **WordPress**, and custom PHP applications before deployment.
+This directory contains the unified PHP environment diagnostic script (`test.php.example`) to verify PHP extensions, server settings, and database connectivity for **Grav CMS**, **WordPress**, **Laravel**, **Symfony**, **Drupal**, **Joomla**, **WooCommerce**, **CodeIgniter**, **Kirby/Statamic**, and **Database Tools** before deployment.
 
 ---
 
-## Compatibility Scoreboard
+## Supported PHP Systems & Frameworks
 
-The diagnostic script automatically calculates real-time **Compatibility Scores & Letter Grades** for both platforms:
+The diagnostic suite automatically calculates real-time **Compatibility Scores & Letter Grades** for:
 
-* **Grav CMS Score**: Calculated based on 7 required core extensions (`10 pts` each) and 8 performance extensions (`2 pts` each).
-* **WordPress Core Score**: Calculated based on required extensions (`8 pts` each), recommended extensions (`3 pts` each), and database connectivity (`15 pts`).
-* **Grade Scale**:
-  * **Grade A+ (98% - 100%)**: Perfect - Stack fully optimized for production!
-  * **Grade A (85% - 97%)**: Excellent - Core features fully operational.
-  * **Grade B (70% - 84%)**: Good - Core operational, some optional extensions disabled.
-  * **Grade F (< 70%)**: Action Required - Missing required extensions or database service.
+1. **CMS & Publishing Platforms**:
+   - **Grav CMS**: Flat-file CMS runtime (requires `gd`, `mbstring`, `xml`, `zip`, `zlib`, `curl`, `yaml`).
+   - **WordPress Core**: World's #1 CMS (requires `mysqli`, `gd`, `mbstring`, `xml`, `zip`, `curl`).
+   - **Drupal 10 / 11**: Enterprise CMS (requires `pdo_mysql`, `gd`, `mbstring`, `xml`, `openssl`).
+   - **Joomla 5**: Flexible CMS (requires `mysqli`, `pdo_mysql`, `gd`, `xml`, `zip`, `mbstring`).
+   - **Kirby / Statamic**: Flat-file publishing platforms (requires `gd`, `mbstring`, `exif`, `zip`, `curl`).
+
+2. **PHP Frameworks**:
+   - **Laravel 10 / 11**: Modern PHP framework (requires `mbstring`, `openssl`, `pdo`, `pdo_mysql`, `xml`, `fileinfo`, `curl`).
+   - **Symfony 6 / 7**: Enterprise framework (requires `mbstring`, `openssl`, `pdo`, `pdo_mysql`, `xml`, `intl`).
+   - **CodeIgniter 4**: Lightweight framework (requires `intl`, `mbstring`, `curl`, `pdo`).
+
+3. **E-Commerce & Database Tools**:
+   - **WooCommerce**: WordPress e-commerce store platform.
+   - **Adminer / phpMyAdmin**: Web-based database management tools.
 
 ---
 
 ## Diagnostic Script (`test.php.example`)
 
+![PHP Systems & Frameworks Environment Diagnostic Test Suite](test-diagnostic-suite.png)
+
 * **File**: `test-scripts/test.php.example`
-* **Purpose**: Single comprehensive diagnostic page checking system compatibility for Grav CMS, WordPress Core, and MariaDB.
+* **Purpose**: Comprehensive diagnostic page checking system compatibility for popular PHP frameworks, CMS platforms, and MariaDB.
 
 ### How to Run:
 Deploy the test script to your application root directory (`src/`):
@@ -35,17 +45,6 @@ cp test-scripts/test.php.example src/test.php
 ```
 
 Access via browser at **[http://localhost/test.php](http://localhost/test.php)**.
-
----
-
-## Automatic Warning Banners & Alerts
-
-The diagnostic script automatically scans your environment on page load, rendering visual alert banners:
-
-* **CRITICAL ALERT (Red)**: Displayed if any required extension (`gd`, `zip`, `mbstring`, `mysqli`, `yaml`, `curl`, `xml`, `zlib`) is missing.
-* **WARNING ALERT (Yellow)**: Displayed if any performance extension (`opcache`, `imagick`, `exif`) is disabled or memory limit is low.
-* **DATABASE ALERT (Notice)**: Displayed if MariaDB is disconnected (explains database requirements for Grav vs WordPress).
-* **SYSTEM READY (Green)**: Displayed when all required & recommended extensions are loaded and MariaDB is connected!
 
 ---
 

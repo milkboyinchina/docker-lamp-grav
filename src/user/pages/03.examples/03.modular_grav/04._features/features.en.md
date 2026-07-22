@@ -28,7 +28,7 @@ features:
   - header: Documentation
     icon: fa fa-bookmark
   - header: On Github
-    icon: fa fa-github
+    icon: fab fa-github
   - header: Responsive Design
     icon: fa fa-html5
   - header: CLI Power
