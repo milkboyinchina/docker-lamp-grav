@@ -17,6 +17,18 @@ A lightweight, high-performance, and developer-friendly Docker environment runni
 
 ---
 
+## ⏱️ Initial Build Benchmark & System Requirements
+
+| Metric | Measured Value | Notes |
+| :--- | :--- | :--- |
+| **First-Run Clean Build Time** | **~9 minutes** (548s) | Compiles PECL extensions (`Imagick`, `Redis`, `APCu`, `Memcache`, `Yaml`) & C-libraries from source on first run. |
+| **Cached Build Time** | **< 3 seconds** | Instantaneous rebuilding leveraging Docker layer caching. |
+| **Webserver Image Size** | **~1.0 GB** | Full PHP 8.3 + Apache 2.4 image (`grav-lamp-docker-webserver`). |
+| **Full Stack Image Size** | **~1.45 GB** | Includes optional MariaDB (~341 MB) & Adminer (~116 MB). |
+| **Container RAM Usage** | **~45 MB - 90 MB** | Lightweight memory footprint at runtime. |
+
+---
+
 ## Project Structure
 
 ```text
