@@ -121,6 +121,7 @@ If you have `make` installed, run these 1-word commands from your terminal:
 * **`make test`**: Deploy unified diagnostic test page to `http://localhost/test.php`.
 * **`make clean-test`**: Remove diagnostic test page from `src/`.
 * **`make backup`**: Run interactive backup helper with logging and pre-flight warning checks.
+* **`make merge-main`**: Merge active branch into `main` while automatically excluding `src/user/pages/`.
 
 ### 2. Windows (Double-Click Batch Scripts)
 For Windows Command Prompt / PowerShell users:
@@ -128,6 +129,7 @@ For Windows Command Prompt / PowerShell users:
 * **`scripts\stop.bat`**: Double-click to stop stack.
 * **`scripts\rebuild.bat`**: Double-click to rebuild stack without cache.
 * **`scripts\backup.bat`**: Double-click or run from CMD to perform interactive backups with logging.
+* **`scripts\merge-to-main.bat`**: Merge feature branch into `main` excluding `src/user/pages/`.
 
 ### 3. Linux / macOS (Shell Scripts)
 For terminal users on Linux / macOS / WSL:
@@ -135,6 +137,7 @@ For terminal users on Linux / macOS / WSL:
 * **`./stop.sh`**: Stop running containers.
 * **`./rebuild.sh`**: Rebuild PHP image & restart stack.
 * **`./backup.sh`**: Run backup helper script.
+* **`./merge-to-main.sh`**: Merge current or specified branch into `main` excluding `src/user/pages/`.
 
 ---
 
