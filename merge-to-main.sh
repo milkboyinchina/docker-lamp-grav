@@ -59,13 +59,12 @@ echo -e "${BLUE}ℹ️ Merging '${SOURCE_BRANCH}' into 'main'...${NC}"
 if ! git merge --no-ff --no-commit "$SOURCE_BRANCH"; then
     echo -e "${YELLOW}⚠️ Resolving merge conflicts...${NC}"
     git checkout --theirs -- . 2>/dev/null || true
-    git add . 2>/dev/null || true
+    git add -A
 fi
 
-# Restore src/user/pages/ to pre-merge state from main
+# Restore src/user/pages/ to pre-merge state from main (completely excluding any changes/additions)
 echo -e "${BLUE}ℹ️ Restoring 'src/user/pages' to previous main state...${NC}"
-git checkout "$PREV_COMMIT" -- src/user/pages 2>/dev/null || true
-git add src/user/pages 2>/dev/null || true
+git restore -s "$PREV_COMMIT" --staged --worktree src/user/pages
 git clean -fd src/user/pages
 
 # Commit the merge

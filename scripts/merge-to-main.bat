@@ -36,11 +36,10 @@ git merge --no-ff --no-commit %SOURCE_BRANCH%
 if errorlevel 1 (
     echo [INFO] Resolving merge conflicts...
     git checkout --theirs -- .
-    git add .
+    git add -A
 )
 
-git checkout %PREV_COMMIT% -- src/user/pages
-git add src/user/pages
+git restore -s %PREV_COMMIT% --staged --worktree src/user/pages
 git clean -fd src/user/pages
 
 git commit -m "Merge branch '%SOURCE_BRANCH%' into main (excluding src/user/pages)"
