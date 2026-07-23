@@ -31,10 +31,17 @@ services:
     # To use Traefik, uncomment the labels below and the traefik network, and comment out 'ports:' above.
     # labels:
     #   - "traefik.enable=true"
-    #   - "traefik.docker.network=traefik" ### Change this if you change network name
+    #   - "traefik.docker.network=traefik"
+    #   # Route rule for www.mydom.com
     #   - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-www.mydom.com}`)"
-    #   - "traefik.http.routers.webserver.entrypoints=web,websecure"
+    #   # Only bind to websecure (Traefik automatically redirects port 80 -> 443)
+    #   - "traefik.http.routers.webserver.entrypoints=websecure"
+    #   # Enable TLS and specify the Let's Encrypt resolver from Traefik
     #   - "traefik.http.routers.webserver.tls=true"
+    #   - "traefik.http.routers.webserver.tls.certresolver=letsencrypt"
+    #   # Override NetBird proxy priority catch-all rule
+    #   - "traefik.http.routers.webserver.priority=10"
+    #   # Target internal Apache HTTP port
     #   - "traefik.http.services.webserver.loadbalancer.server.port=80"
 
   # MariaDB Database
