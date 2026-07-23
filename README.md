@@ -40,19 +40,23 @@ grav-lamp/
 ├── .env                     # Local environment variables (created from env.example)
 ├── env.example              # Template for environment configuration
 ├── GRAV-QUICKSTART.md       # First-time Grav setup & admin user reset guide
+├── .gitignore               # Excludes runtime data, logs, database dumps, and src/*
 ├── .gitattributes           # Enforces LF line endings for Windows/Linux/macOS
 ├── Makefile                 # Cross-platform 1-word command shortcuts
 ├── start.sh / stop.sh       # Linux/macOS/WSL 1-click shell scripts
 ├── rebuild.sh               # Rebuild container image shell script
 ├── backup.sh                # Automated WWW site files & MariaDB backup shell script
+├── merge-to-main.sh         # Helper script to merge branch into main (excluding src/user/pages)
 ├── scripts/                 # Windows CMD/PowerShell batch scripts
 │   ├── start.bat            # Windows 1-click start batch script
 │   ├── stop.bat             # Windows 1-click stop batch script
 │   ├── rebuild.bat          # Windows 1-click rebuild batch script
-│   └── backup.bat           # Windows 1-click backup batch script
+│   ├── backup.bat           # Windows 1-click backup batch script
+│   └── merge-to-main.bat    # Windows 1-click branch merge batch script
 ├── test-scripts/            # Diagnostic & compatibility test scripts
-│   ├── README.md            # Documentation for test scripts
-│   └── test.php.example     # Unified diagnostic script for Grav CMS & WordPress
+│   ├── README.md            # Documentation & screenshot for test scripts
+│   ├── test-diagnostic-suite.png # High-res screenshot of PHP diagnostic suite
+│   └── test.php.example     # Unified diagnostic script for 10 popular PHP systems
 ├── config/                  # Configuration files mounted to the container
 │   ├── apache/
 │   │   └── 000-default.conf # VirtualHost and ServerName configuration
@@ -64,8 +68,8 @@ grav-lamp/
 │   ├── apache/              # Apache access.log and error.log
 │   ├── php/                 # PHP error.log
 │   └── backup.log           # Automated backup execution logs and warnings
-└── src/                     # Grav CMS application directory (web root)
-    └── index.php            # Main entrypoint of your application
+└── src/                     # Application root folder mounted to container /var/www/html
+    └── .gitkeep             # Preserves empty src/ folder in Git (contents ignored via .gitignore)
 ```
 
 ---
