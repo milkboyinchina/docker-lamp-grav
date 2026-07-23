@@ -85,13 +85,21 @@ services:
     # Traefik Reverse Proxy Configuration:
     # To use Traefik, uncomment the labels below and the traefik network, and comment out 'ports:' above.
     # labels:
-    #   - "traefik.enable=true" 
-    #   - "traefik.docker.network=traefik" ### Change this if you change network name
+    #   - "traefik.enable=true"
+    #   - "traefik.docker.network=traefik"
+    #   # Route rule for www.mydom.com/adminer
     #   - "traefik.http.routers.adminer.rule=Host(`${SERVER_NAME:-www.mydom.com}`) && PathPrefix(`/adminer`)"
-    #   - "traefik.http.routers.adminer.entrypoints=web,websecure"
+    #   # Only bind to websecure (Traefik automatically redirects port 80 -> 443)
+    #   - "traefik.http.routers.adminer.entrypoints=websecure"
+    #   # Enable TLS and specify the Let's Encrypt resolver from Traefik
     #   - "traefik.http.routers.adminer.tls=true"
+    #   - "traefik.http.routers.adminer.tls.certresolver=letsencrypt"
+    #   # Override NetBird proxy priority catch-all rule
+    #   - "traefik.http.routers.adminer.priority=10"
+    #   # Strip /adminer path prefix before proxying to Adminer backend
     #   - "traefik.http.routers.adminer.middlewares=adminer-stripprefix"
     #   - "traefik.http.middlewares.adminer-stripprefix.stripprefix.prefixes=/adminer"
+    #   # Target internal Adminer HTTP port
     #   - "traefik.http.services.adminer.loadbalancer.server.port=8080"
 
 networks:
