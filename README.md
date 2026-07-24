@@ -100,7 +100,7 @@ cp env.example .env
 Open the `.env` file and customize the variables as needed:
 * **`COMPOSE_PROFILES`**: Control active services (`db,adminer` for full database stack, or empty for lightweight webserver-only mode).
 * **`RESTART_POLICY`**: Container restart strategy (defaults to `unless-stopped`; options: `unless-stopped`, `always`, `on-failure`, `no`).
-* **`SERVER_NAME`**: Set to your domain (defaults to `www.mydom.com`).
+* **`SERVER_NAME`**: Set to your domain (defaults to `www.example.com`).
 * **`HTTP_PORT` / `ADMINER_PORT`**: Ports exposed on host machine (defaults to `80` and `8080`).
 * **`SRC_PATH`, `LOGS_*_PATH`, `CONFIG_*_PATH`**: Host paths for application source, log directories, and configuration files.
 * **`BACKUP_DIR`, `BACKUP_PREFIX`, `LOGS_BACKUP_PATH`**: Output directory, file prefix, and execution log location for automated backups.
@@ -118,7 +118,7 @@ Once running, you can access your site at:
 * **Adminer Database Manager**: [http://localhost:8080](http://localhost:8080) (when `COMPOSE_PROFILES=db,adminer` is active).
 
 > **First-Time Grav User & Admin Reset Guide**:  
-> Check out [`GRAV-QUICKSTART.md`](file:///home/milkboy/Documents/grav-lamp-docker/GRAV-QUICKSTART.md) for detailed instructions on first-time setup, creating admin users via CLI, and resetting admin accounts if locked out.
+> Check out [`GRAV-QUICKSTART.md`](GRAV-QUICKSTART.md) for detailed instructions on first-time setup, creating admin users via CLI, and resetting admin accounts if locked out.
 
 ---
 
@@ -224,7 +224,7 @@ The stack uses **Docker Compose Profiles** to easily enable or disable MariaDB a
 
 ## Traefik Reverse Proxy & TLS Setup (Optional)
 
-`docker-compose.yml` includes pre-configured, commented Traefik routing rules and TLS SSL settings for `www.mydom.com` and `www.mydom.com/adminer`:
+`docker-compose.yml` includes pre-configured, commented Traefik routing rules and TLS SSL settings for `www.example.com` and `www.example.com/adminer`:
 
 1. **Create external Traefik network** (if not already existing):
    ```bash
