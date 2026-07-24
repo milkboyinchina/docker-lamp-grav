@@ -10,8 +10,8 @@ services:
     # Restart policy configured via RESTART_POLICY in .env (unless-stopped, always, on-failure, no)
     restart: ${RESTART_POLICY:-unless-stopped}
     environment:
-      SERVER_NAME: ${SERVER_NAME:-www.mydom.com}
-      SERVER_ADMIN: ${SERVER_ADMIN:-webmaster@mydom.com}
+      SERVER_NAME: ${SERVER_NAME:-www.example.com}
+      SERVER_ADMIN: ${SERVER_ADMIN:-webmaster@example.com}
     # Direct host ports (comment out if using Traefik reverse proxy)
     ports:
       - "${HTTP_PORT:-80}:80"
@@ -32,8 +32,8 @@ services:
     # labels:
     #   - "traefik.enable=true"
     #   - "traefik.docker.network=traefik"
-    #   # Route rule for www.mydom.com
-    #   - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-www.mydom.com}`)"
+    #   # Route rule for www.example.com
+    #   - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-www.example.com}`)"
     #   # Only bind to websecure (Traefik automatically redirects port 80 -> 443)
     #   - "traefik.http.routers.webserver.entrypoints=websecure"
     #   # Enable TLS and specify the Let's Encrypt resolver from Traefik
@@ -87,8 +87,8 @@ services:
     # labels:
     #   - "traefik.enable=true"
     #   - "traefik.docker.network=traefik"
-    #   # Route rule for www.mydom.com/adminer
-    #   - "traefik.http.routers.adminer.rule=Host(`${SERVER_NAME:-www.mydom.com}`) && PathPrefix(`/adminer`)"
+    #   # Route rule for www.example.com/adminer
+    #   - "traefik.http.routers.adminer.rule=Host(`${SERVER_NAME:-www.example.com}`) && PathPrefix(`/adminer`)"
     #   # Only bind to websecure (Traefik automatically redirects port 80 -> 443)
     #   - "traefik.http.routers.adminer.entrypoints=websecure"
     #   # Enable TLS and specify the Let's Encrypt resolver from Traefik
