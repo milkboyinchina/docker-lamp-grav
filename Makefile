@@ -3,7 +3,7 @@
 # Directory: /home/milkboy/Documents/grav-lamp-docker
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc test clean-test backup merge-main help
+.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install test clean-test backup merge-main help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -61,6 +61,10 @@ clear-cache:
 
 cc: clear-cache
 
+## 📦 Install Grav CMS core dependencies & plugins inside container
+grav-install:
+	docker compose exec webserver bin/grav install
+
 ## 🧪 Deploy diagnostic test page to src/test.php
 test:
 	cp test-scripts/test.php.example src/test.php
@@ -94,6 +98,7 @@ help:
 	@echo "  make status      - Display status of running containers"
 	@echo "  make shell       - Open bash shell in webserver container"
 	@echo "  make clear-cache - Clear Grav CMS cache (alias: make cc)"
+	@echo "  make grav-install - Install Grav CMS dependencies & core plugins"
 	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
 	@echo "  make clean-test  - Remove diagnostic page from src/"
 	@echo "  make backup      - Interactive backup helper (WWW files, DB, or both)"

@@ -134,6 +134,8 @@ If you have `make` installed, run these 1-word commands from your terminal:
 * **`make rebuild`**: Rebuild PHP image without cache & restart stack.
 * **`make logs`**: Stream live webserver logs.
 * **`make status`**: Check status of running containers.
+* **`make clear-cache`**: Clear Grav CMS cache inside container (alias: `make cc`).
+* **`make grav-install`**: Run `bin/grav install` to install core dependencies & plugins inside container.
 * **`make test`**: Deploy unified diagnostic test page to `http://localhost/test.php`.
 * **`make clean-test`**: Remove diagnostic test page from `src/`.
 * **`make backup`**: Run interactive backup helper with logging and pre-flight warning checks.
