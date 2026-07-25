@@ -1,8 +1,9 @@
 # ==============================================================================
 # Cross-Platform Docker Compose Helper Makefile (Linux, macOS, Windows)
+# Directory: /home/milkboy/Documents/grav-lamp-docker
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs status test clean-test backup help
+.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc test clean-test backup merge-main help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -17,9 +18,10 @@ env:
 ## 🚀 Start containers in background (Detached)
 up: env
 	docker compose up -d
-	@echo "\n✅ Stack running! Access site at http://localhost"
+	@echo ""
+	@echo "✅ Stack running! Access site at http://localhost"
 
-## ⏹️ Stop containers (keep state)
+## ⏹️ Stop containers (keep container state)
 stop:
 	docker compose stop
 
@@ -35,13 +37,29 @@ restart:
 rebuild: env
 	docker compose up -d --build --no-cache
 
-## 📋 Stream live container logs
+## 📋 Stream live container logs for webserver
 logs:
 	docker compose logs -f webserver
+
+## 📋 Stream live container logs for all services
+logs-all:
+	docker compose logs -f
 
 ## 📊 View status of running containers
 status:
 	docker compose ps
+
+## 🐚 Interactive bash shell inside webserver container
+shell:
+	docker compose exec webserver bash
+
+exec: shell
+
+## 🧹 Clear Grav CMS cache inside webserver container
+clear-cache:
+	docker compose exec webserver bin/grav clear-cache
+
+cc: clear-cache
 
 ## 🧪 Deploy diagnostic test page to src/test.php
 test:
@@ -72,10 +90,12 @@ help:
 	@echo "  make restart     - Restart all stack containers"
 	@echo "  make rebuild     - Rebuild PHP image without cache & restart"
 	@echo "  make logs        - Stream live webserver logs"
+	@echo "  make logs-all    - Stream live logs from all services"
 	@echo "  make status      - Display status of running containers"
+	@echo "  make shell       - Open bash shell in webserver container"
+	@echo "  make clear-cache - Clear Grav CMS cache (alias: make cc)"
 	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
 	@echo "  make clean-test  - Remove diagnostic page from src/"
 	@echo "  make backup      - Interactive backup helper (WWW files, DB, or both)"
 	@echo "  make merge-main  - Merge branch into main excluding src/user/pages"
 	@echo "======================================================================"
-
