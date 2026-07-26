@@ -7,7 +7,7 @@ A lightweight, high-performance, and developer-friendly Docker environment runni
 
 ### Key Features
 * **PHP 8.3 & Apache 2.4**: Pre-built with required and performance PHP extensions (`GD`, `ZIP`, `OPcache`, `APCu`, `Redis`, `YAML`, `MySQLi`, `PDO_MySQL`, `mbstring`, `exif`, `intl`).
-* **Optional MariaDB & Adminer via Docker Profiles**: Pre-configured database and web-based database management interface ready to enable with `COMPOSE_PROFILES=db,adminer` in `.env`.
+* **Optional MariaDB & Adminer via Docker Profiles**: Pre-configured database and web-based database management interface ready to enable with `COMPOSE_PROFILES=db` (for MariaDB) or `COMPOSE_PROFILES=db,adminer` in `.env`.
 * **Automated Backup Suite with Logging & Warnings**: Integrated Bash and Windows Batch scripts (`backup.sh` and `scripts/backup.bat`) with option-matching file suffixes (`_www`, `_db`, `_all`), pre-flight warnings, and persistent file logging (`logs/backup.log`).
 * **Configurable Environment & Volume Paths**: All volume paths (`src`, `logs`, `config`), restart policies, and ports are customizable via `.env`.
 * **Traefik Reverse Proxy & TLS Ready**: Built-in, commented Traefik labels and external network configuration supporting SSL/TLS termination out of the box.
@@ -98,7 +98,7 @@ Copy the template environment file to create your local configurations:
 cp env.example .env
 ```
 Open the `.env` file and customize the variables as needed:
-* **`COMPOSE_PROFILES`**: Control active services (`db,adminer` for full database stack, or empty for lightweight webserver-only mode).
+* **`COMPOSE_PROFILES`**: Control active services (`db` for full database stack, or empty for lightweight webserver-only mode).
 * **`RESTART_POLICY`**: Container restart strategy (defaults to `unless-stopped`; options: `unless-stopped`, `always`, `on-failure`, `no`).
 * **`SERVER_NAME`**: Set to your domain (defaults to `www.example.com`).
 * **`HTTP_PORT` / `ADMINER_PORT`**: Ports exposed on host machine (defaults to `80` and `8080`).
@@ -218,7 +218,7 @@ The stack uses **Docker Compose Profiles** to easily enable or disable MariaDB a
    * `COMPOSE_PROFILES=db` — Enables Apache + MariaDB only.
    * `COMPOSE_PROFILES=` — Lightweight mode (Apache Webserver only).
 3. Run `docker compose up -d` to apply changes.
-4. **Adminer Database Manager**: Access it at [http://localhost:8080](http://localhost:8080) (or via `ADMINER_PORT`).
+4. **Adminer Database Manager**: Access it at [http://localhost:8080](http://localhost:8080) (or via `ADMINER_PORT`). **Security Warning:** Adminer has known unpatched zero-day vulnerabilities. It is disabled by default and should only be enabled temporarily in local development environments. Never expose Adminer to the public internet!
 
 ---
 
