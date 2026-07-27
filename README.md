@@ -45,12 +45,14 @@ grav-lamp/
 ├── Makefile                 # Cross-platform 1-word command shortcuts
 ├── start.sh / stop.sh       # Linux/macOS/WSL 1-click shell scripts
 ├── rebuild.sh               # Rebuild container image shell script
+├── shell.sh                 # Enter webserver container bash shell script
 ├── backup.sh                # Automated WWW site files & MariaDB backup shell script
 ├── merge-to-main.sh         # Helper script to merge branch into main (excluding src/user/pages)
 ├── scripts/                 # Windows CMD/PowerShell batch scripts
 │   ├── start.bat            # Windows 1-click start batch script
 │   ├── stop.bat             # Windows 1-click stop batch script
 │   ├── rebuild.bat          # Windows 1-click rebuild batch script
+│   ├── shell.bat            # Windows enter container bash shell batch script
 │   ├── backup.bat           # Windows 1-click backup batch script
 │   └── merge-to-main.bat    # Windows 1-click branch merge batch script
 ├── test-scripts/            # Diagnostic & compatibility test scripts
@@ -134,6 +136,7 @@ If you have `make` installed, run these 1-word commands from your terminal:
 * **`make rebuild`**: Rebuild PHP image without cache & restart stack.
 * **`make logs`**: Stream live webserver logs.
 * **`make status`**: Check status of running containers.
+* **`make shell`**: Open interactive bash shell inside webserver container (alias: `make exec`).
 * **`make clear-cache`**: Clear Grav CMS cache inside container (alias: `make cc`).
 * **`make grav-install`**: Run `bin/grav install` to install core dependencies & plugins inside container.
 * **`make test`**: Deploy unified diagnostic test page to `http://localhost/test.php`.
@@ -146,6 +149,7 @@ For Windows Command Prompt / PowerShell users:
 * **`scripts\start.bat`**: Double-click to start stack.
 * **`scripts\stop.bat`**: Double-click to stop stack.
 * **`scripts\rebuild.bat`**: Double-click to rebuild stack without cache.
+* **`scripts\shell.bat`**: Double-click to enter container bash shell.
 * **`scripts\backup.bat`**: Double-click or run from CMD to perform interactive backups with logging.
 * **`scripts\merge-to-main.bat`**: Merge feature branch into `main` excluding `src/user/pages/`.
 
@@ -154,6 +158,7 @@ For terminal users on Linux / macOS / WSL:
 * **`./start.sh`**: Start containers in background.
 * **`./stop.sh`**: Stop running containers.
 * **`./rebuild.sh`**: Rebuild PHP image & restart stack.
+* **`./shell.sh`**: Enter webserver container bash shell.
 * **`./backup.sh`**: Run backup helper script.
 * **`./merge-to-main.sh`**: Merge current or specified branch into `main` excluding `src/user/pages/`.
 
