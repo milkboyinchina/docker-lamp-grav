@@ -8,11 +8,15 @@
 # Default target
 .DEFAULT_GOAL := help
 
-# Auto-copy .env if missing
+# Auto-copy .env and docker-compose.yml if missing
 env:
 	@if [ ! -f .env ]; then \
 		echo "Creating .env configuration file from env.example..."; \
 		cp env.example .env; \
+	fi
+	@if [ ! -f docker-compose.yml ]; then \
+		echo "Creating docker-compose.yml configuration file from docker-compose.yml.example..."; \
+		cp docker-compose.yml.example docker-compose.yml; \
 	fi
 
 ## 🚀 Start containers in background (Detached)

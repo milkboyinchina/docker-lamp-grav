@@ -33,7 +33,8 @@ A lightweight, high-performance, and developer-friendly Docker environment runni
 
 ```text
 grav-lamp/
-├── docker-compose.yml       # Docker Compose services definition (webserver, db, adminer)
+├── docker-compose.yml       # Local Docker Compose configuration (git-ignored, copied from example)
+├── docker-compose.yml.example # Default template for Docker Compose services definition
 ├── docker/                  # Docker build files and entrypoint scripts
 │   ├── Dockerfile           # Custom PHP-Apache image definition with extensions
 │   └── docker-entrypoint.sh # Auto-runs on container startup (handles permissions)
