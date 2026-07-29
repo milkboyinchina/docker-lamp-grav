@@ -1,0 +1,89 @@
+name: Issue Manager
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  manage_issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Manage Issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const repoOwner = `@${owner}`; // Mention the repo owner
+
+            // Get all open issues
+            const issues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open'
+            });
+
+            for (const issue of issues.data) {
+              if (issue.pull_request) continue; // Skip pull requests
+
+              const labels = issue.labels.map(l => l.name.toLowerCase());
+              const bodyText = (issue.body || '').toLowerCase();
+              const titleText = issue.title.toLowerCase();
+
+              // Get comments for this issue
+              const comments = await github.rest.issues.listComments({
+                owner,
+                repo,
+                issue_number: issue.number
+              });
+
+              // Check if already processed to avoid spamming
+              const botCommented = comments.data.some(comment => comment.user.type === 'Bot' && comment.body.includes(repoOwner));
+              const isResolved = comments.data.some(comment =>
+                comment.body.toLowerCase().includes('resolved') ||
+                comment.body.toLowerCase().includes('fixed')
+              );
+
+              const isUserOrConfigError = labels.includes('user error') ||
+                labels.includes('configuration') ||
+                bodyText.includes('configuration error') ||
+                bodyText.includes('user error');
+
+              if (isUserOrConfigError && isResolved) {
+                // If it's a user/config error and resolved, close it
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  body: `This user or configuration error appears to be resolved. Closing the issue. ${repoOwner} please verify if needed.`
+                });
+
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+                console.log(`Closed resolved user/config error issue #${issue.number}`);
+              } else if (!botCommented) {
+                // Initial reply
+                let replyBody = '';
+                if (isUserOrConfigError) {
+                  replyBody = `Hello! It looks like this might be a configuration or user error. Please double check the documentation and your \`.env\` setup. ${repoOwner}, please follow up on this issue.`;
+                } else {
+                  replyBody = `Hello! Thank you for opening this issue. ${repoOwner}, please follow up and take a look.`;
+                }
+
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  body: replyBody
+                });
+                console.log(`Replied to issue #${issue.number}`);
+              }
+            }

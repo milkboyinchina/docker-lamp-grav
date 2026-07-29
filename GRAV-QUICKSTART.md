@@ -14,18 +14,7 @@ make up
 docker compose up -d
 ```
 
-### 2. Install Grav Core Dependencies & Plugins (`bin/grav install`)
-If you are deploying a fresh Grav installation or cloned the repository from Git, install required core packages (`error`, `problems` plugins) and directory symlinks inside the container:
-
-```bash
-# Using Makefile shortcut (Recommended):
-make grav-install
-
-# Or directly via Docker CLI:
-docker compose exec webserver bin/grav install
-```
-
-### 3. Access Your Grav Site
+### 2. Access Your Grav Site
 Open your browser and navigate to:
 * **Website Homepage**: [http://localhost](http://localhost)
 * **Grav Admin Panel**: [http://localhost/admin](http://localhost/admin)
@@ -110,17 +99,9 @@ To manually set a known password hash inside the user account file:
 
 Run any Grav CLI command directly inside your Docker container:
 
-* **Install Grav Dependencies & Core Packages (`bin/grav install`)**:
-  ```bash
-  docker compose exec webserver bin/grav install
-  # or using Makefile:
-  make grav-install
-  ```
 * **Clear Grav Cache**:
   ```bash
   docker compose exec webserver php bin/grav clear-cache
-  # or using Makefile:
-  make clear-cache
   ```
 * **Check Package Updates**:
   ```bash
