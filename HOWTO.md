@@ -231,8 +231,69 @@ Set `COMPOSE_PROFILES=db,adminer` in `.env` and restart the stack (`make up`).
 
 > **⚠️ Security Note**: Disable Adminer in production by setting `COMPOSE_PROFILES=` in `.env`.
 
-### Traefik Reverse Proxy Integration
-Uncomment Traefik labels in `docker-compose.yml` to route domains through an external Traefik network with automatic Let's Encrypt TLS certificates.
+### Traefik Reverse Proxy & SSL/TLS Configuration Guide
+
+When deploying behind a Traefik reverse proxy (with automatic Let's Encrypt TLS certificates or an external proxy network), configure your `docker-compose.yml` as follows:
+
+#### Step 1: Comment out Direct Host Port Mapping
+By default, Docker Compose maps port `80` directly to the host (`ports: - "${HTTP_PORT:-80}:80"`). When using Traefik, comment out the `ports:` block under `webserver`:
+
+```yaml
+    # Direct host ports (comment out if using Traefik reverse proxy)
+    #ports:
+    #  - "${HTTP_PORT:-80}:80"
+```
+
+#### Step 2: Connect Container to External Traefik Network
+Attach `webserver` to your external proxy network (e.g. `traefik` or `nb_netbird`):
+
+```yaml
+services:
+  webserver:
+    ...
+    networks:
+      - traefik_network   # Replace with your external network name
+
+networks:
+  traefik_network:
+    external: true
+```
+
+#### Step 3: Configure Traefik Labels (Apex & WWW Redirect Example)
+Add Traefik labels under `webserver` to configure SSL/TLS certificates and automatic `www` to non-`www` HTTPS redirection using `example.com`:
+
+```yaml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_network"
+
+      # 1. Main Router for Apex Domain (example.com -> HTTPS)
+      - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-example.com}`)"
+      - "traefik.http.routers.webserver.entrypoints=websecure"
+      - "traefik.http.routers.webserver.tls=true"
+      - "traefik.http.routers.webserver.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.webserver.priority=10"
+      - "traefik.http.services.webserver.loadbalancer.server.port=80"
+
+      # 2. Redirect Router for WWW Domain (www.example.com -> HTTPS)
+      - "traefik.http.routers.webserver-www.rule=Host(`www.${SERVER_NAME:-example.com}`)"
+      - "traefik.http.routers.webserver-www.entrypoints=websecure"
+      - "traefik.http.routers.webserver-www.tls=true"
+      - "traefik.http.routers.webserver-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.webserver-www.priority=10"
+      - "traefik.http.routers.webserver-www.middlewares=redirect-to-non-www"
+
+      # 3. Middleware for Redirecting www.example.com -> example.com (301 Permanent)
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.permanent=true"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://$${1}"
+```
+
+#### Step 4: Apply Changes
+Apply changes and start containers:
+```bash
+make up
+```
 
 ---
 
