@@ -13,8 +13,8 @@ services:
       SERVER_NAME: ${SERVER_NAME:-www.example.com}
       SERVER_ADMIN: ${SERVER_ADMIN:-webmaster@example.com}
     # Direct host ports (comment out if using Traefik reverse proxy)
-    ports:
-      - "${HTTP_PORT:-80}:80"
+    #ports:
+    #  - "${HTTP_PORT:-80}:80"
     # Host volume mounts configured via .env variables (SRC_PATH, LOGS_*_PATH, CONFIG_*_PATH)
     volumes:
       - ${SRC_PATH:-./src}:/var/www/html
@@ -25,24 +25,34 @@ services:
     # depends_on:
     #   - db
     networks:
-      - grav-network
+      - nb_netbird
       # - traefik # Uncomment to enable Traefik support
     # Traefik Reverse Proxy Configuration:
     # To use Traefik, uncomment the labels below and the traefik network, and comment out 'ports:' above.
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.docker.network=traefik"
-    #   # Route rule for www.example.com
-    #   - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-www.example.com}`)"
-    #   # Only bind to websecure (Traefik automatically redirects port 80 -> 443)
-    #   - "traefik.http.routers.webserver.entrypoints=websecure"
-    #   # Enable TLS and specify the Let's Encrypt resolver from Traefik
-    #   - "traefik.http.routers.webserver.tls=true"
-    #   - "traefik.http.routers.webserver.tls.certresolver=letsencrypt"
-    #   # Override NetBird proxy priority catch-all rule
-    #   - "traefik.http.routers.webserver.priority=10"
-    #   # Target internal Apache HTTP port
-    #   - "traefik.http.services.webserver.loadbalancer.server.port=80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=nb_netbird"
+
+      # 1. Main Router for Apex Domain
+      - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-milkboy.my.id}`)"
+      - "traefik.http.routers.webserver.entrypoints=websecure"
+      - "traefik.http.routers.webserver.tls=true"
+      - "traefik.http.routers.webserver.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.webserver.priority=10"
+      - "traefik.http.services.webserver.loadbalancer.server.port=80"
+
+      # 2. Redirect Router for WWW Domain
+      - "traefik.http.routers.webserver-www.rule=Host(`www.${SERVER_NAME:-milkboy.my.id}`)"
+      - "traefik.http.routers.webserver-www.entrypoints=websecure"
+      - "traefik.http.routers.webserver-www.tls=true"
+      - "traefik.http.routers.webserver-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.webserver-www.priority=10"
+      - "traefik.http.routers.webserver-www.middlewares=redirect-to-non-www"
+
+      # 3. Middleware for Redirecting WWW -> Apex
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.permanent=true"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.regex=^https://www\\.(.*)"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://$${1}"
 
   # MariaDB Database
   db:
@@ -103,11 +113,11 @@ services:
     #   - "traefik.http.services.adminer.loadbalancer.server.port=8080"
 
 networks:
-  grav-network:
-    driver: bridge
+  #grav-network:
+  #  driver: bridge
   # External network for Traefik reverse proxy (Uncomment to enable)
-  # traefik:
-  #   external: true
+  nb_netbird:
+    external: true
 
 volumes:
   dbdata:
