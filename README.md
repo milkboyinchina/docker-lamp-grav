@@ -22,6 +22,7 @@ make up
 Open your browser at:
 - **Web Application**: [http://localhost](http://localhost)
 - **Adminer Database Manager**: [http://localhost:8080](http://localhost:8080) (when `COMPOSE_PROFILES=db,adminer` in `.env`)
+- **Nginx Proxy Manager Admin UI**: [http://localhost:81](http://localhost:81) (when `COMPOSE_PROFILES=...,proxy` in `.env`, initial login: `admin@example.com` / `changeme`)
 
 ### 3. Clear Grav Cache
 ```bash

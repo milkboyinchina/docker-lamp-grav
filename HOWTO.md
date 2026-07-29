@@ -231,6 +231,46 @@ Set `COMPOSE_PROFILES=db,adminer` in `.env` and restart the stack (`make up`).
 
 > **⚠️ Security Note**: Disable Adminer in production by setting `COMPOSE_PROFILES=` in `.env`.
 
+---
+
+### Nginx Proxy Manager (GUI Reverse Proxy & SSL Manager)
+
+Nginx Proxy Manager provides a web UI to easily manage reverse proxies, SSL/TLS certificates (Let's Encrypt), and domain forwarding.
+
+#### 1. Enabling the Proxy Profile
+Enable `proxy` in `COMPOSE_PROFILES` inside `.env`:
+```ini
+# Enable Nginx Proxy Manager along with MariaDB and Adminer:
+COMPOSE_PROFILES=db,adminer,proxy
+
+# Or enable Nginx Proxy Manager only:
+COMPOSE_PROFILES=proxy
+```
+
+#### 2. Environment Variables (`.env`)
+Configure ports and data storage paths in `.env`:
+```ini
+# Nginx Proxy Manager Ports
+NPM_HTTP_PORT=8000
+NPM_ADMIN_PORT=81
+NPM_HTTPS_PORT=8443
+
+# Persistent Volume Storage Paths
+NPM_DATA_PATH=./data/npm
+NPM_LETSENCRYPT_PATH=./etc/letsencrypt
+```
+
+#### 3. Access & Initial Setup
+1. Start the stack: `make up`
+2. Open the Admin UI at **[http://localhost:81](http://localhost:81)**
+3. Default credentials:
+   - **Email**: `admin@example.com`
+   - **Password**: `changeme`
+4. Promptly change the default admin email and password upon first login.
+5. Create Proxy Hosts pointing your domain (e.g. `example.com`) to container `webserver:80`.
+
+---
+
 ### Traefik Reverse Proxy & SSL/TLS Configuration Guide
 
 When deploying behind a Traefik reverse proxy (with automatic Let's Encrypt TLS certificates or an external proxy network), configure your `docker-compose.yml` as follows:

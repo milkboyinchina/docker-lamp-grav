@@ -112,6 +112,26 @@ services:
     #   # Target internal Adminer HTTP port
     #   - "traefik.http.services.adminer.loadbalancer.server.port=8080"
 
+  # Nginx Proxy Manager (GUI Reverse Proxy & SSL Manager)
+  proxy-manager:
+    # Enabled via COMPOSE_PROFILES=proxy (or COMPOSE_PROFILES=db,adminer,proxy) in .env file
+    profiles: ["proxy"]
+    image: jc21/nginx-proxy-manager:latest
+    container_name: grav-lamp-npm
+    # Restart policy configured via RESTART_POLICY in .env (unless-stopped, always, on-failure, no)
+    restart: ${RESTART_POLICY:-unless-stopped}
+    ports:
+      - "${NPM_HTTP_PORT:-8000}:80"
+      - "${NPM_ADMIN_PORT:-81}:81"
+      - "${NPM_HTTPS_PORT:-8443}:443"
+    environment:
+      DISABLE_HTTP2: 'false'
+    volumes:
+      - ${NPM_DATA_PATH:-./data/npm}:/data
+      - ${NPM_LETSENCRYPT_PATH:-./etc/letsencrypt}:/etc/letsencrypt
+    networks:
+      - grav-network
+
 networks:
   #grav-network:
   #  driver: bridge
