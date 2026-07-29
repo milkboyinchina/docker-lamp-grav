@@ -76,6 +76,7 @@ make deploy-ftp
 grav-lamp/
 ├── HOWTO.md                 # Full User Manual & Comprehensive Usage Guide
 ├── GRAV-QUICKSTART.md       # First-time Grav setup & admin user reset guide
+├── WORDPRESS-QUICKSTART.md  # First-time WordPress setup & database config guide
 ├── docker-compose.yml       # Local Docker Compose configuration (git-ignored)
 ├── docker-compose.yml.example # Default template for Docker Compose services definition
 ├── .env                     # Local environment variables (created from env.example)
@@ -99,3 +100,4 @@ grav-lamp/
 
 - **[HOWTO User Manual](file:///home/milkboy/Documents/docker-stacks-dev/docker-lamp-grav/HOWTO.md)**: Full guide covering all features, parameters, deployments, and troubleshooting.
 - **[Grav Quickstart Guide](file:///home/milkboy/Documents/docker-stacks-dev/docker-lamp-grav/GRAV-QUICKSTART.md)**: Grav CMS initial setup and admin user management.
+- **[WordPress Quickstart Guide](file:///home/milkboy/Documents/docker-stacks-dev/docker-lamp-grav/WORDPRESS-QUICKSTART.md)**: WordPress 5-minute setup, MariaDB configuration, and WP-CLI usage.
