@@ -43,8 +43,14 @@ Before starting the containers, set up your local configuration files:
    ```bash
    cp docker-compose.yml.example docker-compose.yml
    ```
+3. **Copy Configuration Override Templates**:
+   ```bash
+   cp config/apache/000-default.conf.example config/apache/000-default.conf
+   cp config/php/custom.ini.example config/php/custom.ini
+   cp config/mysql/custom.cnf.example config/mysql/custom.cnf
+   ```
 
-*Note: Running `make up`, `./start.sh`, or `./rebuild.sh` automatically creates `.env` and `docker-compose.yml` if missing.*
+*Note: Running `make up`, `./start.sh`, or `./rebuild.sh` automatically copies missing `.env`, `docker-compose.yml`, and `config/` override files from their `.example` templates.*
 
 ### Key `.env` Variables:
 ```ini

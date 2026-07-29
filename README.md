@@ -88,7 +88,7 @@ grav-lamp/
 ├── rebuild.sh / shell.sh    # Image rebuild & container shell scripts
 ├── docker/                  # Dockerfile & entrypoint scripts
 ├── scripts/                 # Windows CMD/PowerShell batch scripts
-├── config/                  # Apache, PHP, and MariaDB config overrides
+├── config/                  # Apache, PHP, and MariaDB config overrides & template examples (.example)
 ├── logs/                    # Host-mounted log directories (apache, php, deployments)
 └── src/                     # Web application web root (var/www/html)
 ```
