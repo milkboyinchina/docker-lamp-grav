@@ -44,6 +44,10 @@ make clear-cache
 | **Run Backups** | `make backup` | `./backup.sh` | `scripts\backup.bat` |
 | **Merge Feature Branch**| `make merge-main` | `./merge-to-main.sh` | `scripts\merge-to-main.bat` |
 
+### Entering & Running Container Commands (`docker compose exec`)
+- **Interactive Container Shell**: Run `make shell` (or `./shell.sh` / `docker compose exec webserver bash`) to open an interactive Bash prompt inside `/var/www/html`.
+- **Run Non-Interactive Commands**: Run `docker compose exec webserver <command>` (e.g. `docker compose exec webserver php bin/grav clearcache`).
+
 ---
 
 ## 📦 Automated Deployments (RSYNC & FTP)

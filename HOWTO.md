@@ -89,6 +89,51 @@ Use Makefile targets or shell/batch scripts depending on your operating system:
 | **View Logs** | `make logs` | `docker compose logs -f` | `docker compose logs -f` |
 | **Stack Status** | `make status` | `docker compose ps` | `docker compose ps` |
 
+### Entering & Running Commands inside Containers (`docker compose exec`)
+
+#### 1. Interactive Container Shell Access
+To open an interactive Bash terminal session inside the running webserver container:
+```bash
+# Makefile shortcut
+make shell     # or: make exec
+
+# Linux / macOS script shortcut
+./shell.sh
+
+# Windows batch script shortcut
+scripts\shell.bat
+
+# Direct Docker Compose command (using service name)
+docker compose exec webserver bash
+
+# Direct Docker command (using container name)
+docker exec -it grav-lamp-web bash
+```
+Once inside the container, your working directory is set to `/var/www/html` where you can inspect logs, check file permissions, or execute CLI commands. Type `exit` to exit the container shell.
+
+#### 2. Running One-Off Commands (`docker compose exec`)
+To run a command inside the container from your host terminal without opening an interactive shell session:
+
+```bash
+# General Syntax: docker compose exec <service_name> <command>
+
+# Clear Grav CMS application cache
+docker compose exec webserver php bin/grav clearcache
+
+# Install Grav CMS dependencies and core plugins
+docker compose exec webserver php bin/grav install
+
+# Check PHP runtime version and active extensions
+docker compose exec webserver php -v
+docker compose exec webserver php -m
+
+# Check web root file permissions and directory contents
+docker compose exec webserver ls -la /var/www/html/user/
+
+# Execute Composer commands inside container
+docker compose exec webserver composer status
+```
+
 ---
 
 ## 4. Grav CMS Operations
