@@ -331,32 +331,59 @@ NPM_LETSENCRYPT_PATH=./etc/letsencrypt
 
 ---
 
+### Network Configuration (Internal Bridge vs External Network)
+
+By default, the Docker stack uses an isolated internal bridge network (`grav-network`) for container-to-container communication.
+
+#### Switching to an External Network (`external-net`)
+If your containers need to connect to an external Docker network (e.g., Traefik, NetBird, or a shared proxy network):
+
+1. Edit the `networks:` block at the bottom of `docker-compose.yml`:
+   ```yaml
+   networks:
+     grav-network:
+       driver: bridge
+
+     external-net:
+       external: true
+       name: nb_netbird  # Replace with your external Docker network name if different
+   ```
+2. Under your service (e.g. `webserver` or `adminer`), switch the network mapping:
+   ```yaml
+       networks:
+         # - grav-network
+         - external-net
+   ```
+
+---
+
 ### Traefik Reverse Proxy & SSL/TLS Configuration Guide
 
-When deploying behind a Traefik reverse proxy (with automatic Let's Encrypt TLS certificates or an external proxy network), configure your `docker-compose.yml` as follows:
+When deploying behind Traefik or Nginx Proxy Manager (with automatic Let's Encrypt TLS certificates or an external proxy network), configure your `docker-compose.yml` as follows:
 
 #### Step 1: Comment out Direct Host Port Mapping
-By default, Docker Compose maps port `80` directly to the host (`ports: - "${HTTP_PORT:-80}:80"`). When using Traefik, comment out the `ports:` block under `webserver`:
+By default, Docker Compose maps host ports (`ports: - "${HTTP_PORT:-80}:80"`). When using Traefik or Nginx Proxy Manager as your primary front-end proxy, comment out the `ports:` block under `webserver` (and `adminer`):
 
 ```yaml
-    # Direct host ports (comment out if using Traefik reverse proxy)
+    # Direct host ports (uncomment for standalone access; comment out if using Traefik or Nginx Proxy Manager)
     #ports:
     #  - "${HTTP_PORT:-80}:80"
 ```
 
-#### Step 2: Connect Container to External Traefik Network
-Attach `webserver` to your external proxy network (e.g. `traefik` or `nb_netbird`):
+#### Step 2: Connect Container to External Network
+Attach `webserver` to your external proxy network (`external-net`):
 
 ```yaml
 services:
   webserver:
     ...
     networks:
-      - traefik_network   # Replace with your external network name
+      - external-net
 
 networks:
-  traefik_network:
+  external-net:
     external: true
+    name: nb_netbird  # Replace with your external network name
 ```
 
 #### Step 3: Configure Traefik Labels (Apex & WWW Redirect Example)
