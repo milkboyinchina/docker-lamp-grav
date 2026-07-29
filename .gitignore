@@ -6,6 +6,8 @@
 .env.*.local
 !.env.example
 !.env.example.php
+docker-compose.yml
+!docker-compose.yml.example
 
 # ==========================================
 # Docker & Database Host Directories

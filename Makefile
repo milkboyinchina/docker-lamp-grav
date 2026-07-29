@@ -1,25 +1,43 @@
 # ==============================================================================
 # Cross-Platform Docker Compose Helper Makefile (Linux, macOS, Windows)
+# Directory: /home/milkboy/Documents/grav-lamp-docker
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs status test clean-test backup help
+.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install deploy deploy-ftp test clean-test backup merge-main help
 
 # Default target
 .DEFAULT_GOAL := help
 
-# Auto-copy .env if missing
+# Auto-copy .env, docker-compose.yml, and config templates if missing
 env:
 	@if [ ! -f .env ]; then \
 		echo "Creating .env configuration file from env.example..."; \
 		cp env.example .env; \
 	fi
+	@if [ ! -f docker-compose.yml ]; then \
+		echo "Creating docker-compose.yml configuration file from docker-compose.yml.example..."; \
+		cp docker-compose.yml.example docker-compose.yml; \
+	fi
+	@if [ ! -f config/apache/000-default.conf ] && [ -f config/apache/000-default.conf.example ]; then \
+		echo "Creating config/apache/000-default.conf from example..."; \
+		cp config/apache/000-default.conf.example config/apache/000-default.conf; \
+	fi
+	@if [ ! -f config/php/custom.ini ] && [ -f config/php/custom.ini.example ]; then \
+		echo "Creating config/php/custom.ini from example..."; \
+		cp config/php/custom.ini.example config/php/custom.ini; \
+	fi
+	@if [ ! -f config/mysql/custom.cnf ] && [ -f config/mysql/custom.cnf.example ]; then \
+		echo "Creating config/mysql/custom.cnf from example..."; \
+		cp config/mysql/custom.cnf.example config/mysql/custom.cnf; \
+	fi
 
 ## 🚀 Start containers in background (Detached)
 up: env
 	docker compose up -d
-	@echo "\n✅ Stack running! Access site at http://localhost"
+	@echo ""
+	@echo "✅ Stack running! Access site at http://localhost"
 
-## ⏹️ Stop containers (keep state)
+## ⏹️ Stop containers (keep container state)
 stop:
 	docker compose stop
 
@@ -35,13 +53,41 @@ restart:
 rebuild: env
 	docker compose up -d --build --no-cache
 
-## 📋 Stream live container logs
+## 📋 Stream live container logs for webserver
 logs:
 	docker compose logs -f webserver
+
+## 📋 Stream live container logs for all services
+logs-all:
+	docker compose logs -f
 
 ## 📊 View status of running containers
 status:
 	docker compose ps
+
+## 🐚 Interactive bash shell inside webserver container
+shell:
+	docker compose exec webserver bash
+
+exec: shell
+
+## 🧹 Clear Grav CMS cache inside webserver container
+clear-cache:
+	docker compose exec webserver php bin/grav clearcache
+
+cc: clear-cache
+
+## 📦 Install Grav CMS core dependencies & plugins inside container
+grav-install:
+	docker compose exec webserver php bin/grav install
+
+## 🚀 Deploy user plugins, themes, and configuration to target environment (RSYNC or default)
+deploy: env
+	./deploy.sh
+
+## 📡 Deploy user plugins, themes, and configuration to target environment via FTP
+deploy-ftp: env
+	./deploy.sh --ftp
 
 ## 🧪 Deploy diagnostic test page to src/test.php
 test:
@@ -72,10 +118,15 @@ help:
 	@echo "  make restart     - Restart all stack containers"
 	@echo "  make rebuild     - Rebuild PHP image without cache & restart"
 	@echo "  make logs        - Stream live webserver logs"
+	@echo "  make logs-all    - Stream live logs from all services"
 	@echo "  make status      - Display status of running containers"
+	@echo "  make shell       - Open bash shell in webserver container"
+	@echo "  make clear-cache - Clear Grav CMS cache (alias: make cc)"
+	@echo "  make grav-install - Install Grav CMS dependencies & core plugins"
+	@echo "  make deploy      - Deploy plugins, themes & config to target environment"
+	@echo "  make deploy-ftp  - Deploy plugins, themes & config via FTP transport"
 	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
 	@echo "  make clean-test  - Remove diagnostic page from src/"
 	@echo "  make backup      - Interactive backup helper (WWW files, DB, or both)"
 	@echo "  make merge-main  - Merge branch into main excluding src/user/pages"
 	@echo "======================================================================"
-
