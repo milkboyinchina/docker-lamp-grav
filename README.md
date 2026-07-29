@@ -47,6 +47,7 @@ grav-lamp/
 ├── rebuild.sh               # Rebuild container image shell script
 ├── shell.sh                 # Enter webserver container bash shell script
 ├── backup.sh                # Automated WWW site files & MariaDB backup shell script
+├── deploy.sh                # Deploy user directory (plugins/themes/config) to production shell script
 ├── merge-to-main.sh         # Helper script to merge branch into main (excluding src/user/pages)
 ├── scripts/                 # Windows CMD/PowerShell batch scripts
 │   ├── start.bat            # Windows 1-click start batch script
@@ -54,6 +55,7 @@ grav-lamp/
 │   ├── rebuild.bat          # Windows 1-click rebuild batch script
 │   ├── shell.bat            # Windows enter container bash shell batch script
 │   ├── backup.bat           # Windows 1-click backup batch script
+│   ├── deploy.bat           # Windows 1-click deployment batch script
 │   └── merge-to-main.bat    # Windows 1-click branch merge batch script
 ├── test-scripts/            # Diagnostic & compatibility test scripts
 │   ├── README.md            # Documentation & screenshot for test scripts
@@ -139,6 +141,7 @@ If you have `make` installed, run these 1-word commands from your terminal:
 * **`make shell`**: Open interactive bash shell inside webserver container (alias: `make exec`).
 * **`make clear-cache`**: Clear Grav CMS cache inside container (alias: `make cc`).
 * **`make grav-install`**: Run `bin/grav install` to install core dependencies & plugins inside container.
+* **`make deploy`**: Deploy plugins, themes & config to target live environment.
 * **`make test`**: Deploy unified diagnostic test page to `http://localhost/test.php`.
 * **`make clean-test`**: Remove diagnostic test page from `src/`.
 * **`make backup`**: Run interactive backup helper with logging and pre-flight warning checks.
@@ -151,6 +154,7 @@ For Windows Command Prompt / PowerShell users:
 * **`scripts\rebuild.bat`**: Double-click to rebuild stack without cache.
 * **`scripts\shell.bat`**: Double-click to enter container bash shell.
 * **`scripts\backup.bat`**: Double-click or run from CMD to perform interactive backups with logging.
+* **`scripts\deploy.bat`**: Deploy `src/user` directory to target live site directory.
 * **`scripts\merge-to-main.bat`**: Merge feature branch into `main` excluding `src/user/pages/`.
 
 ### 3. Linux / macOS (Shell Scripts)
@@ -160,7 +164,46 @@ For terminal users on Linux / macOS / WSL:
 * **`./rebuild.sh`**: Rebuild PHP image & restart stack.
 * **`./shell.sh`**: Enter webserver container bash shell.
 * **`./backup.sh`**: Run backup helper script.
+* **`./deploy.sh`**: Deploy plugins, themes, and configuration to target environment (`./deploy.sh --dry-run` for dry run, `./deploy.sh --ftp` for FTP mode).
 * **`./merge-to-main.sh`**: Merge current or specified branch into `main` excluding `src/user/pages/`.
+
+---
+
+## Automated Deployments & Transport Options (RSYNC & FTP)
+
+The deployment tool (`deploy.sh`, `make deploy`, `make deploy-ftp`) supports RSYNC and FTP transport modes, automatic environment variable reading from `.env`, and timestamped per-run log generation.
+
+### Key Deployment Features:
+* **Per-Run Log Files**: Every execution automatically writes detailed console and transfer output to `logs/deployments/deploy_YYYYMMDD_HHMMSS.log`.
+* **Environment Configuration (`.env`)**:
+  ```ini
+  DEPLOY_MODE=rsync             # Default mode: rsync or ftp
+  DEPLOY_SRC_DIR=./src/user     # Source path
+  DEPLOY_DEST_DIR=/target/path  # Target path for local/rsync mode
+  DEPLOY_LOG_DIR=./logs/deployments # Deployment run logs output path
+  FTP_HOST=ftp.example.com      # FTP server host
+  FTP_PORT=21                   # FTP server port
+  FTP_USER=ftp_user             # FTP username
+  FTP_PASS=ftp_pass             # FTP password
+  FTP_REMOTE_DIR=/public_html/user # Remote FTP directory path
+  FTP_SSL=false                 # Set true for FTPS (TLS)
+  ```
+* **FTP Mode**: Uses `lftp` if available or seamless built-in Python 3 `ftplib` fallback engine.
+
+### Usage Commands:
+```bash
+# Standard RSYNC Deployment (Reads .env settings)
+./deploy.sh
+
+# FTP Deployment Mode
+./deploy.sh --ftp    # or: make deploy-ftp
+
+# Perform Dry-Run (No files modified)
+./deploy.sh --dry-run
+
+# Include src/user/pages/ in deployment
+./deploy.sh --include-pages
+```
 
 ---
 
@@ -226,6 +269,21 @@ The stack uses **Docker Compose Profiles** to easily enable or disable MariaDB a
    * `COMPOSE_PROFILES=` — Lightweight mode (Apache Webserver only).
 3. Run `docker compose up -d` to apply changes.
 4. **Adminer Database Manager**: Access it at [http://localhost:8080](http://localhost:8080) (or via `ADMINER_PORT`).
+
+> **⚠️ Security Warning — Adminer in Production**
+>
+> Adminer exposes a database login page on port `8080`. While it requires valid database credentials to connect, **leaving it enabled in production is not recommended** due to:
+> - **Port exposure** — By default, port `8080` binds to all interfaces (`0.0.0.0`), making the login page accessible from the internet.
+> - **Brute-force risk** — No built-in rate limiting or IP restriction on login attempts.
+> - **No HTTPS** — Without Traefik TLS, database credentials are transmitted in plaintext.
+>
+> **Recommendations:**
+> - **Production**: Keep `COMPOSE_PROFILES=` empty (or `COMPOSE_PROFILES=db` without `adminer`). Only enable Adminer temporarily for maintenance.
+> - **Localhost only**: If you must run Adminer, bind it to localhost by changing the port mapping in `docker-compose.yml` to `"127.0.0.1:${ADMINER_PORT:-8080}:8080"`, then access via SSH tunnel:
+>   ```bash
+>   ssh -L 8080:127.0.0.1:8080 user@your-server
+>   ```
+> - **With Traefik**: Use the commented Traefik labels in `docker-compose.yml` to enable HTTPS and restrict access behind TLS.
 
 ---
 

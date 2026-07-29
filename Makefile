@@ -3,7 +3,7 @@
 # Directory: /home/milkboy/Documents/grav-lamp-docker
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install test clean-test backup merge-main help
+.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install deploy deploy-ftp test clean-test backup merge-main help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -57,13 +57,21 @@ exec: shell
 
 ## 🧹 Clear Grav CMS cache inside webserver container
 clear-cache:
-	docker compose exec webserver bin/grav clear-cache
+	docker compose exec webserver php bin/grav clearcache
 
 cc: clear-cache
 
 ## 📦 Install Grav CMS core dependencies & plugins inside container
 grav-install:
-	docker compose exec webserver bin/grav install
+	docker compose exec webserver php bin/grav install
+
+## 🚀 Deploy user plugins, themes, and configuration to target environment (RSYNC or default)
+deploy: env
+	./deploy.sh
+
+## 📡 Deploy user plugins, themes, and configuration to target environment via FTP
+deploy-ftp: env
+	./deploy.sh --ftp
 
 ## 🧪 Deploy diagnostic test page to src/test.php
 test:
@@ -99,6 +107,8 @@ help:
 	@echo "  make shell       - Open bash shell in webserver container"
 	@echo "  make clear-cache - Clear Grav CMS cache (alias: make cc)"
 	@echo "  make grav-install - Install Grav CMS dependencies & core plugins"
+	@echo "  make deploy      - Deploy plugins, themes & config to target environment"
+	@echo "  make deploy-ftp  - Deploy plugins, themes & config via FTP transport"
 	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
 	@echo "  make clean-test  - Remove diagnostic page from src/"
 	@echo "  make backup      - Interactive backup helper (WWW files, DB, or both)"
