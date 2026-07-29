@@ -90,12 +90,13 @@ innodb_buffer_pool_size = 512M
 
 ---
 
-### Key `.env` Variables:
+### Key `.env` Variables & PHP Version Options:
 ```ini
-# Base Image Selection
+# Base Image & PHP Version Selection
+# Options: php:8.3-apache (default), php:8.2-apache, php:8.1-apache, php:8.0-apache, php:7.4-apache
 PHP_IMAGE=php:8.3-apache
 
-# Profiles (db,adminer)
+# Profiles (db,adminer,proxy)
 COMPOSE_PROFILES=db,adminer
 
 # Ports
@@ -116,6 +117,21 @@ FTP_PASS=ftp_password
 FTP_REMOTE_DIR=/public_html/user
 FTP_SSL=false
 ```
+
+### Changing PHP Version (`PHP_IMAGE`)
+
+To switch your webserver container to a different PHP runtime version (e.g. PHP 8.3, 8.2, 8.1, 8.0, or legacy 7.4):
+
+1. Open `.env` and set `PHP_IMAGE` to your desired PHP version tag:
+   ```ini
+   PHP_IMAGE=php:8.2-apache
+   ```
+2. Rebuild the container image to compile PHP extensions for the selected version:
+   ```bash
+   make rebuild
+   # or on Linux/macOS: ./rebuild.sh
+   # or on Windows: scripts\rebuild.bat
+   ```
 
 ---
 

@@ -17,6 +17,7 @@ make up
 # or on Linux/macOS: ./start.sh
 # or on Windows: scripts\start.bat
 ```
+*(To switch PHP versions, set `PHP_IMAGE=php:8.2-apache` or `php:7.4-apache` in `.env` and run `make rebuild`.)*
 
 ### 2. Access Your Application
 Open your browser at:
