@@ -52,6 +52,44 @@ Before starting the containers, set up your local configuration files:
 
 *Note: Running `make up`, `./start.sh`, or `./rebuild.sh` automatically copies missing `.env`, `docker-compose.yml`, and `config/` override files from their `.example` templates.*
 
+### Quick Guide: Customizing Configuration Files (`config/`)
+
+All service configurations mounted into container runtimes are stored under the `config/` directory. Edit these files using any text editor (VS Code, Nano, Vim) to customize service behavior:
+
+#### 1. Customizing PHP Settings (`config/php/custom.ini`)
+Edit `config/php/custom.ini` to adjust PHP memory limits, file upload limits, or OPcache settings:
+```ini
+; Increase memory limit and file upload limits
+memory_limit = 512M
+upload_max_filesize = 64M
+post_max_size = 64M
+max_execution_time = 600
+```
+*Apply changes:* Run `make restart` (or `make up`).
+
+#### 2. Customizing Apache VirtualHost (`config/apache/000-default.conf`)
+Edit `config/apache/000-default.conf` to add custom Apache rewrite rules, headers, or domain aliases:
+```apache
+<VirtualHost *:80>
+    ServerName example.com
+    ServerAlias www.example.com
+    DocumentRoot /var/www/html
+    ...
+</VirtualHost>
+```
+*Apply changes:* Run `docker compose exec webserver apache2ctl graceful` (or `make restart`).
+
+#### 3. Customizing MariaDB Database Server (`config/mysql/custom.cnf`)
+Edit `config/mysql/custom.cnf` to adjust database buffer pool sizes or maximum connections:
+```ini
+[mysqld]
+max_connections = 200
+innodb_buffer_pool_size = 512M
+```
+*Apply changes:* Run `make restart`.
+
+---
+
 ### Key `.env` Variables:
 ```ini
 # Base Image Selection
