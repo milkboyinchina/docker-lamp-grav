@@ -45,6 +45,8 @@ make clear-cache
 | **Clear Grav Cache** | `make clear-cache` | `docker compose exec webserver php bin/grav clearcache` | N/A |
 | **Deploy (RSYNC)** | `make deploy` | `./deploy.sh` | `scripts\deploy.bat` |
 | **Deploy (FTP)** | `make deploy-ftp` | `./deploy.sh --ftp` | N/A |
+| **Upload Article** | `make upload-article` | `./upload-article.sh` | `scripts\upload-article.bat` |
+| **Upload All Pages**| `make upload-pages` | `./upload-article.sh --all` | `scripts\upload-article.bat /E` |
 | **Run Backups** | `make backup` | `./backup.sh` | `scripts\backup.bat` |
 | **Merge Feature Branch**| `make merge-main` | `./merge-to-main.sh` | `scripts\merge-to-main.bat` |
 
@@ -54,9 +56,9 @@ make clear-cache
 
 ---
 
-## 📦 Automated Deployments (RSYNC & FTP)
+## 📦 Automated Deployments & Article Uploading (RSYNC & FTP)
 
-Deploy your application plugins, themes, and configuration from development to production with per-run log file generation:
+Deploy your application plugins, themes, and configuration, or upload individual articles/pages from development to production with per-run log file generation:
 
 ```bash
 # Standard RSYNC Deployment (Configured via .env)
@@ -65,11 +67,19 @@ make deploy
 # FTP Transport Deployment
 make deploy-ftp
 
+# Upload specific article/page interactively or directly
+make upload-article         # Interactive menu
+./upload-article.sh 05.faq  # Direct subfolder upload
+
+# Upload ALL articles and pages to production
+make upload-pages
+
 # Preview changes (Dry Run)
 ./deploy.sh --dry-run
+./upload-article.sh --dry-run 05.faq
 ```
 
-*Every execution creates a timestamped log in `logs/deployments/deploy_YYYYMMDD_HHMMSS.log`.*
+*Every execution creates a timestamped log in `logs/deployments/`.*
 
 ---
 
@@ -86,6 +96,7 @@ grav-lamp/
 ├── env.example              # Template for environment configuration
 ├── Makefile                 # Cross-platform 1-word command shortcuts
 ├── deploy.sh                # Automated deployment script (RSYNC & FTP)
+├── upload-article.sh        # Article / Page uploader script (RSYNC & FTP)
 ├── backup.sh                # Automated WWW & MariaDB backup script
 ├── merge-to-main.sh         # Helper script to merge branch into main (excluding pages)
 ├── start.sh / stop.sh       # Container control shell scripts

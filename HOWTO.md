@@ -221,34 +221,46 @@ make clean-test  # Removes test page
 
 ---
 
-## 5. Automated Deployments (RSYNC & FTP)
+## 5. Automated Deployments & Article Uploading (RSYNC & FTP)
 
-The deployment tool (`deploy.sh`, `make deploy`, `make deploy-ftp`) synchronizes `src/user/` (plugins, themes, configuration) to a target live environment while preserving production pages and runtime data.
+The deployment suite (`deploy.sh`, `upload-article.sh`, `make deploy`, `make upload-article`) synchronizes code and articles to target live environments while generating timestamped logs in `logs/deployments/`.
+
+### 🚀 Full Deployment (`deploy.sh`)
+Synchronizes `src/user/` (plugins, themes, configuration) to a target live environment while preserving production pages and runtime data.
+
+```bash
+# Standard RSYNC Deployment (Reads .env variables)
+make deploy          # or: ./deploy.sh
+
+# FTP Transport Deployment
+make deploy-ftp      # or: ./deploy.sh --ftp
+
+# Dry-Run Mode (Preview changes without modifying files)
+./deploy.sh --dry-run
+```
+
+---
+
+### 📝 Article & Page Uploading (`upload-article.sh`)
+Upload specific articles, blog posts, or page folders from local `src/user/pages/` to production without running a full stack deployment.
+
+```bash
+# 1. Interactive selection mode (lists available local page folders)
+make upload-article  # or: ./upload-article.sh
+
+# 2. Upload a specific article or subfolder directly
+./upload-article.sh 05.faq
+./upload-article.sh blog/my-new-post
+
+# 3. Upload ALL articles and pages to production
+make upload-pages    # or: ./upload-article.sh --all
+
+# 4. Dry-run mode for article upload
+./upload-article.sh --dry-run 05.faq
+```
 
 ### Per-Run Log File Generation
-Every deployment automatically creates a detailed execution log in `logs/deployments/deploy_YYYYMMDD_HHMMSS.log`.
-
-### Command Examples:
-```bash
-# 1. Standard RSYNC Deployment (Reads .env variables)
-make deploy
-# or:
-./deploy.sh
-
-# 2. FTP / FTPS Transport Deployment
-make deploy-ftp
-# or:
-./deploy.sh --ftp
-
-# 3. Dry-Run Mode (Preview changes without modifying files)
-./deploy.sh --dry-run
-
-# 4. Include src/user/pages/ in deployment
-./deploy.sh --include-pages
-
-# 5. Deploy to a custom destination path
-./deploy.sh /path/to/target/src/user
-```
+Every deployment and article upload automatically creates a detailed execution log in `logs/deployments/` (e.g. `deploy_YYYYMMDD_HHMMSS.log` or `upload_article_YYYYMMDD_HHMMSS.log`).
 
 ---
 

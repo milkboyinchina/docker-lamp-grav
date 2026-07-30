@@ -89,6 +89,14 @@ deploy: env
 deploy-ftp: env
 	./deploy.sh --ftp
 
+## 📝 Upload single article or select interactively from local to target environment
+upload-article: env
+	./upload-article.sh
+
+## 📑 Upload ALL articles and pages from local to target environment
+upload-pages: env
+	./upload-article.sh --all
+
 ## 🧪 Deploy diagnostic test page to src/test.php
 test:
 	cp test-scripts/test.php.example src/test.php
@@ -112,21 +120,23 @@ help:
 	@echo "======================================================================"
 	@echo "   Docker LAMP Stack - Cross-Platform Command Helper"
 	@echo "======================================================================"
-	@echo "  make up          - Start stack in background (auto-creates .env)"
-	@echo "  make stop        - Stop running containers"
-	@echo "  make down        - Stop & remove containers and networks"
-	@echo "  make restart     - Restart all stack containers"
-	@echo "  make rebuild     - Rebuild PHP image without cache & restart"
-	@echo "  make logs        - Stream live webserver logs"
-	@echo "  make logs-all    - Stream live logs from all services"
-	@echo "  make status      - Display status of running containers"
-	@echo "  make shell       - Open bash shell in webserver container"
-	@echo "  make clear-cache - Clear Grav CMS cache (alias: make cc)"
+	@echo "  make up           - Start stack in background (auto-creates .env)"
+	@echo "  make stop         - Stop running containers"
+	@echo "  make down         - Stop & remove containers and networks"
+	@echo "  make restart      - Restart all stack containers"
+	@echo "  make rebuild      - Rebuild PHP image without cache & restart"
+	@echo "  make logs         - Stream live webserver logs"
+	@echo "  make logs-all     - Stream live logs from all services"
+	@echo "  make status       - Display status of running containers"
+	@echo "  make shell        - Open bash shell in webserver container"
+	@echo "  make clear-cache  - Clear Grav CMS cache (alias: make cc)"
 	@echo "  make grav-install - Install Grav CMS dependencies & core plugins"
-	@echo "  make deploy      - Deploy plugins, themes & config to target environment"
-	@echo "  make deploy-ftp  - Deploy plugins, themes & config via FTP transport"
-	@echo "  make test        - Deploy diagnostic page (http://localhost/test.php)"
-	@echo "  make clean-test  - Remove diagnostic page from src/"
-	@echo "  make backup      - Interactive backup helper (WWW files, DB, or both)"
-	@echo "  make merge-main  - Merge branch into main excluding src/user/pages"
+	@echo "  make deploy       - Deploy plugins, themes & config to target environment"
+	@echo "  make deploy-ftp   - Deploy plugins, themes & config via FTP transport"
+	@echo "  make upload-article - Upload specific article/page interactively"
+	@echo "  make upload-pages - Upload ALL articles and pages to target environment"
+	@echo "  make test         - Deploy diagnostic page (http://localhost/test.php)"
+	@echo "  make clean-test   - Remove diagnostic page from src/"
+	@echo "  make backup       - Interactive backup helper (WWW files, DB, or both)"
+	@echo "  make merge-main   - Merge branch into main excluding src/user/pages"
 	@echo "======================================================================"
