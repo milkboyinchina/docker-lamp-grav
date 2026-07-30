@@ -153,7 +153,7 @@ echo -e "${BLUE}----------------------------------------------------------------
 echo -e "${BLUE}ℹ️ Step 1/3: Synchronizing files via ${MODE^^}...${NC}"
 
 if [ "${MODE}" = "rsync" ]; then
-    RSYNC_OPTS=("-avz" "--exclude=.git" "--exclude=cache" "--exclude=data")
+    RSYNC_OPTS=("-rlz" "--omit-dir-times" "--no-perms" "--no-owner" "--no-group" "--exclude=.git" "--exclude=cache" "--exclude=data")
     if [ "$INCLUDE_PAGES" = false ]; then
         RSYNC_OPTS+=("--exclude=pages")
     fi
