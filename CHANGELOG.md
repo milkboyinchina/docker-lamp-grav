@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Optional Cloudflare Tunnel (`tunnel` profile, `make logs-tunnel`): outbound-only
+  edge access via `CLOUDFLARE_TUNNEL_TOKEN` + `TUNNEL_ORIGIN_URL` in `.env`.
 - Host port publishing overlay (`docker-compose.direct.yml` + example) with
   `COMPOSE_FILE` switch in `.env`: direct standalone access vs proxied mode
   (NPM / Traefik / tunnel) with zero published host ports. `NPM_ADMIN_BIND`

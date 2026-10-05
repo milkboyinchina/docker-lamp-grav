@@ -143,6 +143,22 @@ services:
       - grav-network
       # - external-net
 
+  # Cloudflare Tunnel (outbound-only edge access, no open firewall ports)
+  tunnel:
+    # Enabled via COMPOSE_PROFILES=tunnel (typically with proxy) in .env file
+    profiles: ["tunnel"]
+    image: cloudflare/cloudflared:latest
+    container_name: grav-lamp-tunnel
+    # Restart policy configured via RESTART_POLICY in .env (unless-stopped, always, on-failure, no)
+    restart: ${RESTART_POLICY:-unless-stopped}
+    # Origin is fully .env-driven (--url works with token runs when the
+    # dashboard defines no ingress rules). Token must be set in .env.
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN:-} --url ${TUNNEL_ORIGIN_URL:-http://proxy-manager:80}
+    depends_on:
+      - proxy-manager
+    networks:
+      - grav-network
+
 networks:
   # Default internal bridge network for container-to-container communication
   grav-network:

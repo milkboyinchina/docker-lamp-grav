@@ -4,7 +4,7 @@
 # No host folder names are hardcoded, so renaming this directory is safe.
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install deploy deploy-user deploy-pages deploy-user-all deploy-src deploy-all deploy-ftp test clean-test backup merge-main help
+.PHONY: up down stop restart rebuild logs logs-tunnel logs-all status shell exec clear-cache cc grav-install deploy deploy-user deploy-pages deploy-user-all deploy-src deploy-all deploy-ftp test clean-test backup merge-main help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -69,6 +69,10 @@ rebuild: env
 ## 📋 Stream live container logs for webserver
 logs:
 	docker compose logs -f webserver
+
+## 📋 Stream live container logs for Cloudflare Tunnel
+logs-tunnel:
+	docker compose logs -f tunnel
 
 ## 📋 Stream live container logs for all services
 logs-all:
@@ -174,6 +178,7 @@ help:
 	@echo "  make restart          - Restart all stack containers"
 	@echo "  make rebuild          - Rebuild PHP image without cache & restart"
 	@echo "  make logs             - Stream live webserver logs"
+	@echo "  make logs-tunnel      - Stream live Cloudflare Tunnel logs"
 	@echo "  make logs-all         - Stream live logs from all services"
 	@echo "  make status           - Display status of running containers"
 	@echo "  make shell            - Open bash shell in webserver container"

@@ -445,6 +445,30 @@ NPM_LETSENCRYPT_PATH=./etc/letsencrypt
 
 ---
 
+### Cloudflare Tunnel (Zero-Trust Edge Access)
+
+Expose the stack through Cloudflare's edge without opening any firewall ports. The `tunnel` container dials out to Cloudflare and forwards to NPM.
+
+#### 1. Create the tunnel (one-time, in Cloudflare dashboard)
+1. Zero Trust → Networks → Tunnels → Create tunnel (Cloudflared type).
+2. Copy the tunnel **token**.
+3. No dashboard ingress rules are needed: this stack passes the origin via `--url`, which applies when the dashboard defines no ingress rules.
+
+#### 2. Configure `.env`
+```ini
+COMPOSE_PROFILES=proxy,tunnel
+CLOUDFLARE_TUNNEL_TOKEN=<paste-token-here>
+TUNNEL_ORIGIN_URL=http://proxy-manager:80
+```
+Change the port in `TUNNEL_ORIGIN_URL` if NPM ever listens on a different internal port. Combine with proxied mode (`COMPOSE_FILE=docker-compose.yml`) for zero published host ports.
+
+#### 3. Start and verify
+```bash
+make up
+make logs-tunnel   # expect: "Registered tunnel connection"
+```
+If the tunnel container exits immediately, the token is empty or invalid — check `make logs-tunnel`. Point your Cloudflare DNS hostname at the tunnel and create one NPM proxy host per site hostname → `<service>:80`.
+
 ### Direct vs Proxied Host Ports (`COMPOSE_FILE`)
 
 Host port publishing is controlled by which Compose files are loaded (set `COMPOSE_FILE` in `.env`):
