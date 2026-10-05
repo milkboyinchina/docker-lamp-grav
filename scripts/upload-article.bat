@@ -8,7 +8,12 @@ IF NOT EXIST .env (
 FOR /F "tokens=1* delims==" %%A IN ('findstr /V "^#" .env') DO SET %%A=%%B
 
 IF "%DEPLOY_SRC_DIR%"=="" SET DEPLOY_SRC_DIR=.\src\user
-IF "%DEPLOY_DEST_DIR%"=="" SET DEPLOY_DEST_DIR=C:\docker\docker-lamp-grav\src\user
+REM No hardcoded DEPLOY_DEST_DIR fallback: it must come from .env so that
+REM renaming this directory can never recreate a stale folder.
+IF "%DEPLOY_DEST_DIR%"=="" (
+    echo ERROR: DEPLOY_DEST_DIR is not set. Configure it in .env.
+    exit /b 1
+)
 IF "%DEPLOY_LOG_DIR%"=="" SET DEPLOY_LOG_DIR=.\logs\deployments
 
 SET SRC_PAGES=%DEPLOY_SRC_DIR%\pages

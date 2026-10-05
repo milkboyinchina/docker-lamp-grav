@@ -1,6 +1,7 @@
 # ==============================================================================
 # Cross-Platform Docker Compose Helper Makefile (Linux, macOS, Windows)
-# Directory: /home/milkboy/Documents/grav-lamp-docker
+# NOTE: All paths are relative to this directory or come from .env.
+# No host folder names are hardcoded, so renaming this directory is safe.
 # ==============================================================================
 
 .PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install deploy deploy-user deploy-pages deploy-user-all deploy-src deploy-all deploy-ftp test clean-test backup merge-main help
@@ -73,12 +74,25 @@ shell:
 exec: shell
 
 ## 🧹 Clear Grav CMS cache on BOTH source container and target environment
+## Target cache dir is derived from DEPLOY_DEST_DIR in .env (never hardcoded,
+## so renaming this directory cannot recreate a stale folder).
 clear-cache:
 	docker compose exec webserver php bin/grav clearcache
-	@if [ -d /mnt/1.milkboy/docker/docker-lamp-grav/src/cache ]; then \
-		echo "Clearing target VPS cache directory..."; \
-		rm -rf /mnt/1.milkboy/docker/docker-lamp-grav/src/cache/* 2>/dev/null || true; \
-		echo "✅ Target VPS cache cleared!"; \
+	@if [ -f .env ]; then set -a; . ./.env; set +a; fi; \
+	DEST="$${DEPLOY_DEST_DIR:-}"; DEST="$${DEST%/}"; \
+	case "$$DEST" in \
+		*/user) BASE="$${DEST%/user}";; \
+		*/user/*) BASE="";; \
+		*) BASE="";; \
+	esac; \
+	if [ -n "$$BASE" ] && [ -d "$$BASE/src/cache" ]; then \
+		echo "Clearing target cache directory ($$BASE/src/cache)..."; \
+		rm -rf "$$BASE/src/cache"/* 2>/dev/null || true; \
+		echo "✅ Target cache cleared!"; \
+	elif [ -n "$$DEST" ]; then \
+		echo "Target cache dir not found under $$DEST - skipping (no folders created)."; \
+	else \
+		echo "DEPLOY_DEST_DIR not set - skipping target cache clear (no folders created)."; \
 	fi
 
 cc: clear-cache

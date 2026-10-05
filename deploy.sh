@@ -117,10 +117,33 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Calculate Source & Target Base Paths
-TARGET_BASE_DIR="${DEPLOY_TARGET_BASE:-/mnt/1.milkboy/docker/docker-lamp-grav}"
-APP_SRC_BASE="${SRC_PATH:-/home/milkboy/Documents/web-app/personal-cv-site}"
+# NOTE: No hardcoded host paths here on purpose. If this repository directory
+# is renamed, scripts must never recreate the old folder name. The target
+# location must come from DEPLOY_TARGET_BASE, DEPLOY_DEST_DIR (.env), or an
+# explicit DESTINATION_PATH argument. Fail fast instead of writing to a
+# stale default path.
+TARGET_BASE_DIR="${DEPLOY_TARGET_BASE:-}"
+APP_SRC_BASE="${SRC_PATH:-${SCRIPT_DIR}/src}"
 if [ ! -d "${APP_SRC_BASE}" ] && [ -d "${SCRIPT_DIR}/src" ]; then
     APP_SRC_BASE="${SCRIPT_DIR}/src"
+fi
+
+# Derive the target base from DEPLOY_DEST_DIR when DEPLOY_TARGET_BASE is unset.
+# DEPLOY_DEST_DIR conventionally points at '<base>/src/user[/...]'.
+if [ -z "${TARGET_BASE_DIR}" ] && [ -z "${CUSTOM_DEST}" ] && [ -n "${DEPLOY_DEST_DIR:-}" ]; then
+    _DEPLOY_DEST_TRIMMED="${DEPLOY_DEST_DIR%/}"
+    case "${_DEPLOY_DEST_TRIMMED}" in
+        */src/user/pages|*/src/user/pages/*)
+            TARGET_BASE_DIR="${_DEPLOY_DEST_TRIMMED%%/src/user/pages*}"
+            ;;
+        */src/user|*/src/user/*)
+            TARGET_BASE_DIR="${_DEPLOY_DEST_TRIMMED%%/src/user*}"
+            ;;
+        */src|*/src/*)
+            TARGET_BASE_DIR="${_DEPLOY_DEST_TRIMMED%%/src*}"
+            ;;
+    esac
+    unset _DEPLOY_DEST_TRIMMED
 fi
 
 case "${TARGET_SCOPE}" in
@@ -140,6 +163,15 @@ case "${TARGET_SCOPE}" in
         SCOPE_LABEL="user folder (Plugins, Themes, Config)"
         ;;
 esac
+
+# Fail fast when no target is configured (rsync mode). Never fall back to a
+# hardcoded path, which would recreate a stale folder after a rename.
+if [ "${MODE}" = "rsync" ] && [ -z "${CUSTOM_DEST}" ] && [ -z "${TARGET_BASE_DIR}" ]; then
+    echo -e "${RED}❌ ERROR: No deployment target configured.${NC}"
+    echo -e "Set DEPLOY_TARGET_BASE in .env (e.g. DEPLOY_TARGET_BASE=/mnt/1.milkboy/docker/<stack-dir>)"
+    echo -e "or pass an explicit destination: ./deploy.sh --target user /path/to/target"
+    exit 1
+fi
 
 # Ensure source directory exists
 if [ ! -d "${SRC_DEPLOY_DIR}" ]; then
@@ -303,19 +335,21 @@ if [ -d "${LOCAL_CACHE_DIR}" ]; then
     echo -e "${GREEN}✅ Source cache directory purged successfully!${NC}"
 fi
 
-# 2. Clear Target Environment Cache
-TARGET_CACHE_DIR="${TARGET_BASE_DIR}/src/cache"
+# 2. Clear Target Environment Cache (only when a target base is configured)
+if [ -n "${TARGET_BASE_DIR}" ]; then
+    TARGET_CACHE_DIR="${TARGET_BASE_DIR}/src/cache"
 
-if [ -d "${TARGET_CACHE_DIR}" ]; then
-    echo -e "${BLUE}ℹ️ Clearing TARGET Grav CMS cache directory (${TARGET_CACHE_DIR})...${NC}"
-    rm -rf "${TARGET_CACHE_DIR:?}"/* 2>/dev/null || true
-    echo -e "${GREEN}✅ Target Grav cache directory cleared successfully!${NC}"
-fi
+    if [ -d "${TARGET_CACHE_DIR}" ]; then
+        echo -e "${BLUE}ℹ️ Clearing TARGET Grav CMS cache directory (${TARGET_CACHE_DIR})...${NC}"
+        rm -rf "${TARGET_CACHE_DIR:?}"/* 2>/dev/null || true
+        echo -e "${GREEN}✅ Target Grav cache directory cleared successfully!${NC}"
+    fi
 
-# Touch target system configuration so Grav automatically rebuilds cache
-if [ -f "${TARGET_BASE_DIR}/src/user/config/system.yaml" ]; then
-    touch "${TARGET_BASE_DIR}/src/user/config/system.yaml" 2>/dev/null || true
-    echo -e "${GREEN}✅ Target system.yaml touched to trigger cache invalidation!${NC}"
+    # Touch target system configuration so Grav automatically rebuilds cache
+    if [ -f "${TARGET_BASE_DIR}/src/user/config/system.yaml" ]; then
+        touch "${TARGET_BASE_DIR}/src/user/config/system.yaml" 2>/dev/null || true
+        echo -e "${GREEN}✅ Target system.yaml touched to trigger cache invalidation!${NC}"
+    fi
 fi
 
 # ==============================================================================
@@ -323,7 +357,7 @@ fi
 # ==============================================================================
 echo ""
 echo -e "${BLUE}ℹ️ Step 3/3: Running health check...${NC}"
-HEALTH_URL="http://localhost"
+HEALTH_URL="http://localhost:${HTTP_PORT:-80}"
 if command -v curl >/dev/null 2>&1; then
     HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${HEALTH_URL}" || echo "000")
     if [ "${HTTP_STATUS}" = "200" ] || [ "${HTTP_STATUS}" = "301" ] || [ "${HTTP_STATUS}" = "302" ]; then

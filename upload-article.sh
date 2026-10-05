@@ -32,8 +32,16 @@ if [ -f "${SCRIPT_DIR}/.env" ]; then
 fi
 
 # Environment-based defaults with fallbacks
-SRC_PAGES_DIR="${SCRIPT_DIR}/src/user/pages"
-DEFAULT_DEST_DIR="${DEPLOY_DEST_DIR:-/mnt/1.milkboy/docker/docker-lamp-grav/src/user}"
+# NOTE: No hardcoded host paths here on purpose. If this repository directory
+# is renamed, scripts must never recreate the old folder name.
+# Source pages: prefer the mounted app root (SRC_PATH), fall back to ./src.
+_APP_BASE="${SRC_PATH:-${SCRIPT_DIR}/src}"
+if [ ! -d "${_APP_BASE}/user/pages" ] && [ -d "${SCRIPT_DIR}/src/user/pages" ]; then
+    _APP_BASE="${SCRIPT_DIR}/src"
+fi
+SRC_PAGES_DIR="${_APP_BASE}/user/pages"
+unset _APP_BASE
+DEFAULT_DEST_DIR="${DEPLOY_DEST_DIR:-}"
 DEST_PAGES_DIR="${DEFAULT_DEST_DIR%/}/pages"
 LOG_DIR="${DEPLOY_LOG_DIR:-${SCRIPT_DIR}/logs/deployments}"
 MODE="${DEPLOY_MODE:-rsync}"
@@ -97,6 +105,14 @@ done
 # Ensure source pages directory exists
 if [ ! -d "${SRC_PAGES_DIR}" ]; then
     echo -e "${RED}❌ ERROR: Source pages directory '${SRC_PAGES_DIR}' does not exist.${NC}"
+    exit 1
+fi
+
+# Fail fast when no destination is configured (rsync mode). Never fall back
+# to a hardcoded path, which would recreate a stale folder after a rename.
+if [ "${MODE}" = "rsync" ] && [ -z "${DEFAULT_DEST_DIR}" ]; then
+    echo -e "${RED}❌ ERROR: No upload destination configured.${NC}"
+    echo -e "Set DEPLOY_DEST_DIR in .env (e.g. DEPLOY_DEST_DIR=/mnt/1.milkboy/docker/<stack-dir>/src/user)"
     exit 1
 fi
 
@@ -337,7 +353,7 @@ fi
 # ==============================================================================
 echo ""
 echo -e "${BLUE}ℹ️ Step 3/3: Running health check...${NC}"
-HEALTH_URL="http://localhost"
+HEALTH_URL="http://localhost:${HTTP_PORT:-80}"
 if command -v curl >/dev/null 2>&1; then
     HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${HEALTH_URL}" || echo "000")
     if [ "${HTTP_STATUS}" = "200" ] || [ "${HTTP_STATUS}" = "301" ] || [ "${HTTP_STATUS}" = "302" ]; then

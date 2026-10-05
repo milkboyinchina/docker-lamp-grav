@@ -4,7 +4,7 @@ A lightweight, high-performance, and developer-friendly Docker environment runni
 
 > [!NOTE]
 > **📖 Full User Manual & Advanced Usage Guide**  
-> For complete step-by-step instructions, deployment details (RSYNC & FTP), backup operations, database management, and branch workflows, please read the **[HOWTO User Manual](file:///home/milkboy/Documents/docker-stacks-dev/docker-lamp-grav/HOWTO.md)** (`HOWTO.md`).
+> For complete step-by-step instructions, deployment details (RSYNC & FTP), backup operations, database management, and branch workflows, please read the **[HOWTO User Manual](HOWTO.md)** (`HOWTO.md`).
 
 ---
 
@@ -25,7 +25,7 @@ Open your browser at:
 - **Adminer Database Manager**: [http://localhost:8080](http://localhost:8080) (when `COMPOSE_PROFILES=db,adminer` in `.env`)
 - **Nginx Proxy Manager Admin UI**: [http://localhost:81](http://localhost:81) (when `COMPOSE_PROFILES=...,proxy` in `.env`, initial login: `admin@example.com` / `changeme`)
 
-*(Note: Stack uses `grav-network` bridge by default. Comment out `ports:` if routing traffic through Traefik or Nginx Proxy Manager; see [HOWTO.md](file:///home/milkboy/Documents/docker-stacks-dev/docker-lamp-grav/HOWTO.md) for external network setup.)*
+*(Note: Stack uses `grav-network` bridge by default. Comment out `ports:` if routing traffic through Traefik or Nginx Proxy Manager; see [HOWTO.md](HOWTO.md) for external network setup.)*
 
 ### 3. Clear Grav Cache
 ```bash
@@ -132,4 +132,4 @@ grav-lamp/
 
 ## 🤝 Support & Documentation
 
-For detailed information on configuring reverse proxies (Traefik / Nginx Proxy Manager), custom domain binding, database restoration, or AI Chatbot integration, see **[HOWTO.md](file:///home/milkboy/Documents/docker-stacks-dev/docker-lamp-grav/HOWTO.md)**.
+For detailed information on configuring reverse proxies (Traefik / Nginx Proxy Manager), custom domain binding, database restoration, or AI Chatbot integration, see **[HOWTO.md](HOWTO.md)**.

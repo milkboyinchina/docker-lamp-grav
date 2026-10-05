@@ -1,3 +1,7 @@
+# Stable Compose project name (independent of host folder name).
+# Renaming this repository directory will NOT orphan networks/volumes.
+name: grav-lamp
+
 services:
   # LAMP Web Application
   webserver:
