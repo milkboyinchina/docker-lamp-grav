@@ -94,6 +94,12 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # ==========================================
+# Agent instructions (machine-local/shared, never committed)
+AGENTS.md
+.opencode/
+.agents/
+
+# ==========================================
 # Operating System, IDEs & AI Tools
 # ==========================================
 # macOS
