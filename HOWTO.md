@@ -206,6 +206,71 @@ make clear-cache  # alias: make cc
 docker compose exec webserver php bin/grav clearcache
 ```
 
+### Grav Scheduler & System Cron (`crontab`)
+Grav CMS includes an internal job scheduler for automated cache purges, backups, and scheduled tasks. The `cron` daemon runs inside the `webserver` container with a crontab entry configured for the `www-data` user.
+
+#### 1. How to Add `bin/grav scheduler` to Crontab
+In this Docker stack, the container automatically adds the scheduler entry for `www-data` on boot. If you are configuring it manually or setting up a new server environment, use any of these methods:
+
+- **Method A: Automated Grav CLI Setup (Recommended)**
+  Run the Grav CLI install command inside the web container:
+  ```bash
+  docker compose exec webserver php bin/grav scheduler -i
+  ```
+
+- **Method B: One-Line Non-Interactive Command**
+  Append the job directly to the `www-data` user crontab:
+  ```bash
+  docker compose exec webserver bash -c "(crontab -u www-data -l 2>/dev/null | grep -v 'bin/grav scheduler'; echo '* * * * * cd /var/www/html && /usr/local/bin/php bin/grav scheduler 1>> /dev/null 2>&1') | crontab -u www-data -"
+  ```
+
+- **Method C: Manual Interactive Crontab Editing (`crontab -e`)**
+  Open the crontab editor for the `www-data` user:
+  ```bash
+  docker compose exec webserver crontab -u www-data -e
+  ```
+  Add the following line to the end of the file and save:
+  ```crontab
+  * * * * * cd /var/www/html && /usr/local/bin/php bin/grav scheduler 1>> /dev/null 2>&1
+  ```
+
+#### 2. Checking Scheduler & Cron Status
+- **Grav Admin GUI**: Open `http://localhost/admin/tools#scheduler` (displays **Enabled for user: www-data**).
+- **Inspect Container Crontab**:
+  ```bash
+  docker compose exec webserver crontab -u www-data -l
+  ```
+- **Check Cron Daemon Status**:
+  ```bash
+  docker compose exec webserver service cron status
+  ```
+
+#### 3. Executing Scheduled Jobs Manually
+To trigger all pending scheduled jobs immediately via CLI:
+```bash
+docker compose exec webserver php bin/grav scheduler -r
+```
+
+### 🤖 Grav AI Chatbot Plugin Integration & Configuration
+The pre-installed `ai-chatbot` plugin (`src/user/plugins/ai-chatbot`) provides an intelligent site assistant with multi-provider AI support, local FAQ pre-matching, and live analytics.
+
+#### Key Features & Settings (`/admin/plugins/ai-chatbot`):
+1. **AI Provider Engines**:
+   - **Ollama**: Connects to local or remote Ollama instances (e.g. `http://host.docker.internal:11434/v1` or `http://100.100.75.77:11434/v1`). Hostnames like `localhost` or `127.0.0.1` inside Docker containers are automatically mapped to `host.docker.internal`.
+   - **Groq, Google Gemini, OpenRouter, OpenAI, and Custom API Endpoints**.
+2. **Customizable Chatbot Header Title (`bot_title`)**:
+   - Change the widget top header box title directly from Grav Admin (default: `"Website Assistant"`).
+3. **Model Context Window Limit (`context_window_tokens`)**:
+   - Configures model context capacity (e.g. `1024`, `8192`, `16384`, `128000`). Automatically calculates available context prompt length and truncates site summaries so model context limits are strictly honored.
+   - Automatically passes `num_ctx` and `num_predict` options to Ollama API requests.
+4. **Input/Output Token Limits**:
+   - **Max Input Tokens (`max_input_tokens`)**: Default `500` tokens (~2,000 characters). Preserves typed user input for easy shortening if exceeded.
+   - **Max Output Tokens (`max_tokens`)**: Default `800` tokens.
+5. **Optional AI Server Response Logging (`log_ai_responses`)**:
+   - Disabled by default. When enabled, records full response payloads, tokens, questions, answers, and errors to `user/data/ai-chatbot/ai_responses.log`.
+
+---
+
 ### Install Dependencies & Plugins
 Install core Grav dependencies and missing plugins:
 ```bash
@@ -223,21 +288,55 @@ make clean-test  # Removes test page
 
 ## 5. Automated Deployments & Article Uploading (RSYNC & FTP)
 
-The deployment suite (`deploy.sh`, `upload-article.sh`, `make deploy`, `make upload-article`) synchronizes code and articles to target live environments while generating timestamped logs in `logs/deployments/`.
+### 🚀 Targeted Deployments (`deploy.sh` & `Makefile`)
+Synchronize code, plugins, themes, pages, or the entire application codebase to a target live environment with precise target scope control:
 
-### 🚀 Full Deployment (`deploy.sh`)
-Synchronizes `src/user/` (plugins, themes, configuration) to a target live environment while preserving production pages and runtime data.
-
+#### 1. Deploy `src/user/` Directory (Plugins, Themes, Config)
+Deploys plugins, themes, and configuration files while preserving production pages by default:
 ```bash
-# Standard RSYNC Deployment (Reads .env variables)
-make deploy          # or: ./deploy.sh
-
-# FTP Transport Deployment
-make deploy-ftp      # or: ./deploy.sh --ftp
-
-# Dry-Run Mode (Preview changes without modifying files)
-./deploy.sh --dry-run
+make deploy            # or: make deploy-user
+./deploy.sh --target user
 ```
+
+#### 2. Deploy ONLY `src/user/pages/` Directory
+Deploys ONLY markdown pages and article content without modifying plugins or system settings:
+```bash
+make deploy-pages
+./deploy.sh --pages-only
+```
+
+#### 3. Deploy `src/user/` INCLUDING Pages
+Deploys user plugins, themes, configuration, **AND** all markdown pages together:
+```bash
+make deploy-user-all
+./deploy.sh --target user --include-pages
+```
+
+#### 4. Deploy the WHOLE `src/` Folder (Full Site Codebase)
+Deploys the entire application document root including Grav core, vendor, system, plugins, themes, and configuration:
+```bash
+make deploy-src        # or: make deploy-all
+./deploy.sh --target src
+```
+
+#### 5. FTP Transport Deployment
+Deploys user files using FTP credentials defined in `.env`:
+```bash
+make deploy-ftp        # or: ./deploy.sh --ftp
+```
+
+#### 6. Dry-Run Mode (Preview Changes)
+Preview file transfers without modifying any live files:
+```bash
+./deploy.sh --dry-run
+./deploy.sh --target src --dry-run
+```
+
+#### 7. Automatic Cache Exclusion & Dual Invalidation Policy
+- **Cache Exclusion**: All deployment commands strictly exclude `cache/`, `user/cache/`, and `.cache/` directories from transfer.
+- **Dual Cache Invalidation**: Upon completion of any deployment run, cache is automatically cleared on **BOTH**:
+  1. **Source Development Environment**: Runs `php bin/grav clearcache` inside `grav-lamp-web` container and purges `./src/cache/*`.
+  2. **Target Production Environment**: Purges target cache directory (`/mnt/1.milkboy/.../src/cache/*`) and touches `system.yaml` to force Grav to rebuild page and system caches instantly.
 
 ---
 
@@ -260,7 +359,7 @@ make upload-pages    # or: ./upload-article.sh --all
 ```
 
 ### Per-Run Log File Generation
-Every deployment and article upload automatically creates a detailed execution log in `logs/deployments/` (e.g. `deploy_YYYYMMDD_HHMMSS.log` or `upload_article_YYYYMMDD_HHMMSS.log`).
+Every deployment and article upload automatically creates a detailed execution log in `logs/deployments/` (e.g. `deploy_user_YYYYMMDD_HHMMSS.log`, `deploy_pages_YYYYMMDD_HHMMSS.log`, or `deploy_src_YYYYMMDD_HHMMSS.log`).
 
 ---
 

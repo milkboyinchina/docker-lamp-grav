@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Script: deploy.sh
-# Description: Deploys Grav CMS user directory (plugins, themes, config) from local
-#              development stack to target environment via RSYNC or FTP.
-#              Generates a timestamped log file for each execution.
+# Description: Deploys Grav CMS files from local development stack to target environment via RSYNC or FTP.
+#              Supports selective deployment for:
+#                1. Pages ONLY (src/user/pages)
+#                2. User folder (src/user)
+#                3. Whole src folder (src/)
+#              Excludes cache directories and clears cache on BOTH source and target.
 # Usage: ./deploy.sh [OPTIONS] [DESTINATION_PATH]
 # Options:
+#   -t, --target SCOPE   Target scope: 'pages' (src/user/pages), 'user' (src/user), or 'src' (whole src folder)
+#   --pages-only, --pages Deploy ONLY src/user/pages/ directory
+#   --src, --all         Deploy the WHOLE src/ folder
 #   -d, --dry-run        Perform a trial run with no changes made
-#   -p, --include-pages  Include src/user/pages directory in deployment
+#   -p, --include-pages  Include src/user/pages directory in user deployment
 #   -f, --ftp            Use FTP deployment mode
 #   -r, --rsync          Use RSYNC local deployment mode (default)
 #   -h, --help           Display this help message
@@ -27,47 +33,57 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Auto-load .env configuration if present
 if [ -f "${SCRIPT_DIR}/.env" ]; then
-    # Export non-commented lines from .env
     set -a
     # shellcheck disable=SC1091
     source <(grep -v '^#' "${SCRIPT_DIR}/.env" | grep -v '^\s*$')
     set +a
 fi
 
-# Environment-based defaults with fallbacks
-SRC_USER_DIR="${DEPLOY_SRC_DIR:-${SCRIPT_DIR}/src/user}"
-DEFAULT_DEST_DIR="${DEPLOY_DEST_DIR:-/mnt/1.milkboy/docker/docker-lamp-grav/src/user}"
-DEST_DIR="${DEFAULT_DEST_DIR}"
-LOG_DIR="${DEPLOY_LOG_DIR:-${SCRIPT_DIR}/logs/deployments}"
+# Defaults
 MODE="${DEPLOY_MODE:-rsync}"
-
+TARGET_SCOPE="user"
 DRY_RUN=false
+VERBOSE=false
 INCLUDE_PAGES=false
+CUSTOM_DEST=""
 
 # Help screen
 show_help() {
     echo "Usage: ./deploy.sh [OPTIONS] [DESTINATION_PATH]"
     echo ""
-    echo "Options:"
-    echo "  -d, --dry-run        Perform a dry-run without copying files"
-    echo "  -p, --include-pages  Include src/user/pages/ in the deployment"
-    echo "  -f, --ftp            Force FTP deployment mode"
-    echo "  -r, --rsync          Force RSYNC local deployment mode"
-    echo "  -h, --help           Show this help message"
+    echo "Target Scope Options:"
+    echo "  --pages-only, --pages  Deploy ONLY 'src/user/pages/'"
+    echo "  -t, --target user      Deploy 'src/user/' (plugins, themes, config)"
+    echo "  --src, --all, -t src   Deploy the WHOLE 'src/' folder"
     echo ""
-    echo "Environment Variables (from .env or shell):"
-    echo "  DEPLOY_MODE          'rsync' or 'ftp' (Current: ${MODE})"
-    echo "  DEPLOY_SRC_DIR       Source path (Current: ${SRC_USER_DIR})"
-    echo "  DEPLOY_DEST_DIR      Target path (Current: ${DEST_DIR})"
-    echo "  DEPLOY_LOG_DIR       Logs output directory (Current: ${LOG_DIR})"
-    echo "  FTP_HOST             FTP server address (Current: ${FTP_HOST:-none})"
-    echo "  FTP_USER             FTP username"
-    echo "  FTP_REMOTE_DIR       FTP remote path (Current: ${FTP_REMOTE_DIR:-/public_html/user})"
+    echo "General Options:"
+    echo "  -v, --verbose          Show progress / detailed transfer output"
+    echo "  -d, --dry-run          Perform a dry-run without copying files"
+    echo "  -p, --include-pages    Include 'src/user/pages/' during user folder deployment"
+    echo "  -f, --ftp              Force FTP deployment mode"
+    echo "  -r, --rsync            Force RSYNC local deployment mode (default)"
+    echo "  -h, --help             Show this help message"
 }
 
 # Parse options
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --pages-only|--pages)
+            TARGET_SCOPE="pages"
+            shift
+            ;;
+        --src|--all|--root)
+            TARGET_SCOPE="src"
+            shift
+            ;;
+        -t|--target)
+            TARGET_SCOPE="$2"
+            shift 2
+            ;;
+        -v|--verbose)
+            VERBOSE=true
+            shift
+            ;;
         -d|--dry-run)
             DRY_RUN=true
             shift
@@ -94,44 +110,70 @@ while [[ $# -gt 0 ]]; do
             exit 1
             ;;
         *)
-            DEST_DIR="$1"
+            CUSTOM_DEST="$1"
             shift
             ;;
     esac
 done
 
-# Ensure source user directory exists
-if [ ! -d "${SRC_USER_DIR}" ]; then
-    echo -e "${RED}❌ ERROR: Source directory '${SRC_USER_DIR}' does not exist.${NC}"
+# Calculate Source & Target Base Paths
+TARGET_BASE_DIR="${DEPLOY_TARGET_BASE:-/mnt/1.milkboy/docker/docker-lamp-grav}"
+APP_SRC_BASE="${SRC_PATH:-/home/milkboy/Documents/web-app/personal-cv-site}"
+if [ ! -d "${APP_SRC_BASE}" ] && [ -d "${SCRIPT_DIR}/src" ]; then
+    APP_SRC_BASE="${SCRIPT_DIR}/src"
+fi
+
+case "${TARGET_SCOPE}" in
+    pages)
+        SRC_DEPLOY_DIR="${APP_SRC_BASE}/user/pages"
+        DEST_DEPLOY_DIR="${CUSTOM_DEST:-${TARGET_BASE_DIR}/src/user/pages}"
+        SCOPE_LABEL="user/pages ONLY"
+        ;;
+    src|all|root)
+        SRC_DEPLOY_DIR="${APP_SRC_BASE}"
+        DEST_DEPLOY_DIR="${CUSTOM_DEST:-${TARGET_BASE_DIR}/src}"
+        SCOPE_LABEL="WHOLE Grav CMS folder"
+        ;;
+    user|*)
+        SRC_DEPLOY_DIR="${APP_SRC_BASE}/user"
+        DEST_DEPLOY_DIR="${CUSTOM_DEST:-${TARGET_BASE_DIR}/src/user}"
+        SCOPE_LABEL="user folder (Plugins, Themes, Config)"
+        ;;
+esac
+
+# Ensure source directory exists
+if [ ! -d "${SRC_DEPLOY_DIR}" ]; then
+    echo -e "${RED}❌ ERROR: Source directory '${SRC_DEPLOY_DIR}' does not exist.${NC}"
     exit 1
 fi
 
-# Prepare Log Directory and Log File for this run
+LOG_DIR="${DEPLOY_LOG_DIR:-${SCRIPT_DIR}/logs/deployments}"
 mkdir -p "${LOG_DIR}"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-LOG_FILE="${LOG_DIR}/deploy_${TIMESTAMP}.log"
+LOG_FILE="${LOG_DIR}/deploy_${TARGET_SCOPE}_${TIMESTAMP}.log"
 
 # Setup Dual Output Tee to Log File
 exec > >(tee -a "${LOG_FILE}") 2>&1
 
 # Ensure trailing slashes for paths
-SRC_USER_DIR="${SRC_USER_DIR%/}/"
+SRC_DEPLOY_DIR="${SRC_DEPLOY_DIR%/}/"
 
 echo -e "${BLUE}======================================================================${NC}"
 echo -e "${BLUE} 🚀 Grav LAMP Stack - Deployment Tool${NC}"
 echo -e "${BLUE}======================================================================${NC}"
 echo -e "Timestamp:   $(date '+%Y-%m-%d %H:%M:%S')"
 echo -e "Log File:    ${LOG_FILE}"
-echo -e "Source:      ${SRC_USER_DIR}"
+echo -e "Target Scope:${GREEN} ${SCOPE_LABEL}${NC}"
+echo -e "Source:      ${SRC_DEPLOY_DIR}"
 echo -e "Transport:   ${MODE^^}"
 
 if [ "${MODE}" = "ftp" ]; then
     echo -e "FTP Host:    ${FTP_HOST:-Not Configured}"
     echo -e "FTP User:    ${FTP_USER:-Not Configured}"
-    echo -e "Remote Dir:  ${FTP_REMOTE_DIR:-/public_html/user}"
+    echo -e "Remote Dir:  ${FTP_REMOTE_DIR:-/public_html}"
 else
-    DEST_DIR="${DEST_DIR%/}/"
-    echo -e "Destination: ${DEST_DIR}"
+    DEST_DEPLOY_DIR="${DEST_DEPLOY_DIR%/}/"
+    echo -e "Destination: ${DEST_DEPLOY_DIR}"
 fi
 
 if [ "$DRY_RUN" = true ]; then
@@ -140,28 +182,48 @@ else
     echo -e "Mode:        ${GREEN}LIVE DEPLOYMENT${NC}"
 fi
 
-if [ "$INCLUDE_PAGES" = true ]; then
-    echo -e "Pages:       ${YELLOW}INCLUDED${NC}"
-else
-    echo -e "Pages:       ${BLUE}EXCLUDED (Preserving target pages)${NC}"
+if [ "${TARGET_SCOPE}" = "user" ]; then
+    if [ "$INCLUDE_PAGES" = true ]; then
+        echo -e "Pages:       ${YELLOW}INCLUDED${NC}"
+    else
+        echo -e "Pages:       ${BLUE}EXCLUDED (Preserving target pages)${NC}"
+    fi
 fi
 echo -e "${BLUE}----------------------------------------------------------------------${NC}"
 
 # ==============================================================================
-# Execution Step 1: Synchronize Source to Target
+# Execution Step 1: Synchronize Source to Target (Excludes Cache Folders)
 # ==============================================================================
-echo -e "${BLUE}ℹ️ Step 1/3: Synchronizing files via ${MODE^^}...${NC}"
+echo -e "${BLUE}ℹ️ Step 1/3: Synchronizing files via ${MODE^^} (Excludes cache folder)...${NC}"
 
 if [ "${MODE}" = "rsync" ]; then
-    RSYNC_OPTS=("-rlz" "--omit-dir-times" "--no-perms" "--no-owner" "--no-group" "--exclude=.git" "--exclude=cache" "--exclude=data")
-    if [ "$INCLUDE_PAGES" = false ]; then
+    RSYNC_OPTS=(
+        "-rlz"
+        "-u"
+        "--omit-dir-times"
+        "--no-perms"
+        "--no-owner"
+        "--no-group"
+        "--exclude=.git"
+        "--exclude=cache"
+        "--exclude=cache/**"
+        "--exclude=user/cache"
+        "--exclude=user/cache/**"
+        "--exclude=.cache"
+        "--exclude=data/ai-chatbot/*.log"
+    )
+    
+    if [ "${TARGET_SCOPE}" = "user" ] && [ "$INCLUDE_PAGES" = false ]; then
         RSYNC_OPTS+=("--exclude=pages")
+    fi
+    if [ "$VERBOSE" = true ]; then
+        RSYNC_OPTS+=("-v" "--info=progress2")
     fi
     if [ "$DRY_RUN" = true ]; then
         RSYNC_OPTS+=("--dry-run")
     fi
 
-    rsync "${RSYNC_OPTS[@]}" "${SRC_USER_DIR}" "${DEST_DIR}"
+    rsync "${RSYNC_OPTS[@]}" "${SRC_DEPLOY_DIR}" "${DEST_DEPLOY_DIR}"
 
 elif [ "${MODE}" = "ftp" ]; then
     if [ -z "${FTP_HOST}" ] || [ -z "${FTP_USER}" ]; then
@@ -169,12 +231,12 @@ elif [ "${MODE}" = "ftp" ]; then
         exit 1
     fi
 
-    REMOTE_TARGET="${FTP_REMOTE_DIR:-/public_html/user}"
+    REMOTE_TARGET="${FTP_REMOTE_DIR:-/public_html}"
     PORT="${FTP_PORT:-21}"
     USE_SSL="${FTP_SSL:-false}"
 
-    EXCLUDES=("cache" "data" ".git")
-    if [ "$INCLUDE_PAGES" = false ]; then
+    EXCLUDES=("cache" "user/cache" "data" ".git")
+    if [ "${TARGET_SCOPE}" = "user" ] && [ "$INCLUDE_PAGES" = false ]; then
         EXCLUDES+=("pages")
     fi
 
@@ -187,6 +249,11 @@ elif [ "${MODE}" = "ftp" ]; then
             EXCLUDE_FLAGS="${EXCLUDE_FLAGS} -X ${exc}/"
         done
 
+        VERBOSE_FLAG=""
+        if [ "$VERBOSE" = true ]; then
+            VERBOSE_FLAG="--verbose"
+        fi
+
         DRY_FLAG=""
         if [ "$DRY_RUN" = true ]; then
             DRY_FLAG="--dry-run"
@@ -197,88 +264,8 @@ elif [ "${MODE}" = "ftp" ]; then
         set net:max-retries 2;
         set ftp:ssl-allow ${USE_SSL};
         open -u '${FTP_USER}','${FTP_PASS}' -p ${PORT} '${FTP_HOST}';
-        mirror -R ${DRY_FLAG} --delete ${EXCLUDE_FLAGS} '${SRC_USER_DIR}' '${REMOTE_TARGET}'
+        mirror -R ${DRY_FLAG} ${VERBOSE_FLAG} --only-newer --delete ${EXCLUDE_FLAGS} '${SRC_DEPLOY_DIR}' '${REMOTE_TARGET}'
         "
-    else
-        echo -e "${BLUE}ℹ️ Using built-in Python FTP engine for deployment...${NC}"
-        
-        python3 - "${SRC_USER_DIR}" "${FTP_HOST}" "${PORT}" "${FTP_USER}" "${FTP_PASS}" "${REMOTE_TARGET}" "${DRY_RUN}" "${INCLUDE_PAGES}" "${USE_SSL}" << 'EOF'
-import sys, os, ftplib
-
-src_dir, host, port, user, passwd, remote_dir, dry_run, include_pages, use_ssl = sys.argv[1:]
-dry_run = dry_run.lower() == 'true'
-include_pages = include_pages.lower() == 'true'
-use_ssl = use_ssl.lower() == 'true'
-port = int(port)
-
-excludes = {'cache', 'data', '.git'}
-if not include_pages:
-    excludes.add('pages')
-
-print(f"Connecting to FTP server {host}:{port}...")
-
-try:
-    if use_ssl:
-        ftp = ftplib.FTP_TLS()
-        ftp.connect(host, port)
-        ftp.login(user, passwd)
-        ftp.prot_p()
-    else:
-        ftp = ftplib.FTP()
-        ftp.connect(host, port)
-        ftp.login(user, passwd)
-
-    print("FTP connection established.")
-
-    def ensure_remote_dir(path):
-        dirs = path.strip('/').split('/')
-        current = ''
-        for d in dirs:
-            if not d: continue
-            current += '/' + d
-            try:
-                ftp.cwd(current)
-            except ftplib.error_perm:
-                if not dry_run:
-                    try:
-                        ftp.mkd(current)
-                        print(f"[MKDIR] {current}")
-                    except Exception as e:
-                        pass
-
-    ensure_remote_dir(remote_dir)
-
-    for root, dirs, files in os.walk(src_dir):
-        rel_path = os.path.relpath(root, src_dir)
-        if rel_path == '.':
-            rel_path = ''
-
-        # Filter excluded directories
-        parts = rel_path.split(os.sep) if rel_path else []
-        if any(p in excludes for p in parts):
-            continue
-        dirs[:] = [d for d in dirs if d not in excludes]
-
-        target_dir = os.path.join(remote_dir, rel_path).replace('\\', '/')
-        ensure_remote_dir(target_dir)
-
-        for fname in files:
-            local_file = os.path.join(root, fname)
-            remote_file = os.path.join(target_dir, fname).replace('\\', '/')
-            
-            if dry_run:
-                print(f"[DRY-RUN UPLOAD] {local_file} -> {remote_file}")
-            else:
-                with open(local_file, 'rb') as f:
-                    ftp.storbinary(f'STOR {remote_file}', f)
-                    print(f"[UPLOAD] {fname} -> {target_dir}")
-
-    ftp.quit()
-    print("FTP sync completed.")
-except Exception as err:
-    print(f"FTP Error: {err}", file=sys.stderr)
-    sys.exit(1)
-EOF
     fi
 fi
 
@@ -289,24 +276,46 @@ if [ "$DRY_RUN" = true ]; then
 fi
 
 # ==============================================================================
-# Execution Step 2: Invalidation & Permissions
+# Execution Step 2: Cache Clearing (BOTH Source and Target Environments)
 # ==============================================================================
 echo ""
-echo -e "${BLUE}ℹ️ Step 2/3: Invalidation & Permissions...${NC}"
+echo -e "${BLUE}ℹ️ Step 2/3: Clearing Cache on BOTH Source and Target environments...${NC}"
 
+# 1. Clear Source (Local) Cache
 CONTAINER_NAME=$(docker compose ps -q webserver 2>/dev/null || docker ps -q --filter "name=grav-lamp-web" 2>/dev/null || echo "")
 
 if [ -n "${CONTAINER_NAME}" ]; then
-    echo -e "${BLUE}ℹ️ Container detected (${CONTAINER_NAME}). Clearing Grav CMS cache...${NC}"
+    echo -e "${BLUE}ℹ️ Clearing SOURCE Grav CMS cache inside container (${CONTAINER_NAME})...${NC}"
     if docker exec "${CONTAINER_NAME}" php bin/grav clearcache 2>/dev/null; then
-        echo -e "${GREEN}✅ Grav cache cleared successfully!${NC}"
+        echo -e "${GREEN}✅ Source Grav cache cleared successfully via CLI!${NC}"
     else
-        echo -e "${YELLOW}⚠️ Warning: Unable to run 'bin/grav clearcache' inside container.${NC}"
+        echo -e "${YELLOW}⚠️ Warning: Unable to run 'bin/grav clearcache' inside local container.${NC}"
     fi
 
     docker exec "${CONTAINER_NAME}" chmod -R 777 /var/www/html/user/config /var/www/html/user/data /var/www/html/cache 2>/dev/null || true
-else
-    echo -e "${YELLOW}⚠️ Notice: No running local container detected. Remote cache clear skipped.${NC}"
+fi
+
+# Physical clean of source cache directory if exists
+LOCAL_CACHE_DIR="${SCRIPT_DIR}/src/cache"
+if [ -d "${LOCAL_CACHE_DIR}" ]; then
+    echo -e "${BLUE}ℹ️ Purging source cache directory files (${LOCAL_CACHE_DIR})...${NC}"
+    rm -rf "${LOCAL_CACHE_DIR:?}"/* 2>/dev/null || true
+    echo -e "${GREEN}✅ Source cache directory purged successfully!${NC}"
+fi
+
+# 2. Clear Target Environment Cache
+TARGET_CACHE_DIR="${TARGET_BASE_DIR}/src/cache"
+
+if [ -d "${TARGET_CACHE_DIR}" ]; then
+    echo -e "${BLUE}ℹ️ Clearing TARGET Grav CMS cache directory (${TARGET_CACHE_DIR})...${NC}"
+    rm -rf "${TARGET_CACHE_DIR:?}"/* 2>/dev/null || true
+    echo -e "${GREEN}✅ Target Grav cache directory cleared successfully!${NC}"
+fi
+
+# Touch target system configuration so Grav automatically rebuilds cache
+if [ -f "${TARGET_BASE_DIR}/src/user/config/system.yaml" ]; then
+    touch "${TARGET_BASE_DIR}/src/user/config/system.yaml" 2>/dev/null || true
+    echo -e "${GREEN}✅ Target system.yaml touched to trigger cache invalidation!${NC}"
 fi
 
 # ==============================================================================

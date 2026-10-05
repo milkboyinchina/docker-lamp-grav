@@ -33,5 +33,15 @@ chmod -R 777 /var/www/html/cache \
              /var/www/html/backup \
              /var/www/html/user 2>/dev/null || true
 
+# Setup Grav Scheduler crontab for www-data
+if command -v crontab >/dev/null 2>&1; then
+    (crontab -u www-data -l 2>/dev/null | grep -v 'bin/grav scheduler'; echo "* * * * * cd /var/www/html && /usr/local/bin/php bin/grav scheduler 1>> /dev/null 2>&1") | crontab -u www-data - 2>/dev/null || true
+fi
+
+# Start cron daemon
+if command -v service >/dev/null 2>&1; then
+    service cron start 2>/dev/null || true
+fi
+
 # Execute Apache
 exec "$@"

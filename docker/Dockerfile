@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
+    cron \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \

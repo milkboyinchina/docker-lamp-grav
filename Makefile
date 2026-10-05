@@ -3,7 +3,7 @@
 # Directory: /home/milkboy/Documents/grav-lamp-docker
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install deploy deploy-ftp test clean-test backup merge-main help
+.PHONY: up down stop restart rebuild logs logs-all status shell exec clear-cache cc grav-install deploy deploy-user deploy-pages deploy-user-all deploy-src deploy-all deploy-ftp test clean-test backup merge-main help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -51,7 +51,8 @@ restart:
 
 ## 🛠️ Rebuild image without cache & restart containers
 rebuild: env
-	docker compose up -d --build --no-cache
+	docker compose build --no-cache
+	docker compose up -d
 
 ## 📋 Stream live container logs for webserver
 logs:
@@ -71,9 +72,14 @@ shell:
 
 exec: shell
 
-## 🧹 Clear Grav CMS cache inside webserver container
+## 🧹 Clear Grav CMS cache on BOTH source container and target environment
 clear-cache:
 	docker compose exec webserver php bin/grav clearcache
+	@if [ -d /mnt/1.milkboy/docker/docker-lamp-grav/src/cache ]; then \
+		echo "Clearing target VPS cache directory..."; \
+		rm -rf /mnt/1.milkboy/docker/docker-lamp-grav/src/cache/* 2>/dev/null || true; \
+		echo "✅ Target VPS cache cleared!"; \
+	fi
 
 cc: clear-cache
 
@@ -81,9 +87,26 @@ cc: clear-cache
 grav-install:
 	docker compose exec webserver php bin/grav install
 
-## 🚀 Deploy user plugins, themes, and configuration to target environment (RSYNC or default)
+## 🚀 Deploy src/user directory (plugins, themes, config) (default: pages excluded)
 deploy: env
-	./deploy.sh
+	./deploy.sh --target user
+
+deploy-user: deploy
+
+## 📄 Deploy ONLY src/user/pages directory
+deploy-pages: env
+	./deploy.sh --pages-only
+
+## 📦 Deploy src/user directory INCLUDING pages
+deploy-user-all: env
+	./deploy.sh --target user --include-pages
+
+## 🌐 Deploy the WHOLE src/ folder (Grav core, system, vendor, user, config)
+deploy-src: env
+	./deploy.sh --target src
+
+## 🌐 Alias for deploy-src (deploy whole src/ folder)
+deploy-all: deploy-src
 
 ## 📡 Deploy user plugins, themes, and configuration to target environment via FTP
 deploy-ftp: env
@@ -120,23 +143,27 @@ help:
 	@echo "======================================================================"
 	@echo "   Docker LAMP Stack - Cross-Platform Command Helper"
 	@echo "======================================================================"
-	@echo "  make up           - Start stack in background (auto-creates .env)"
-	@echo "  make stop         - Stop running containers"
-	@echo "  make down         - Stop & remove containers and networks"
-	@echo "  make restart      - Restart all stack containers"
-	@echo "  make rebuild      - Rebuild PHP image without cache & restart"
-	@echo "  make logs         - Stream live webserver logs"
-	@echo "  make logs-all     - Stream live logs from all services"
-	@echo "  make status       - Display status of running containers"
-	@echo "  make shell        - Open bash shell in webserver container"
-	@echo "  make clear-cache  - Clear Grav CMS cache (alias: make cc)"
-	@echo "  make grav-install - Install Grav CMS dependencies & core plugins"
-	@echo "  make deploy       - Deploy plugins, themes & config to target environment"
-	@echo "  make deploy-ftp   - Deploy plugins, themes & config via FTP transport"
-	@echo "  make upload-article - Upload specific article/page interactively"
-	@echo "  make upload-pages - Upload ALL articles and pages to target environment"
-	@echo "  make test         - Deploy diagnostic page (http://localhost/test.php)"
-	@echo "  make clean-test   - Remove diagnostic page from src/"
-	@echo "  make backup       - Interactive backup helper (WWW files, DB, or both)"
-	@echo "  make merge-main   - Merge branch into main excluding src/user/pages"
+	@echo "  make up               - Start stack in background (auto-creates .env)"
+	@echo "  make stop             - Stop running containers"
+	@echo "  make down             - Stop & remove containers and networks"
+	@echo "  make restart          - Restart all stack containers"
+	@echo "  make rebuild          - Rebuild PHP image without cache & restart"
+	@echo "  make logs             - Stream live webserver logs"
+	@echo "  make logs-all         - Stream live logs from all services"
+	@echo "  make status           - Display status of running containers"
+	@echo "  make shell            - Open bash shell in webserver container"
+	@echo "  make clear-cache      - Clear Grav CMS cache on source & target (alias: make cc)"
+	@echo "  make grav-install     - Install Grav CMS dependencies & core plugins"
+	@echo "  make deploy           - Deploy src/user directory (plugins, themes, config)"
+	@echo "  make deploy-pages     - Deploy ONLY src/user/pages directory"
+	@echo "  make deploy-user-all  - Deploy src/user directory INCLUDING pages"
+	@echo "  make deploy-src       - Deploy WHOLE src/ folder (Grav core + plugins/themes)"
+	@echo "  make deploy-all       - Alias for deploy-src (deploy whole src/ folder)"
+	@echo "  make deploy-ftp       - Deploy user plugins, themes & config via FTP"
+	@echo "  make upload-article   - Upload specific article/page interactively"
+	@echo "  make upload-pages     - Upload ALL articles and pages to target environment"
+	@echo "  make test             - Deploy diagnostic page (http://localhost/test.php)"
+	@echo "  make clean-test       - Remove diagnostic page from src/"
+	@echo "  make backup           - Interactive backup helper (WWW files, DB, or both)"
+	@echo "  make merge-main       - Merge branch into main excluding src/user/pages"
 	@echo "======================================================================"
