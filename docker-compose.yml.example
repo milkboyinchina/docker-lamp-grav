@@ -9,13 +9,16 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       args:
-        PHP_VERSION: ${PHP_IMAGE:-php:8.3-apache}
+        # Image derived from PHP_VERSION selector (number only, never hardcoded).
+        PHP_VERSION: php:${PHP_VERSION:-8.4}-apache
     container_name: grav-lamp-web
     # Restart policy configured via RESTART_POLICY in .env (unless-stopped, always, on-failure, no)
     restart: ${RESTART_POLICY:-unless-stopped}
     environment:
       SERVER_NAME: ${SERVER_NAME:-www.example.com}
       SERVER_ADMIN: ${SERVER_ADMIN:-webmaster@example.com}
+      APP_TYPE: ${APP_TYPE:-grav}
+      APACHE_DOCROOT: ${APACHE_DOCROOT:-/var/www/html}
     # Host port publishing lives in docker-compose.direct.yml (included via
     # COMPOSE_FILE for standalone access; omitted when a reverse proxy or
     # tunnel fronts all services). Inter-container traffic uses expose below.

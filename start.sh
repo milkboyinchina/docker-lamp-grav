@@ -24,6 +24,16 @@ if [ ! -f config/mysql/custom.cnf ] && [ -f config/mysql/custom.cnf.example ]; t
     echo "Creating config/mysql/custom.cnf from example..."
     cp config/mysql/custom.cnf.example config/mysql/custom.cnf
 fi
+# Validate PHP_VERSION selector (number only - image is derived in compose)
+PHP_VERSION_VAL="$(grep -E '^PHP_VERSION=' .env 2>/dev/null | tail -n 1 | cut -d= -f2-)"
+PHP_VERSION_VAL="${PHP_VERSION_VAL:-8.4}"
+case " 8.3 8.4 8.5 " in
+    *" ${PHP_VERSION_VAL} "*) ;;
+    *)
+        echo "ERROR: unsupported PHP_VERSION '${PHP_VERSION_VAL}'. Choose: 8.3, 8.4, 8.5"
+        exit 1
+        ;;
+esac
 echo "Starting Docker LAMP Stack..."
 docker compose up -d
 echo ""

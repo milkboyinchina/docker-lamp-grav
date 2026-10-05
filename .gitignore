@@ -8,6 +8,8 @@
 !.env.example.php
 docker-compose.yml
 !docker-compose.yml.example
+docker-compose.direct.yml
+!docker-compose.direct.yml.example
 
 # ==========================================
 # Docker & Database Host Directories

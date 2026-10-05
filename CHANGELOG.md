@@ -6,6 +6,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Multi-app PHP runtime: `APP_TYPE` (`grav|laravel|codeigniter|wordpress|custom`)
+  + `APACHE_DOCROOT` in `.env`; entrypoint manages per-app writable dirs,
+  ownership, scheduler cron (`grav`/`artisan`/none), vhost docroot, and warns
+  on empty docroot. Composer preinstalled for Laravel/CodeIgniter.
+- `PHP_VERSION` number selector (`8.3|8.4|8.5`, image derived in compose) with
+  fail-fast validation in `make up`/`rebuild`, `start.sh`, `rebuild.sh`.
+  Compat: Grav 2.x >= 8.3.11, Laravel 11/12 >= 8.2, CodeIgniter 4 >= 8.1.
+
+### Added
 - Optional Cloudflare Tunnel (`tunnel` profile, `make logs-tunnel`): outbound-only
   edge access via `CLOUDFLARE_TUNNEL_TOKEN` + `TUNNEL_ORIGIN_URL` in `.env`.
 - Host port publishing overlay (`docker-compose.direct.yml` + example) with

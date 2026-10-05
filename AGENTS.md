@@ -1,13 +1,13 @@
-# AGENTS.md — Docker LAMP Grav Infrastructure Stack
+# AGENTS.md — Docker LAMP Multi-App Infrastructure Stack
 
-> **Independent Infrastructure Project**: This repository manages, builds, tunes, and optimizes the containerized Docker LAMP stack runtime environment.
+> **Independent Infrastructure Project**: This repository manages, builds, tunes, and optimizes the containerized Docker LAMP stack runtime environment for **Grav 2.x, WordPress, Laravel, CodeIgniter, and custom PHP applications**.
 
 ---
 
 ## 1. 🚨 Critical Directives & Boundaries (Priority 1)
 
 ### A. Project Scope & Independence
-* **Role**: Dedicated to container infrastructure, Docker image builds, Apache 2.4 vhosts, PHP 8.3 runtime tuning, and MariaDB configuration.
+* **Role**: Dedicated to container infrastructure, Docker image builds, Apache 2.4 vhosts, PHP 8.3–8.5 runtime tuning, and MariaDB configuration. Web apps are selected via `APP_TYPE` (`grav|laravel|codeigniter|wordpress|custom`) and `APACHE_DOCROOT` in `.env`.
 * **Separation of Concerns**: Do NOT modify the mounted web application source code (`SRC_PATH`) from this repository. Work on the web app directly in `/home/milkboy/Documents/web-app/personal-cv-site`.
 * **Persona**: Accurate, disciplined software engineer. **DO NOT TRY TO BE FUNNY.**
 
@@ -51,8 +51,8 @@ make clear-cache# Run Grav clearcache command inside web container
 ```text
 docker-lamp-grav/
 ├── docker-compose.yml         # Container services & volume definitions
-├── Dockerfile                 # Custom PHP 8.3 Debian Bookworm build
-├── .env                       # Local ports, mount paths (SRC_PATH), and profiles
+├── docker/Dockerfile          # Custom PHP Apache build (version via PHP_VERSION)
+├── .env                       # PHP selection, APP_TYPE, ports, mount paths (SRC_PATH), profiles
 ├── config/
 │   ├── apache/000-default.conf # VirtualHost, mod_rewrite, headers, KeepAlive
 │   ├── php/custom.ini         # OPcache, JIT, memory limits, upload limits

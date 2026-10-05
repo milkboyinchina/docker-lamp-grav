@@ -1,8 +1,8 @@
 # Declare build argument with default fallback before FROM
-ARG PHP_VERSION=php:8.3-apache
+ARG PHP_VERSION=php:8.4-apache
 FROM ${PHP_VERSION}
 
-# Install system dependencies & C-libraries for Grav CMS & WordPress extensions
+# Install system dependencies & C-libraries for Grav CMS, WordPress, Laravel & CodeIgniter
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libyaml-dev \
     libmagickwand-dev \
+    libmemcached-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
     zip \
@@ -32,23 +33,27 @@ RUN apt-get update && apt-get install -y \
         exif \
         intl \
         bcmath \
+        curl \
         sockets \
     && pecl install \
         imagick \
         redis \
-        memcache \
+        memcached \
         apcu \
         yaml \
     && docker-php-ext-enable \
         imagick \
         opcache \
         redis \
-        memcache \
+        memcached \
         apcu \
         yaml
 
-# Enable Apache mod_rewrite
+# Enable Apache mod_rewrite (required by Grav, Laravel, CodeIgniter, WordPress)
 RUN a2enmod rewrite
+
+# Composer (required by Laravel & CodeIgniter, harmless for Grav/WordPress)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create PHP log directory
 RUN mkdir -p /var/log/php && chown -R www-data:www-data /var/log/php

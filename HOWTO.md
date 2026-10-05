@@ -92,9 +92,13 @@ innodb_buffer_pool_size = 512M
 
 ### Key `.env` Variables & PHP Version Options:
 ```ini
-# Base Image & PHP Version Selection
-# Options: php:8.3-apache (default), php:8.2-apache, php:8.1-apache, php:8.0-apache, php:7.4-apache
-PHP_IMAGE=php:8.3-apache
+# PHP Runtime Selection (number only - image is derived)
+# Options: 8.3, 8.4, 8.5 (Grav 2.x requires >= 8.3.11)
+PHP_VERSION=8.4
+
+# Application Type & Document Root
+APP_TYPE=grav
+APACHE_DOCROOT=/var/www/html
 
 # Profiles (db,adminer,proxy)
 COMPOSE_PROFILES=db,adminer
@@ -121,13 +125,13 @@ FTP_SSL=false
 > [!NOTE]
 > **Web root location (`SRC_PATH`)**: the served document root may live inside this repository (`SRC_PATH=./src`) or anywhere else on the host (e.g. `SRC_PATH=/home/milkboy/Documents/web-app/personal-cv-site`). All scripts resolve it from `SRC_PATH` — never assume `./src`. `DEPLOY_SRC_DIR` is only read by the Windows helper scripts (`scripts\*.bat`); Bash scripts use `SRC_PATH`. `merge-to-main.sh` only operates on an in-repo `src/`; with an external web root, run page-exclusion merges in the application repository instead.
 
-### Changing PHP Version (`PHP_IMAGE`)
+### Changing PHP Version (`PHP_VERSION`)
 
-To switch your webserver container to a different PHP runtime version (e.g. PHP 8.3, 8.2, 8.1, 8.0, or legacy 7.4):
+Set the version number (not an image tag) in `.env` — the image is derived automatically:
 
-1. Open `.env` and set `PHP_IMAGE` to your desired PHP version tag:
+1. Open `.env` and set `PHP_VERSION` to a supported version (`8.3`, `8.4`, `8.5`):
    ```ini
-   PHP_IMAGE=php:8.2-apache
+   PHP_VERSION=8.4
    ```
 2. Rebuild the container image to compile PHP extensions for the selected version:
    ```bash
@@ -135,6 +139,19 @@ To switch your webserver container to a different PHP runtime version (e.g. PHP 
    # or on Linux/macOS: ./rebuild.sh
    # or on Windows: scripts\rebuild.bat
    ```
+   `make up`, `make rebuild`, `./start.sh` and `./rebuild.sh` validate the value and fail fast on anything outside the supported list.
+
+### Application Compatibility Matrix
+
+| Application | Minimum PHP | `.env` settings |
+| :--- | :--- | :--- |
+| **Grav 2.x** | 8.3.11 | `APP_TYPE=grav`, `APACHE_DOCROOT=/var/www/html` |
+| **WordPress 6.x** | 7.4 (8.2+ recommended) | `APP_TYPE=wordpress`, `APACHE_DOCROOT=/var/www/html` |
+| **Laravel 11/12** | 8.2 | `APP_TYPE=laravel`, `APACHE_DOCROOT=/var/www/html/public` |
+| **CodeIgniter 4.x** | 8.1 | `APP_TYPE=codeigniter`, `APACHE_DOCROOT=/var/www/html` |
+| **Custom PHP** | — | `APP_TYPE=custom`, set `APACHE_DOCROOT` to your public dir |
+
+`APP_TYPE` drives entrypoint behavior: per-app writable directories, ownership, and the scheduler cron (`bin/grav scheduler` for Grav, `artisan schedule:run` for Laravel, none for the rest). The entrypoint warns if the document root is empty (usually a wrong `SRC_PATH`). Composer is preinstalled in the image for Laravel/CodeIgniter dependency installs (`docker compose exec webserver composer install`).
 
 ---
 

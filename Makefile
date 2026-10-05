@@ -4,7 +4,7 @@
 # No host folder names are hardcoded, so renaming this directory is safe.
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs logs-tunnel logs-all status shell exec clear-cache cc grav-install deploy deploy-user deploy-pages deploy-user-all deploy-src deploy-all deploy-ftp test clean-test backup merge-main help
+.PHONY: up down stop restart rebuild logs logs-tunnel logs-all status shell exec clear-cache cc grav-install deploy deploy-user deploy-pages deploy-user-all deploy-src deploy-all deploy-ftp test clean-test backup merge-main check-php help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -14,6 +14,12 @@
 SRC_DIR := $(shell grep -E '^SRC_PATH=[^#]' .env 2>/dev/null | tail -n 1 | cut -d= -f2-)
 ifeq ($(strip $(SRC_DIR)),)
 SRC_DIR := ./src
+endif
+
+# PHP runtime selector (number only - image is derived in compose).
+PHPV := $(shell grep -E '^PHP_VERSION=[^#]' .env 2>/dev/null | tail -n 1 | cut -d= -f2-)
+ifeq ($(strip $(PHPV)),)
+PHPV := 8.4
 endif
 
 # Auto-copy .env, docker-compose.yml, and config templates if missing
@@ -44,7 +50,7 @@ env:
 	fi
 
 ## 🚀 Start containers in background (Detached)
-up: env
+up: env check-php
 	docker compose up -d
 	@echo ""
 	@echo "✅ Stack running! Access site at http://localhost"
@@ -62,7 +68,7 @@ restart:
 	docker compose restart
 
 ## 🛠️ Rebuild image without cache & restart containers
-rebuild: env
+rebuild: env check-php
 	docker compose build --no-cache
 	docker compose up -d
 
@@ -162,6 +168,13 @@ clean-test:
 ## 💾 Backup WWW site files and MariaDB database
 backup: env
 	./backup.sh
+
+## 🔍 Validate PHP_VERSION selector against supported versions
+check-php:
+	@case " 8.3 8.4 8.5 " in \
+		*" $(PHPV) "*) ;; \
+		*) echo "ERROR: unsupported PHP_VERSION '$(PHPV)'. Choose: 8.3, 8.4, 8.5"; exit 1;; \
+	esac
 
 ## 🔀 Merge current branch into main excluding src/user/pages
 merge-main:
