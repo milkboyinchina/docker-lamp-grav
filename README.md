@@ -105,6 +105,8 @@ grav-lamp/
 ├── WORDPRESS-QUICKSTART.md  # First-time WordPress setup & database config guide
 ├── docker-compose.yml       # Local Docker Compose configuration (git-ignored)
 ├── docker-compose.yml.example # Default template for Docker Compose services definition
+├── docker-compose.direct.yml  # Host port publishing overlay (git-ignored; omit via COMPOSE_FILE for proxied mode)
+├── docker-compose.direct.yml.example # Template for host port publishing overlay
 ├── .env                     # Local environment variables (created from env.example)
 ├── env.example              # Template for environment configuration
 ├── Makefile                 # Cross-platform 1-word command shortcuts

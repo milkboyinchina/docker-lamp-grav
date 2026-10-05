@@ -1,0 +1,25 @@
+# ==============================================================================
+# Host port publishing overlay (direct standalone access).
+# Included via COMPOSE_FILE in .env:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.direct.yml   (direct, default)
+#   COMPOSE_FILE=docker-compose.yml                             (proxied: NPM / Traefik / tunnel fronts everything)
+# Omit this file to publish NO host ports (reverse-proxy or tunnel only).
+# Inter-container traffic always works via expose: in docker-compose.yml.
+# ==============================================================================
+
+services:
+  webserver:
+    ports:
+      - "${HTTP_PORT:-80}:80"
+
+  adminer:
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+
+  proxy-manager:
+    ports:
+      - "${NPM_HTTP_PORT:-8000}:80"
+      # Admin UI bind address controls exposure: 127.0.0.1 = host-only,
+      # 0.0.0.0 = LAN-reachable. Comment out to unpublish entirely.
+      - "${NPM_ADMIN_BIND:-127.0.0.1}:${NPM_ADMIN_PORT:-81}:81"
+      - "${NPM_HTTPS_PORT:-8443}:443"

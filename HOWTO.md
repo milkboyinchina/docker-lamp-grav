@@ -445,6 +445,22 @@ NPM_LETSENCRYPT_PATH=./etc/letsencrypt
 
 ---
 
+### Direct vs Proxied Host Ports (`COMPOSE_FILE`)
+
+Host port publishing is controlled by which Compose files are loaded (set `COMPOSE_FILE` in `.env`):
+
+```ini
+# Direct standalone access (default): publish HTTP/Adminer/NPM ports on the host
+COMPOSE_FILE=docker-compose.yml:docker-compose.direct.yml
+
+# Proxied mode: publish NO host ports (NPM / Traefik / Cloudflare Tunnel fronts everything)
+COMPOSE_FILE=docker-compose.yml
+```
+
+- In proxied mode, inter-container traffic is unaffected (`expose:` + `grav-network` still route `webserver:80`, `proxy-manager:80`, `db`).
+- NPM Admin UI exposure is tuned with `NPM_ADMIN_BIND` (`127.0.0.1` = host-only, `0.0.0.0` = LAN-reachable); comment out its line in `docker-compose.direct.yml` to unpublish it entirely.
+- Verify the effective setup with `docker compose config | grep -A2 'ports:\|expose:'`.
+
 ### Network Configuration (Internal Bridge vs External Network)
 
 By default, the Docker stack uses an isolated internal bridge network (`grav-network`) for container-to-container communication.

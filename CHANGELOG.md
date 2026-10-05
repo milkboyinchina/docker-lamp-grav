@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Host port publishing overlay (`docker-compose.direct.yml` + example) with
+  `COMPOSE_FILE` switch in `.env`: direct standalone access vs proxied mode
+  (NPM / Traefik / tunnel) with zero published host ports. `NPM_ADMIN_BIND`
+  controls Admin UI exposure (`127.0.0.1` host-only vs `0.0.0.0` LAN).
+
 ### Changed
 - Web root is now location-agnostic: `backup.sh` loads `.env` from its own
   directory and resolves `SRC_PATH` to an absolute path; `deploy.sh` purges

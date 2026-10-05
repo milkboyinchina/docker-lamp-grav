@@ -8,6 +8,10 @@ if [ ! -f docker-compose.yml ]; then
     echo "Creating docker-compose.yml configuration file from docker-compose.yml.example..."
     cp docker-compose.yml.example docker-compose.yml
 fi
+if [ ! -f docker-compose.direct.yml ]; then
+    echo "Creating docker-compose.direct.yml configuration file from docker-compose.direct.yml.example..."
+    cp docker-compose.direct.yml.example docker-compose.direct.yml
+fi
 if [ ! -f config/apache/000-default.conf ] && [ -f config/apache/000-default.conf.example ]; then
     echo "Creating config/apache/000-default.conf from example..."
     cp config/apache/000-default.conf.example config/apache/000-default.conf
