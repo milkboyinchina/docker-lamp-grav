@@ -5,10 +5,20 @@
 
 set -e
 
+# Anchor to this script's directory so the repo folder can be renamed and the
+# script invoked from any working directory.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Load environment variables from .env if available
 ENV_FOUND=true
-if [ -f .env ]; then
+if [ -f "${SCRIPT_DIR}/.env" ]; then
     set -a
+    # shellcheck disable=SC1091
+    source "${SCRIPT_DIR}/.env"
+    set +a
+elif [ -f .env ]; then
+    set -a
+    # shellcheck disable=SC1091
     source .env
     set +a
 else
@@ -23,6 +33,13 @@ LOGS_BACKUP_PATH="${LOGS_BACKUP_PATH:-./logs/backup.log}"
 MARIADB_DATABASE="${MARIADB_DATABASE:-grav_db}"
 MARIADB_USER="${MARIADB_USER:-grav_user}"
 MARIADB_PASSWORD="${MARIADB_PASSWORD:-userpassword}"
+
+# Resolve the web root to an absolute path. It may live inside this repository
+# (./src stub) or anywhere else on the host (SRC_PATH in .env).
+case "${SRC_PATH}" in
+    /*) ;;
+    *) SRC_PATH="${SCRIPT_DIR}/${SRC_PATH}" ;;
+esac
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 

@@ -105,7 +105,7 @@ ADMINER_PORT=8080
 
 # Deployment Configuration
 DEPLOY_MODE=rsync
-DEPLOY_SRC_DIR=./src/user
+DEPLOY_TARGET_BASE=/mnt/1.milkboy/docker/docker-lamp-grav
 DEPLOY_DEST_DIR=/mnt/1.milkboy/docker/docker-lamp-grav/src/user
 DEPLOY_LOG_DIR=./logs/deployments
 
@@ -117,6 +117,9 @@ FTP_PASS=ftp_password
 FTP_REMOTE_DIR=/public_html/user
 FTP_SSL=false
 ```
+
+> [!NOTE]
+> **Web root location (`SRC_PATH`)**: the served document root may live inside this repository (`SRC_PATH=./src`) or anywhere else on the host (e.g. `SRC_PATH=/home/milkboy/Documents/web-app/personal-cv-site`). All scripts resolve it from `SRC_PATH` — never assume `./src`. `DEPLOY_SRC_DIR` is only read by the Windows helper scripts (`scripts\*.bat`); Bash scripts use `SRC_PATH`. `merge-to-main.sh` only operates on an in-repo `src/`; with an external web root, run page-exclusion merges in the application repository instead.
 
 ### Changing PHP Version (`PHP_IMAGE`)
 

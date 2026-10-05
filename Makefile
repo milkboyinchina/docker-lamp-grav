@@ -9,6 +9,13 @@
 # Default target
 .DEFAULT_GOAL := help
 
+# Web root served by the container. SRC_PATH in .env may point outside this
+# repository (e.g. an external app checkout); fall back to the ./src stub.
+SRC_DIR := $(shell grep -E '^SRC_PATH=[^#]' .env 2>/dev/null | tail -n 1 | cut -d= -f2-)
+ifeq ($(strip $(SRC_DIR)),)
+SRC_DIR := ./src
+endif
+
 # Auto-copy .env, docker-compose.yml, and config templates if missing
 env:
 	@if [ ! -f .env ]; then \
@@ -134,15 +141,15 @@ upload-article: env
 upload-pages: env
 	./upload-article.sh --all
 
-## 🧪 Deploy diagnostic test page to src/test.php
+## 🧪 Deploy diagnostic test page to the served web root ($SRC_PATH or ./src)
 test:
-	cp test-scripts/test.php.example src/test.php
+	cp test-scripts/test.php.example "$(SRC_DIR)/test.php"
 	@echo "✅ Diagnostic test script deployed! Open http://localhost/test.php"
 
-## 🧹 Clean up diagnostic test page from src/
+## 🧹 Clean up diagnostic test page from the served web root
 clean-test:
-	rm -f src/test.php src/diagnostics.php src/wp-diagnostics.php
-	@echo "✅ Diagnostic test page removed from src/"
+	rm -f "$(SRC_DIR)/test.php" "$(SRC_DIR)/diagnostics.php" "$(SRC_DIR)/wp-diagnostics.php"
+	@echo "✅ Diagnostic test page removed from $(SRC_DIR)/"
 
 ## 💾 Backup WWW site files and MariaDB database
 backup: env

@@ -128,6 +128,9 @@ grav-lamp/
     └── cache/               # Grav cache directory (git-ignored & excluded from deployments)
 ```
 
+> [!NOTE]
+> **External web root**: `SRC_PATH` in `.env` may point outside this repository (e.g. `/home/milkboy/Documents/web-app/personal-cv-site`). All scripts (`deploy.sh`, `upload-article.sh`, `backup.sh`, `make test`) resolve the web root from `SRC_PATH`; `./src/` is only a stub for in-repo layouts.
+
 ---
 
 ## 🤝 Support & Documentation

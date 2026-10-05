@@ -327,8 +327,9 @@ if [ -n "${CONTAINER_NAME}" ]; then
     docker exec "${CONTAINER_NAME}" chmod -R 777 /var/www/html/user/config /var/www/html/user/data /var/www/html/cache 2>/dev/null || true
 fi
 
-# Physical clean of source cache directory if exists
-LOCAL_CACHE_DIR="${SCRIPT_DIR}/src/cache"
+# Physical clean of source cache directory (resolved from SRC_PATH, so it works
+# whether the web root lives in-repo or elsewhere on the host)
+LOCAL_CACHE_DIR="${APP_SRC_BASE}/cache"
 if [ -d "${LOCAL_CACHE_DIR}" ]; then
     echo -e "${BLUE}ℹ️ Purging source cache directory files (${LOCAL_CACHE_DIR})...${NC}"
     rm -rf "${LOCAL_CACHE_DIR:?}"/* 2>/dev/null || true
