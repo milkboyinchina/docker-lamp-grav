@@ -46,9 +46,9 @@ NPM routes each hostname to its app container.
   `make check` target validates each enabled slot's path before `up`.
 - Naming convention locked by the template: fragment/service/container names
   must match (`app-2` → `grav-lamp-app-2`).
-- `deploy.sh` / `backup.sh` stay single-app (slot 1 default); per-app
-  selection (`SITE=` parameter) is future work, consistent with their TBD
-  status in `AGENTS.md`.
+- `backup.sh` stays single-app (slot 1 default); per-app
+  selection (`SITE=` parameter) is future work. Application deployment lives
+  in the app repository — this stack intentionally has no deploy scripts.
 
 ## 5. Relationship to Grav-native multisite
 

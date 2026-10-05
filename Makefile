@@ -4,7 +4,7 @@
 # No host folder names are hardcoded, so renaming this directory is safe.
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs logs-tunnel logs-all status shell exec clear-cache cc grav-install deploy deploy-user deploy-pages deploy-user-all deploy-src deploy-all deploy-ftp test clean-test backup merge-main check-php help
+.PHONY: up down stop restart rebuild logs logs-tunnel logs-all status shell exec clear-cache cc grav-install test clean-test backup merge-main check-php help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -94,66 +94,16 @@ shell:
 
 exec: shell
 
-## 🧹 Clear Grav CMS cache on BOTH source container and target environment
-## Target cache dir is derived from DEPLOY_DEST_DIR in .env (never hardcoded,
-## so renaming this directory cannot recreate a stale folder).
+## 🧹 Clear Grav CMS cache inside the webserver container
+## (Target-environment cache is handled by the app repo deploy flow.)
 clear-cache:
 	docker compose exec webserver php bin/grav clearcache
-	@if [ -f .env ]; then set -a; . ./.env; set +a; fi; \
-	DEST="$${DEPLOY_DEST_DIR:-}"; DEST="$${DEST%/}"; \
-	case "$$DEST" in \
-		*/user) BASE="$${DEST%/user}";; \
-		*/user/*) BASE="";; \
-		*) BASE="";; \
-	esac; \
-	if [ -n "$$BASE" ] && [ -d "$$BASE/src/cache" ]; then \
-		echo "Clearing target cache directory ($$BASE/src/cache)..."; \
-		rm -rf "$$BASE/src/cache"/* 2>/dev/null || true; \
-		echo "✅ Target cache cleared!"; \
-	elif [ -n "$$DEST" ]; then \
-		echo "Target cache dir not found under $$DEST - skipping (no folders created)."; \
-	else \
-		echo "DEPLOY_DEST_DIR not set - skipping target cache clear (no folders created)."; \
-	fi
 
 cc: clear-cache
 
 ## 📦 Install Grav CMS core dependencies & plugins inside container
 grav-install:
 	docker compose exec webserver php bin/grav install
-
-## 🚀 Deploy src/user directory (plugins, themes, config) (default: pages excluded)
-deploy: env
-	./deploy.sh --target user
-
-deploy-user: deploy
-
-## 📄 Deploy ONLY src/user/pages directory
-deploy-pages: env
-	./deploy.sh --pages-only
-
-## 📦 Deploy src/user directory INCLUDING pages
-deploy-user-all: env
-	./deploy.sh --target user --include-pages
-
-## 🌐 Deploy the WHOLE src/ folder (Grav core, system, vendor, user, config)
-deploy-src: env
-	./deploy.sh --target src
-
-## 🌐 Alias for deploy-src (deploy whole src/ folder)
-deploy-all: deploy-src
-
-## 📡 Deploy user plugins, themes, and configuration to target environment via FTP
-deploy-ftp: env
-	./deploy.sh --ftp
-
-## 📝 Upload single article or select interactively from local to target environment
-upload-article: env
-	./upload-article.sh
-
-## 📑 Upload ALL articles and pages from local to target environment
-upload-pages: env
-	./upload-article.sh --all
 
 ## 🧪 Deploy diagnostic test page to the served web root ($SRC_PATH or ./src)
 test:
@@ -195,16 +145,8 @@ help:
 	@echo "  make logs-all         - Stream live logs from all services"
 	@echo "  make status           - Display status of running containers"
 	@echo "  make shell            - Open bash shell in webserver container"
-	@echo "  make clear-cache      - Clear Grav CMS cache on source & target (alias: make cc)"
+	@echo "  make clear-cache      - Clear app cache in container (alias: make cc)"
 	@echo "  make grav-install     - Install Grav CMS dependencies & core plugins"
-	@echo "  make deploy           - Deploy src/user directory (plugins, themes, config)"
-	@echo "  make deploy-pages     - Deploy ONLY src/user/pages directory"
-	@echo "  make deploy-user-all  - Deploy src/user directory INCLUDING pages"
-	@echo "  make deploy-src       - Deploy WHOLE src/ folder (Grav core + plugins/themes)"
-	@echo "  make deploy-all       - Alias for deploy-src (deploy whole src/ folder)"
-	@echo "  make deploy-ftp       - Deploy user plugins, themes & config via FTP"
-	@echo "  make upload-article   - Upload specific article/page interactively"
-	@echo "  make upload-pages     - Upload ALL articles and pages to target environment"
 	@echo "  make test             - Deploy diagnostic page (http://localhost/test.php)"
 	@echo "  make clean-test       - Remove diagnostic page from src/"
 	@echo "  make backup           - Interactive backup helper (WWW files, DB, or both)"

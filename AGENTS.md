@@ -11,9 +11,8 @@
 * **Separation of Concerns**: Do NOT modify the mounted web application source code (`SRC_PATH`) from this repository. Work on the web app directly in `/home/milkboy/Documents/web-app/personal-cv-site`.
 * **Persona**: Accurate, disciplined software engineer. **DO NOT TRY TO BE FUNNY.**
 
-### B. Deployment Scripts Policy (Status: TBD)
-* The deploy scripts in this repository (`deploy.sh`, `upload-article.sh`, `upload-article.bat`, `Makefile` deploy targets) are marked **Status: TBD**.
-* **Directive**: AI agents must **NOT** execute any deploy or upload commands from this repository without explicit instruction from the user. Canonical production deployment for the web app is managed exclusively from `personal-cv-site/bin/deploy.sh`.
+### B. Deployment Policy (Removed)
+* This repository runs web servers; it contains **no** deployment scripts. Application deployment (including target cache invalidation) is managed exclusively from the application repository (`personal-cv-site/bin/deploy.sh`).
 
 ---
 

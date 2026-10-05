@@ -1,6 +1,6 @@
 # Comprehensive User Manual & Usage Guide
 
-Welcome to the **Dockerized LAMP Stack (PHP 8.3 + Apache + MariaDB)** user manual. This guide covers installation, local development, database management, automated backups, deployments, and branch workflows.
+Welcome to the **Dockerized LAMP Stack (PHP 8.3–8.5 + Apache + MariaDB)** user manual. This guide covers installation, local development, database management, automated backups, and branch workflows.
 
 ---
 
@@ -10,7 +10,7 @@ Welcome to the **Dockerized LAMP Stack (PHP 8.3 + Apache + MariaDB)** user manua
 2. [Environment Setup](#2-environment-setup)
 3. [Local Development Commands](#3-local-development-commands)
 4. [Grav CMS Operations](#4-grav-cms-operations)
-5. [Automated Deployments (RSYNC & FTP)](#5-automated-deployments-rsync--ftp)
+5. [Application Deployments](#5-application-deployments)
 6. [Automated Backups](#6-automated-backups)
 7. [Git Branch Merging & Page Exclusion](#7-git-branch-merging--page-exclusion)
 8. [Database & Reverse Proxy Configuration](#8-database--reverse-proxy-configuration)
@@ -21,13 +21,12 @@ Welcome to the **Dockerized LAMP Stack (PHP 8.3 + Apache + MariaDB)** user manua
 ## 1. System Overview & Prerequisites
 
 ### Overview
-This stack provides a containerized PHP 8.3 environment on Apache 2.4, optimized for **Grav CMS**, **WordPress**, and custom PHP web applications.
+This stack provides a containerized PHP 8.3–8.5 environment on Apache 2.4 for **Grav 2.x**, **WordPress**, **Laravel**, **CodeIgniter**, and custom PHP web applications. Application deployments live in the application repository — this stack only runs the servers.
 
 ### Requirements
 - **Docker Engine**: 20.10+
 - **Docker Compose**: v2+
 - **Make** (Optional): For 1-word Makefile command shortcuts
-- **rsync** & **python3**: Pre-installed on Linux/macOS for deployment automation
 
 ---
 
@@ -106,24 +105,10 @@ COMPOSE_PROFILES=db,adminer
 # Ports
 HTTP_PORT=80
 ADMINER_PORT=8080
-
-# Deployment Configuration
-DEPLOY_MODE=rsync
-DEPLOY_TARGET_BASE=/mnt/1.milkboy/docker/docker-lamp-grav
-DEPLOY_DEST_DIR=/mnt/1.milkboy/docker/docker-lamp-grav/src/user
-DEPLOY_LOG_DIR=./logs/deployments
-
-# FTP Settings
-FTP_HOST=ftp.example.com
-FTP_PORT=21
-FTP_USER=ftp_username
-FTP_PASS=ftp_password
-FTP_REMOTE_DIR=/public_html/user
-FTP_SSL=false
 ```
 
 > [!NOTE]
-> **Web root location (`SRC_PATH`)**: the served document root may live inside this repository (`SRC_PATH=./src`) or anywhere else on the host (e.g. `SRC_PATH=/home/milkboy/Documents/web-app/personal-cv-site`). All scripts resolve it from `SRC_PATH` — never assume `./src`. `DEPLOY_SRC_DIR` is only read by the Windows helper scripts (`scripts\*.bat`); Bash scripts use `SRC_PATH`. `merge-to-main.sh` only operates on an in-repo `src/`; with an external web root, run page-exclusion merges in the application repository instead.
+> **Web root location (`SRC_PATH`)**: the served document root may live inside this repository (`SRC_PATH=./src`) or anywhere else on the host (e.g. `SRC_PATH=/home/milkboy/Documents/web-app/personal-cv-site`). All scripts resolve it from `SRC_PATH` — never assume `./src`. `merge-to-main.sh` only operates on an in-repo `src/`; with an external web root, run page-exclusion merges in the application repository instead.
 
 ### Changing PHP Version (`PHP_VERSION`)
 
@@ -306,80 +291,12 @@ make clean-test  # Removes test page
 
 ---
 
-## 5. Automated Deployments & Article Uploading (RSYNC & FTP)
+## 5. Application Deployments
 
-### 🚀 Targeted Deployments (`deploy.sh` & `Makefile`)
-Synchronize code, plugins, themes, pages, or the entire application codebase to a target live environment with precise target scope control:
-
-#### 1. Deploy `src/user/` Directory (Plugins, Themes, Config)
-Deploys plugins, themes, and configuration files while preserving production pages by default:
-```bash
-make deploy            # or: make deploy-user
-./deploy.sh --target user
-```
-
-#### 2. Deploy ONLY `src/user/pages/` Directory
-Deploys ONLY markdown pages and article content without modifying plugins or system settings:
-```bash
-make deploy-pages
-./deploy.sh --pages-only
-```
-
-#### 3. Deploy `src/user/` INCLUDING Pages
-Deploys user plugins, themes, configuration, **AND** all markdown pages together:
-```bash
-make deploy-user-all
-./deploy.sh --target user --include-pages
-```
-
-#### 4. Deploy the WHOLE `src/` Folder (Full Site Codebase)
-Deploys the entire application document root including Grav core, vendor, system, plugins, themes, and configuration:
-```bash
-make deploy-src        # or: make deploy-all
-./deploy.sh --target src
-```
-
-#### 5. FTP Transport Deployment
-Deploys user files using FTP credentials defined in `.env`:
-```bash
-make deploy-ftp        # or: ./deploy.sh --ftp
-```
-
-#### 6. Dry-Run Mode (Preview Changes)
-Preview file transfers without modifying any live files:
-```bash
-./deploy.sh --dry-run
-./deploy.sh --target src --dry-run
-```
-
-#### 7. Automatic Cache Exclusion & Dual Invalidation Policy
-- **Cache Exclusion**: All deployment commands strictly exclude `cache/`, `user/cache/`, and `.cache/` directories from transfer.
-- **Dual Cache Invalidation**: Upon completion of any deployment run, cache is automatically cleared on **BOTH**:
-  1. **Source Development Environment**: Runs `php bin/grav clearcache` inside `grav-lamp-web` container and purges `./src/cache/*`.
-  2. **Target Production Environment**: Purges target cache directory (`/mnt/1.milkboy/.../src/cache/*`) and touches `system.yaml` to force Grav to rebuild page and system caches instantly.
-
----
-
-### 📝 Article & Page Uploading (`upload-article.sh`)
-Upload specific articles, blog posts, or page folders from local `src/user/pages/` to production without running a full stack deployment.
-
-```bash
-# 1. Interactive selection mode (lists available local page folders)
-make upload-article  # or: ./upload-article.sh
-
-# 2. Upload a specific article or subfolder directly
-./upload-article.sh 05.faq
-./upload-article.sh blog/my-new-post
-
-# 3. Upload ALL articles and pages to production
-make upload-pages    # or: ./upload-article.sh --all
-
-# 4. Dry-run mode for article upload
-./upload-article.sh --dry-run 05.faq
-```
-
-### Per-Run Log File Generation
-Every deployment and article upload automatically creates a detailed execution log in `logs/deployments/` (e.g. `deploy_user_YYYYMMDD_HHMMSS.log`, `deploy_pages_YYYYMMDD_HHMMSS.log`, or `deploy_src_YYYYMMDD_HHMMSS.log`).
+This stack runs web servers; it does not deploy applications. All deployments
+(including target cache invalidation) live in the application repository —
+e.g. `personal-cv-site/bin/deploy.sh`. The `make clear-cache` target clears the
+app cache inside the local container only.
 
 ---
 

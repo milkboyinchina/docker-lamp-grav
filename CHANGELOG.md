@@ -5,6 +5,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Removed
+- Deployment function (out of scope for a web-server stack; canonical flow is
+  `personal-cv-site/bin/deploy.sh`): deleted `deploy.sh`, `upload-article.sh`,
+  `scripts/deploy.bat`, `scripts/upload-article.bat` and all related `Makefile`
+  targets, `.env` variables (`DEPLOY_*`, `FTP_*`), and docs. `make clear-cache`
+  now clears the local container cache only.
+
 ### Added
 - Multi-app PHP runtime: `APP_TYPE` (`grav|laravel|codeigniter|wordpress|custom`)
   + `APACHE_DOCROOT` in `.env`; entrypoint manages per-app writable dirs,
