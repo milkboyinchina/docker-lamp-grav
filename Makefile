@@ -4,7 +4,7 @@
 # No host folder names are hardcoded, so renaming this directory is safe.
 # ==============================================================================
 
-.PHONY: up down stop restart rebuild logs logs-tunnel logs-all status shell exec clear-cache cc grav-install test clean-test backup merge-main check-php help
+.PHONY: up down stop restart rebuild logs logs-tunnel logs-all status shell exec clear-cache cc grav-install test clean-test backup merge-main check-php check-env help
 
 # Default target
 .DEFAULT_GOAL := help
@@ -50,7 +50,7 @@ env:
 	fi
 
 ## 🚀 Start containers in background (Detached)
-up: env check-php
+up: env check-env
 	docker compose up -d
 	@echo ""
 	@echo "✅ Stack running! Access site at http://localhost"
@@ -68,7 +68,7 @@ restart:
 	docker compose restart
 
 ## 🛠️ Rebuild image without cache & restart containers
-rebuild: env check-php
+rebuild: env check-env
 	docker compose build --no-cache
 	docker compose up -d
 
@@ -126,6 +126,36 @@ check-php:
 		*) echo "ERROR: unsupported PHP_VERSION '$(PHPV)'. Choose: 8.3, 8.4, 8.5"; exit 1;; \
 	esac
 
+## 🔍 Validate .env consistency (profiles, required secrets, key parity)
+check-env: check-php
+	@set -a; [ -f .env ] && . ./.env; set +a; \
+	PROFILES=",$${COMPOSE_PROFILES:-},"; \
+	FILES="$${COMPOSE_FILE:-docker-compose.yml}"; \
+	APP="$${APP_TYPE:-grav}"; \
+	DOCROOT="$${APACHE_DOCROOT:-/var/www/html}"; \
+	case "$$APP" in grav|laravel|codeigniter|wordpress|custom) ;; \
+		*) echo "ERROR: unsupported APP_TYPE '$$APP'. Choose: grav, laravel, codeigniter, wordpress, custom"; exit 1;; \
+	esac; \
+	case "$$PROFILES" in *,tunnel,*) \
+		if [ -z "$${CLOUDFLARE_TUNNEL_TOKEN:-}" ]; then \
+			echo "ERROR: tunnel profile is enabled but CLOUDFLARE_TUNNEL_TOKEN is empty (set it in .env)"; exit 1; \
+		fi;; \
+	esac; \
+	case "$$FILES" in *direct*) ;; \
+		*) case "$$PROFILES" in *,proxy*) ;; \
+			*) echo "ERROR: proxied COMPOSE_FILE publishes no host ports and no proxy profile is enabled - the stack would serve nothing. Add proxy to COMPOSE_PROFILES or switch COMPOSE_FILE back to include docker-compose.direct.yml"; exit 1;; \
+		esac;; \
+	esac; \
+	if [ "$$APP" = "laravel" ]; then case "$$DOCROOT" in */public) ;; \
+		*) echo "WARNING: APP_TYPE=laravel but APACHE_DOCROOT is '$$DOCROOT' (expected .../public); Laravel will not route correctly";; \
+	esac; fi; \
+	MISSING=""; T1="$$(mktemp)"; T2="$$(mktemp)"; \
+	grep -E '^[A-Z_]+=' env.example | cut -d= -f1 | sort -u > "$$T1"; \
+	grep -E '^[A-Z_]+=' .env 2>/dev/null | cut -d= -f1 | sort -u > "$$T2"; \
+	MISSING="$$(comm -23 "$$T1" "$$T2" | tr '\n' ' ')"; rm -f "$$T1" "$$T2"; \
+	if [ -n "$$MISSING" ]; then echo "WARNING: .env is missing keys present in env.example (copy them over): $$MISSING"; fi; \
+	echo "✅ Environment checks passed."
+
 ## 🔀 Merge current branch into main excluding src/user/pages
 merge-main:
 	./merge-to-main.sh
@@ -151,4 +181,5 @@ help:
 	@echo "  make clean-test       - Remove diagnostic page from src/"
 	@echo "  make backup           - Interactive backup helper (WWW files, DB, or both)"
 	@echo "  make merge-main       - Merge branch into main excluding src/user/pages"
+	@echo "  make check-env        - Validate .env consistency (profiles, secrets, key parity)"
 	@echo "======================================================================"

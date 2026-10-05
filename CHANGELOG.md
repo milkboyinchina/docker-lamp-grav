@@ -5,6 +5,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `make check-env` (wired into `make up`/`rebuild`): validates APP_TYPE,
+  tunnel token presence, proxied-mode sanity, Laravel/docroot coupling, and
+  `.env` vs `env.example` key parity. Verified against six fault cases.
+
 ### Removed
 - Deployment function (out of scope for a web-server stack; canonical flow is
   `personal-cv-site/bin/deploy.sh`): deleted `deploy.sh`, `upload-article.sh`,
