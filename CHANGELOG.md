@@ -6,6 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `EXTERNAL_NETWORK_NAME` configuration variable in `env.example` and `docker-compose.yml.example` (and `traefik.docker.network` label) to parameterize custom external Docker networks (e.g. Traefik, NetBird mesh) without editing compose YAML.
 - `make check-env` (wired into `make up`/`rebuild`): validates APP_TYPE,
   tunnel token presence, proxied-mode sanity, Laravel/docroot coupling, and
   `.env` vs `env.example` key parity. Verified against six fault cases.

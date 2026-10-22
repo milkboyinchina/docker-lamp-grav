@@ -43,7 +43,7 @@ services:
     # To use Traefik, uncomment the labels below and external-net, and comment out 'ports:' above.
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=external-net"
+      - "traefik.docker.network=${EXTERNAL_NETWORK_NAME:-external-net}"
 
       # 1. Main Router for Apex Domain
       - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-example.com}`)"
@@ -108,7 +108,7 @@ services:
     # To use Traefik, uncomment the labels below and external-net, and comment out 'ports:' above.
     # labels:
     #   - "traefik.enable=true"
-    #   - "traefik.docker.network=external-net"
+    #   - "traefik.docker.network=${EXTERNAL_NETWORK_NAME:-external-net}"
     #   # Route rule for www.example.com/adminer
     #   - "traefik.http.routers.adminer.rule=Host(`${SERVER_NAME:-www.example.com}`) && PathPrefix(`/adminer`)"
     #   # Only bind to websecure (Traefik automatically redirects port 80 -> 443)
@@ -171,7 +171,7 @@ networks:
   # Uncomment below and enable 'external-net' in services to connect containers to an external network:
   # external-net:
   #   external: true
-  #   name: nb_netbird # Replace with your external Docker network name if different
+  #   name: ${EXTERNAL_NETWORK_NAME:-external-net}
 
 volumes:
   dbdata:

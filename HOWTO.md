@@ -424,9 +424,13 @@ COMPOSE_FILE=docker-compose.yml
 By default, the Docker stack uses an isolated internal bridge network (`grav-network`) for container-to-container communication.
 
 #### Switching to an External Network (`external-net`)
-If your containers need to connect to an external Docker network (e.g., Traefik, NetBird, or a shared proxy network):
+If your containers need to connect to a pre-existing external Docker network (e.g., Traefik, NetBird mesh, or an external reverse proxy network):
 
-1. Edit the `networks:` block at the bottom of `docker-compose.yml`:
+1. Set your external network name in `.env`:
+   ```ini
+   EXTERNAL_NETWORK_NAME=nb_netbird  # Or your custom Docker network name
+   ```
+2. In `docker-compose.yml`, uncomment the `external-net` definition at the bottom:
    ```yaml
    networks:
      grav-network:
@@ -434,9 +438,9 @@ If your containers need to connect to an external Docker network (e.g., Traefik,
 
      external-net:
        external: true
-       name: nb_netbird  # Replace with your external Docker network name if different
+       name: ${EXTERNAL_NETWORK_NAME:-external-net}
    ```
-2. Under your service (e.g. `webserver` or `adminer`), switch the network mapping:
+3. Under your service (e.g. `webserver` or `adminer`), switch the network mapping:
    ```yaml
        networks:
          # - grav-network
@@ -447,20 +451,27 @@ If your containers need to connect to an external Docker network (e.g., Traefik,
 
 ### Traefik Reverse Proxy & SSL/TLS Configuration Guide
 
-When deploying behind Traefik or Nginx Proxy Manager (with automatic Let's Encrypt TLS certificates or an external proxy network), configure your `docker-compose.yml` as follows:
+When deploying behind Traefik or an external reverse proxy network with automatic Let's Encrypt TLS certificates:
 
-#### Step 1: Comment out Direct Host Port Mapping
-By default, Docker Compose maps host ports (`ports: - "${HTTP_PORT:-80}:80"`). When using Traefik or Nginx Proxy Manager as your primary front-end proxy, comment out the `ports:` block under `webserver` (and `adminer`):
+#### Step 1: Switch to Proxied Mode (No Direct Host Ports)
+Ensure `COMPOSE_FILE` in `.env` omits `docker-compose.direct.yml`:
+```ini
+COMPOSE_FILE=docker-compose.yml
+```
+This ensures no host ports are published directly on the host interface.
 
-```yaml
-    # Direct host ports (uncomment for standalone access; comment out if using Traefik or Nginx Proxy Manager)
-    #ports:
-    #  - "${HTTP_PORT:-80}:80"
+#### Step 2: Configure External Network in `.env`
+Specify your external Docker network name in `.env`:
+```ini
+EXTERNAL_NETWORK_NAME=nb_netbird  # e.g. nb_netbird, traefik_network, webproxy
+```
+And declare the profile for clarity (optional, recognized by check-env):
+```ini
+COMPOSE_PROFILES=traefik
 ```
 
-#### Step 2: Connect Container to External Network
-Attach `webserver` to your external proxy network (`external-net`):
-
+#### Step 3: Connect Webserver to the External Network
+In `docker-compose.yml`:
 ```yaml
 services:
   webserver:
@@ -471,16 +482,15 @@ services:
 networks:
   external-net:
     external: true
-    name: nb_netbird  # Replace with your external network name
+    name: ${EXTERNAL_NETWORK_NAME:-external-net}
 ```
 
-#### Step 3: Configure Traefik Labels (Apex & WWW Redirect Example)
-Add Traefik labels under `webserver` to configure SSL/TLS certificates and automatic `www` to non-`www` HTTPS redirection using `example.com`:
-
+#### Step 4: Configure Traefik Labels (Apex & WWW Redirect Example)
+Uncomment the Traefik labels under `webserver` in `docker-compose.yml`:
 ```yaml
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik_network"
+      - "traefik.docker.network=${EXTERNAL_NETWORK_NAME:-external-net}"
 
       # 1. Main Router for Apex Domain (example.com -> HTTPS)
       - "traefik.http.routers.webserver.rule=Host(`${SERVER_NAME:-example.com}`)"
@@ -504,7 +514,7 @@ Add Traefik labels under `webserver` to configure SSL/TLS certificates and autom
       - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://$${1}"
 ```
 
-#### Step 4: Apply Changes
+#### Step 5: Apply Changes
 Apply changes and start containers:
 ```bash
 make up

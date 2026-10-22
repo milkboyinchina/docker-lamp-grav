@@ -25,7 +25,7 @@ Open your browser at:
 - **Adminer Database Manager**: [http://localhost:8080](http://localhost:8080) (when `COMPOSE_PROFILES=db,adminer` in `.env`)
 - **Nginx Proxy Manager Admin UI**: [http://localhost:81](http://localhost:81) (when `COMPOSE_PROFILES=...,proxy` in `.env`, initial login: `admin@example.com` / `changeme`)
 
-*(Note: Stack uses `grav-network` bridge by default. Comment out `ports:` if routing traffic through Traefik or Nginx Proxy Manager; see [HOWTO.md](HOWTO.md) for external network setup.)*
+*(Note: Stack uses `grav-network` bridge by default. Set `COMPOSE_FILE=docker-compose.yml` for proxied/external network mode; see [HOWTO.md](HOWTO.md) for external network and Traefik setup.)*
 
 ### 3. Clear Grav Cache
 ```bash
