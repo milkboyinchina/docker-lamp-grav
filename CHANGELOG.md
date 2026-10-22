@@ -12,6 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - Rebuild scripts (`rebuild.sh` and `scripts/rebuild.bat`): aligned with `Makefile` by splitting `docker compose up -d --build --no-cache` into `docker compose build --no-cache` followed by `docker compose up -d` (resolves Compose v2 `unknown flag: --no-cache` error).
+- `Makefile` (`check-env`): allow external reverse proxies (Traefik labels or `external: true` networks in `docker-compose.yml`, or `external`/`traefik` in `COMPOSE_PROFILES`) in proxied mode, eliminating false-positive aborts when internal NPM is omitted.
 
 ### Removed
 - Deployment function (out of scope for a web-server stack; canonical flow is

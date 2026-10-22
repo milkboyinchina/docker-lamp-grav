@@ -142,8 +142,10 @@ check-env: check-php
 		fi;; \
 	esac; \
 	case "$$FILES" in *direct*) ;; \
-		*) case "$$PROFILES" in *,proxy*) ;; \
-			*) echo "ERROR: proxied COMPOSE_FILE publishes no host ports and no proxy profile is enabled - the stack would serve nothing. Add proxy to COMPOSE_PROFILES or switch COMPOSE_FILE back to include docker-compose.direct.yml"; exit 1;; \
+		*) case "$$PROFILES" in *,proxy*|*,tunnel*|*,external*|*,traefik*) ;; \
+			*) if ! grep -qE '^[[:space:]]*-[[:space:]]*"?traefik\.enable=true|^[[:space:]]*external:[[:space:]]*true' docker-compose.yml 2>/dev/null; then \
+				echo "ERROR: proxied COMPOSE_FILE publishes no host ports, no proxy profile is enabled, and no external proxy/network is configured - the stack would serve nothing. Add proxy to COMPOSE_PROFILES, configure external proxy/network in docker-compose.yml, or switch COMPOSE_FILE back to include docker-compose.direct.yml"; exit 1; \
+			fi;; \
 		esac;; \
 	esac; \
 	if [ "$$APP" = "laravel" ]; then case "$$DOCROOT" in */public) ;; \
