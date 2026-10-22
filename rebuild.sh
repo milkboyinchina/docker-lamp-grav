@@ -35,6 +35,7 @@ case " 8.3 8.4 8.5 " in
         ;;
 esac
 echo "Rebuilding Docker LAMP Stack image..."
-docker compose up -d --build --no-cache
+docker compose build --no-cache
+docker compose up -d
 echo ""
 echo "✅ Rebuild complete! Access site at http://localhost"

@@ -10,6 +10,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   tunnel token presence, proxied-mode sanity, Laravel/docroot coupling, and
   `.env` vs `env.example` key parity. Verified against six fault cases.
 
+### Fixed
+- Rebuild scripts (`rebuild.sh` and `scripts/rebuild.bat`): aligned with `Makefile` by splitting `docker compose up -d --build --no-cache` into `docker compose build --no-cache` followed by `docker compose up -d` (resolves Compose v2 `unknown flag: --no-cache` error).
+
 ### Removed
 - Deployment function (out of scope for a web-server stack; canonical flow is
   `personal-cv-site/bin/deploy.sh`): deleted `deploy.sh`, `upload-article.sh`,

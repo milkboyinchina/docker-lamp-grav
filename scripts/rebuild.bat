@@ -5,7 +5,8 @@ IF NOT EXIST .env (
     copy env.example .env
 )
 echo Rebuilding Docker LAMP Stack image...
-docker compose up -d --build --no-cache
+docker compose build --no-cache
+docker compose up -d
 echo.
 echo Rebuild complete! Access your site at http://localhost
 pause
